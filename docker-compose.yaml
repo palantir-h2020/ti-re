@@ -1,0 +1,81 @@
+# Kafka https://kafka.apache.org/quickstart
+
+version: "3.7"
+services:
+    zookeeper:
+        #restart: always
+        hostname: zookeeper
+        image: wurstmeister/zookeeper
+        ports:
+            - "2181:2181"
+        networks:
+            nat-network:
+                ipv4_address: 10.0.100.2
+        #logging:
+        #    driver: "none"
+
+    kafka:
+        #restart: always
+        image: wurstmeister/kafka
+        ports:
+          - "9092:9092"
+        hostname: kafka
+        environment:
+            #DOCKER_API_VERSION: 1.22
+            KAFKA_ADVERTISED_HOST_NAME: kafka
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+        networks:
+            nat-network:
+                ipv4_address: 10.0.100.3
+        #logging:
+        #    driver: "none"
+        depends_on:
+        - zookeeper
+        #command: "kafka-topics.sh --create --topic quickstart-events --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1"
+        #command: "kafka-console-consumer.sh --topic snort --from-beginning --bootstrap-server localhost:9092"
+        #command: kafka-console-producer.sh --topic ti.threat_findings_netflow --bootstrap-server kafka:9092
+
+#    tcam_mockup:
+#       restart: always
+#       image: ubuntu:20.04
+#       hostname: tcam_mockup
+#       stdin_open: true
+#       tty: true
+#       networks:
+#           # eth0
+#           nat-network:
+#               ipv4_address: 10.0.100.4
+#       depends_on:
+#           - kafka
+#       #command: "bash alice.sh"
+#       #ip route add 10.0.20.0/24 via 10.0.10.2 dev eth0
+#       #command: sh -c "ip route add 10.0.20.0/24 via 10.0.10.2 dev eth0 && exec ping 10.0.20.3"
+
+    rr-tool:
+        #restart: always
+        build: rr-tool
+        hostname: rr-tool
+        stdin_open: true
+        tty: true
+        networks:
+            # eth0
+            nat-network:
+                ipv4_address: 10.0.100.5
+        #command: "bash iptables.sh"
+        #command: "fprobe -g 10 -d 10 -e 10 -v 7 -l 2 -i eth0 10.0.30.3:12345"
+        #command: "bash"
+        depends_on:
+            - kafka
+
+#volumes:
+#    logvolume01: {}
+#    sitevolume: {}
+#    databasevolume: {}
+
+networks:
+    nat-network:
+        internal: false
+        name: nat-network
+        ipam:
+            config:
+                - subnet: "10.0.100.0/24"
