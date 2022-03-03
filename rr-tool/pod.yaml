@@ -10,7 +10,7 @@ spec:
       imagePullPolicy: Always
       env:
         - name: KAFKA_IP
-          value: "10.0.100.3"
+          value: "10.0.41.255"
         - name: KAFKA_PORT
           value: "9092"
         - name: TOPIC_TI_NETFLOW
@@ -22,7 +22,7 @@ spec:
         - name: TOPIC_IR_INCIDENT_DETECTED
           value: "ir.detected_incident"
         - name: RR_TOOL_IP
-          value: "10.?.?.?"
+          value: "10.101.41.42"
         - name: SC_ORCHESTRATOR_IP
           value: "10.101.41.168"
         - name: SC_CLUSTER_PORT
