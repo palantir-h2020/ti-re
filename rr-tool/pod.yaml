@@ -10,7 +10,7 @@ spec:
       imagePullPolicy: Always
       env:
         - name: KAFKA_IP
-          value: "10.0.41.255"
+          value: "10.101.41.255"
         - name: KAFKA_PORT
           value: "9092"
         - name: TOPIC_TI_NETFLOW
