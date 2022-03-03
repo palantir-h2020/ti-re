@@ -1,10 +1,10 @@
 import irAPI
 import logging
 import portalAPI
+import settings
 
 def fbm_function(alert):
-    #TODO extrapolate victim machine IP from alert
-    ip = "10.1.10.1"
+    ip = alert[settings.TI_SYSLOG_VICTIM_IP_FIELD_NAME]
     logging.info('Incident response API: notifying data breach on host with IP '+ip)
     portalAPI.notify_portal(componentType="Recommendation and Remediation",
                             componentId="0",
