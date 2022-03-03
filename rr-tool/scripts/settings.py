@@ -1,25 +1,26 @@
-# KAFKA CONFIGURATION
+import os
 
+# KAFKA CONFIGURATION
 KAFKA_PRODUCER_PROPERTIES = {
-        "bootstrap.servers": "10.0.100.3:9092",
+        "bootstrap.servers": (os.environ['KAFKA_IP'])+":"+(os.environ['KAFKA_PORT']),
         "compression.type": "none"
     }
 
 KAFKA_CONSUMER_PROPERTIES = {
-        "bootstrap.servers": "10.0.100.3:9092",
+        "bootstrap.servers": (os.environ['KAFKA_IP'])+":"+(os.environ['KAFKA_PORT']),
         "group.id": "test-consumer-group",
         #"auto.offset.reset": "earliest"
     }
 
-TOPIC_TI_NETFLOW = 'ti.threat_findings_netflow'
-TOPIC_TI_SYSLOG = 'ti.threat_findings_syslog'
-TOPIC_PORTAL_NOTIFICATIONS = 'actions-notifications'
-TOPIC_IR_INCIDENT_DETECTED = 'ir.detected_incident'
+TOPIC_TI_NETFLOW = (os.environ['TOPIC_TI_NETFLOW'])
+TOPIC_TI_SYSLOG = (os.environ['TOPIC_TI_SYSLOG'])
+TOPIC_PORTAL_NOTIFICATIONS = (os.environ['TOPIC_PORTAL_NOTIFICATIONS'])
+TOPIC_IR_INCIDENT_DETECTED = (os.environ['TOPIC_IR_INCIDENT_DETECTED'])
 # SC CONFIGURATION
 
-RR_TOOL_IP = '10.?.?.?'
-SC_ORCHESTRATOR_IP = '10.101.41.168'
-SC_CLUSTER_PORT = '50101'
-IPTABLES_SC_ID = 'dfbba196-c6b9-406c-9853-6eabfd865794'
+RR_TOOL_IP = (os.environ['RR_TOOL_IP'])
+SC_ORCHESTRATOR_IP = (os.environ['SC_ORCHESTRATOR_IP'])
+SC_CLUSTER_PORT = (os.environ['SC_CLUSTER_PORT'])
+IPTABLES_SC_ID = (os.environ['IPTABLES_SC_ID'])
 
-IGRAPH_PICTURES_OUTPUT_FOLDER = ""
+IGRAPH_PICTURES_OUTPUT_FOLDER = (os.environ['IGRAPH_PICTURES_OUTPUT_FOLDER'])

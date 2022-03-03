@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rr-tool
+spec:
+  restartPolicy: OnFailure
+  containers:
+    - name: palantir-rr-tool:1.0
+      image: 10.101.10.244:5000/palantir-rr-tool:1.0
+      imagePullPolicy: Always
+      env:
+        - name: KAFKA_IP
+          value: "10.0.100.3"
+        - name: KAFKA_PORT
+          value: "9092"
+        - name: TOPIC_TI_NETFLOW
+          value: "ti.threat_findings_netflow"
+        - name: TOPIC_TI_SYSLOG
+          value: "ti.threat_findings_syslog"
+        - name: TOPIC_PORTAL_NOTIFICATIONS
+          value: "actions-notifications"
+        - name: TOPIC_IR_INCIDENT_DETECTED
+          value: "ir.detected_incident"
+        - name: RR_TOOL_IP
+          value: "10.?.?.?"
+        - name: SC_ORCHESTRATOR_IP
+          value: "10.101.41.168"
+        - name: SC_CLUSTER_PORT
+          value: "50101"
+        - name: IPTABLES_SC_ID
+          value: "dfbba196-c6b9-406c-9853-6eabfd865794"
+        - name: IGRAPH_PICTURES_OUTPUT_FOLDER
+          value: ""

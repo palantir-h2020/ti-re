@@ -44,6 +44,19 @@ services:
                 ipv4_address: 10.0.100.5
         depends_on:
             - kafka
+        environment:
+            #KAFKA_IP: "10.101.41.255"
+            KAFKA_IP: "10.0.100.3"
+            KAFKA_PORT: "9092"
+            TOPIC_TI_NETFLOW: "ti.threat_findings_netflow"
+            TOPIC_TI_SYSLOG: "ti.threat_findings_syslog"
+            TOPIC_PORTAL_NOTIFICATIONS: "actions-notifications"
+            TOPIC_IR_INCIDENT_DETECTED: "ir.detected_incident"
+            RR_TOOL_IP: "10.?.?.?"
+            SC_ORCHESTRATOR_IP: "10.101.41.168"
+            SC_CLUSTER_PORT: "50101"
+            IPTABLES_SC_ID: "dfbba196-c6b9-406c-9853-6eabfd865794"
+            IGRAPH_PICTURES_OUTPUT_FOLDER: ""
 
 networks:
     nat-network:
