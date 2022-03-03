@@ -5,7 +5,7 @@ metadata:
 spec:
   restartPolicy: OnFailure
   containers:
-    - name: palantir-rr-tool:1.0
+    - name: palantir-rr-tool
       image: 10.101.10.244:5000/palantir-rr-tool:1.0
       imagePullPolicy: Always
       env:
