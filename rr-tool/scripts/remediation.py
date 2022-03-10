@@ -375,6 +375,7 @@ class Remediator():
     def stringInputNetflow(self,threat_report_netflow):
         logging.info("Threat report netflow: "+threat_report_netflow)
         alert = json.loads(threat_report_netflow)
+        logging.info("Serialized netflow threat report: "+alert)
         #for alert in alerts:
         alert["Threat_Name"] = "malware"
         self.jsonInput(alert)
@@ -382,6 +383,7 @@ class Remediator():
     def stringInputSyslog(self,threat_report_syslog):
         logging.info("Threat report syslog: " + threat_report_syslog)
         alert = json.loads(threat_report_syslog)
+        logging.info("Serialized syslog threat report: "+alert)
         #for alert in alerts:
         alert["Threat_Name"] = "unauthorized_access"
         self.jsonInput(alert)

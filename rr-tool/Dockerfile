@@ -7,8 +7,10 @@ RUN add-apt-repository "deb https://packages.confluent.io/clients/deb focal main
 RUN apt-get update -y
 RUN apt-get install librdkafka-dev python3-pip python-dev -y
 RUN pip3 install --no-binary :all: confluent-kafka
+ADD requirements.txt /usr/src/
+WORKDIR /usr/src
+RUN python3 -m pip install -r requirements.txt
 ADD scripts /usr/src/scripts
 WORKDIR /usr/src/scripts
-RUN python3 -m pip install -r requirements.txt
 ENV PYTHONUNBUFFERED 1
 ENTRYPOINT ["python3", "/usr/src/scripts/kafka_connector.py"]
