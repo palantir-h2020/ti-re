@@ -12,9 +12,9 @@ import settings
 logging.basicConfig(level=logging.DEBUG)
 
 globalCounters = {
-    "firewall": 3,
-    "switch": 2,
-    "host": 12,
+    "firewall": 1,
+    "switch": 0,
+    "host": 2,
     "network_monitor": 0
 }
 
@@ -118,8 +118,8 @@ class ServiceGraph():
     def __init__(self):
 
         gnet1 = ig.Graph(4)
-        gnet1.vs["name"] = ["host1", "attacker", "border_firewall"]
-        gnet1.add_edges([("host1", "border_firewall"), ("border_firewall", "attacker")])
+        gnet1.vs["name"] = ["victim", "attacker", "border_firewall"]
+        gnet1.add_edges([("victim", "border_firewall"), ("border_firewall", "attacker")])
         gnet1.vs["ipAddress"] = ["10.1.0.10", "1.2.3.4", "10.1.0.11"]
         gnet1.vs["subnetMask"] = ["16", "16", "16"]
         gnet1.vs["nodeType"] = ["host", "firewall", "attacker"]
@@ -149,6 +149,10 @@ class ServiceGraph():
         node1 = self.returnNodeName(nodeIdentifier)
         node: ig.Vertex = self.sgraph.vs.find(node1)
         return node["ipAddress"]
+
+    def changeNodeIP(self, nodeName, newNodeIp):
+        node: ig.Vertex = self.sgraph.vs.find(nodeName)
+        node["ipAddress"] = newNodeIp
 
     def list_paths(self, srcNode, dstNode):  # return a list of node paths
         logging.info(msg="Searching for paths ...")

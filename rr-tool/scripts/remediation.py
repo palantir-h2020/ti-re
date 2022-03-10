@@ -256,6 +256,11 @@ class Remediator():
         self.GlobalScope["c2serversPort"] = attacker_port  # 22
         self.GlobalScope["attacker_ip"] = attacker_ip  # 12.12.12.12
 
+        #TODO remove this temporary fix after having landscape information/ip changes in alerts
+        self.ServiceGraph.changeNodeIP("victim",impacted_host_ip)
+        self.ServiceGraph.changeNodeIP("attacker", attacker_ip)
+
+
         if threatName in self.ThreatRepository[threatType]:
             logging.info("Threat found in the repository, applying specific countermeasures ...")
             mitigation_rules = self.ThreatRepository[threatType][threatName]["rules"]
