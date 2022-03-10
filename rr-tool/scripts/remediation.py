@@ -309,7 +309,7 @@ class Remediator():
                 {"level": 4, "victimIP": impacted_host_ip, "c2serversPort": attacker_port, "c2serversIP": attacker_ip,
                  "proto": "TCP"}]
 
-            suggestedRecipe = self.ThreatRepository[threatType][threatName]["suggestedRecipe"]
+            suggestedRecipe = self.ThreatRepository[threatType]["command_control"]["suggestedRecipe"]
             logging.info(
                 f"Recommended recipe for the threat: \n{self.RecipeRepository[suggestedRecipe]['description']} with parameters: ")
             logging.info(
