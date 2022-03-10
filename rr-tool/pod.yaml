@@ -14,7 +14,7 @@ spec:
         - name: KAFKA_PORT
           value: "9092"
         - name: KAFKA_POLLING_TIMEOUT
-          value: "60"
+          value: "1.0"
         - name: TOPIC_TI_NETFLOW
           value: "ti.threat_findings_netflow"
         - name: TOPIC_TI_SYSLOG
