@@ -12,7 +12,7 @@
                 ]
             }
         },
-        "botnet": {
+        "Botnet": {
             "Cridex": {
                 "rules": [{
                     "level": 7,
