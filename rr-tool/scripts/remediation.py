@@ -251,7 +251,7 @@ class Remediator():
     def prepareDataForRemediationOfMalware(self, threatType, threatName, impacted_host_ip, attacker_port, attacker_ip):
 
         self.GlobalScope["threat_type"] = threatType  # malware
-        self.GlobalScope["threat_name"] = threatName  # command_control / Cridex / Zeus
+        self.GlobalScope["threat_name"] = threatName  # unknown / Cridex / Zeus
         self.GlobalScope["impacted_host_ip"] = impacted_host_ip  # 10.1.0.10
         self.GlobalScope["c2serversPort"] = attacker_port  # 22
         self.GlobalScope["attacker_ip"] = attacker_ip  # 12.12.12.12
@@ -301,7 +301,7 @@ class Remediator():
             for rule in self.GlobalScope["rules_level_7"]:
                 payload = rule["payload"]
                 logging.info(f"Payload: {payload}")
-        # if threatName == "command_control":
+        # if threatName == "unknown":
         else:
             # logging.info("Generic command and control threat detected, apply countermeasures ...")
             logging.info("Threat not found in the repository, applying generic countermeasures ...")
@@ -309,7 +309,7 @@ class Remediator():
                 {"level": 4, "victimIP": impacted_host_ip, "c2serversPort": attacker_port, "c2serversIP": attacker_ip,
                  "proto": "TCP"}]
 
-            suggestedRecipe = self.ThreatRepository[threatType]["command_control"]["suggestedRecipe"]
+            suggestedRecipe = self.ThreatRepository[threatType]["unknown"]["suggestedRecipe"]
             logging.info(
                 f"Recommended recipe for the threat: \n{self.RecipeRepository[suggestedRecipe]['description']} with parameters: ")
             logging.info(
@@ -403,7 +403,7 @@ class Remediator():
         elif alert["Threat_Category"] == "Botnet":
             # alert of type malware
             self.prepareDataForRemediationOfMalware(alert["Threat_Category"],  # malware
-                                                    alert["Threat_Label"],  # command_control / Cridex / Zeus
+                                                    alert["Threat_Label"],  # unknown / Cridex / Zeus
                                                     alert["Threat_Finding"]["Source_Address"],
                                                     # alert["Threat_Finding"]["Source_Address"],
                                                     alert["Threat_Finding"]["Destination_Port"],
@@ -931,7 +931,7 @@ class Remediator():
 
 def main():
     ####################### CLI input examples ########################
-    # malware command_control 10.1.0.10 22 12.12.12.12                #
+    # malware unknown 10.1.0.10 22 12.12.12.12                #
     # malware Cridex 10.1.0.10 22 12.12.12.12                         #
     # malware Zeus 10.1.0.10 22 12.12.12.12                           #
     # malware Neptune 10.1.0.10 22 12.12.12.12                        #
