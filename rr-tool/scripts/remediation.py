@@ -407,14 +407,17 @@ class Remediator():
             self.setCapabilitiesToSecurityControlMappings(self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
         elif alert["Threat_Category"] == "Botnet":
             # alert of type malware
-            self.prepareDataForRemediationOfMalware(alert["Threat_Category"],  # malware
+            try:
+                self.prepareDataForRemediationOfMalware(alert["Threat_Category"],  # malware
                                                     alert["Threat_Label"],  # unknown / Cridex / Zeus
                                                     alert["Threat_Finding"]["Source_Address"],
                                                     # alert["Threat_Finding"]["Source_Address"],
                                                     alert["Threat_Finding"]["Destination_Port"],
                                                     # alert["Threat_Finding"]["Destination_Port"],  # 22
                                                     alert["Threat_Finding"]["Destination_Address"])  # alert["Threat_Finding"]["Destination_Address"]) # 54.154.132.12
-
+            except KeyError as ex:
+                logging.ERROR("Malformed alert reiceved, skipping...")
+                return
             bestRecipeName = self.selectBestRecipe(alert["Threat_Category"], alert["Threat_Label"])
             self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
             self.setCapabilitiesToSecurityControlMappings(self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
