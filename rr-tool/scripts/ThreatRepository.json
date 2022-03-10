@@ -167,7 +167,7 @@
                     }
                 ]
             },
-            "command_control": {
+            "unknown": {
                 "rules": [],
                 "_comment": "the key suggestedRecipe is present only for retro compatibility with prepareDataForRemediation() function, use priorities in the recipe list in the future",
                 "suggestedRecipe": "filter_ip_port_recipe",
