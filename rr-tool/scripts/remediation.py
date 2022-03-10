@@ -256,18 +256,7 @@ class Remediator():
         self.GlobalScope["c2serversPort"] = attacker_port  # 22
         self.GlobalScope["attacker_ip"] = attacker_ip  # 12.12.12.12
 
-        if threatName == "command_control":
-            logging.info("Generic command and control threat detected, apply countermeasures ...")
-            self.GlobalScope["rules_level_4"] = [
-                {"level": 4, "victimIP": impacted_host_ip, "c2serversPort": attacker_port, "c2serversIP": attacker_ip,
-                 "proto": "TCP"}]
-
-            suggestedRecipe = self.ThreatRepository[threatType][threatName]["suggestedRecipe"]
-            logging.info(
-                f"Recommended recipe for the threat: \n{self.RecipeRepository[suggestedRecipe]['description']} with parameters: ")
-            logging.info(
-                f"Impacted host ip: {impacted_host_ip} \nAttacker port: {attacker_port} \nAttacker ip: {attacker_ip}")
-        elif threatName in self.ThreatRepository[threatType]:
+        if threatName in self.ThreatRepository[threatType]:
             logging.info("Threat found in the repository, applying specific countermeasures ...")
             mitigation_rules = self.ThreatRepository[threatType][threatName]["rules"]
             self.GlobalScope["rules_level_7"] = [rule for rule in mitigation_rules if
@@ -312,14 +301,27 @@ class Remediator():
             for rule in self.GlobalScope["rules_level_7"]:
                 payload = rule["payload"]
                 logging.info(f"Payload: {payload}")
+        # if threatName == "command_control":
         else:
+            # logging.info("Generic command and control threat detected, apply countermeasures ...")
             logging.info("Threat not found in the repository, applying generic countermeasures ...")
-            self.GlobalScope["impacted_nodes"] = [impacted_host_ip]
-            suggestedRecipe = "isolate_recipe"
+            self.GlobalScope["rules_level_4"] = [
+                {"level": 4, "victimIP": impacted_host_ip, "c2serversPort": attacker_port, "c2serversIP": attacker_ip,
+                 "proto": "TCP"}]
+
+            suggestedRecipe = self.ThreatRepository[threatType][threatName]["suggestedRecipe"]
             logging.info(
                 f"Recommended recipe for the threat: \n{self.RecipeRepository[suggestedRecipe]['description']} with parameters: ")
             logging.info(
                 f"Impacted host ip: {impacted_host_ip} \nAttacker port: {attacker_port} \nAttacker ip: {attacker_ip}")
+        # else:
+        #     logging.info("Threat not found in the repository, applying generic countermeasures ...")
+        #     self.GlobalScope["impacted_nodes"] = [impacted_host_ip]
+        #     suggestedRecipe = "isolate_recipe"
+        #     logging.info(
+        #         f"Recommended recipe for the threat: \n{self.RecipeRepository[suggestedRecipe]['description']} with parameters: ")
+        #     logging.info(
+        #         f"Impacted host ip: {impacted_host_ip} \nAttacker port: {attacker_port} \nAttacker ip: {attacker_ip}")
 
     def prepareDataForRemediationOfUnauthorizedAccess(self, alert):
 
@@ -372,20 +374,17 @@ class Remediator():
             alert = json.load(alertFile)
             self.jsonInput(alert)
 
-    def stringInputNetflow(self,threat_report_netflow):
-        logging.info("Threat report netflow: "+threat_report_netflow)
+    def stringInputNetflow(self, threat_report_netflow):
+        logging.info("Threat report netflow: " + threat_report_netflow)
         alert = json.loads(threat_report_netflow)
-        logging.info("Serialized netflow threat report: "+str(alert))
-        #for alert in alerts:
-        alert["Threat_Name"] = "malware"
+        logging.info("Serialized netflow threat report: " + str(alert))
         self.jsonInput(alert)
 
-    def stringInputSyslog(self,threat_report_syslog):
+    def stringInputSyslog(self, threat_report_syslog):
         logging.info("Threat report syslog: " + threat_report_syslog)
         alert = json.loads(threat_report_syslog)
-        logging.info("Serialized syslog threat report: "+str(alert))
-        #for alert in alerts:
-        alert["Threat_Name"] = "unauthorized_access"
+        logging.info("Serialized syslog threat report: " + str(alert))
+        alert["Threat_Category"] = "unauthorized_access"
         self.jsonInput(alert)
 
     def jsonInput(self, alert):
@@ -394,16 +393,16 @@ class Remediator():
 
         self.ServiceGraph.plot()
 
-        #for alert in alerts:
-        if alert["Threat_Name"] == "unauthorized_access":
+        # for alert in alerts:
+        if alert["Threat_Category"] == "unauthorized_access":
             # alert of type unauthorized_access
             self.prepareDataForRemediationOfUnauthorizedAccess(alert)
             bestRecipeName = self.selectBestRecipe(alert["Threat_Name"], alert["Threat_Label"])
             self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
             self.setCapabilitiesToSecurityControlMappings(self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
-        else:
+        elif alert["Threat_Category"] == "Botnet":
             # alert of type malware
-            self.prepareDataForRemediationOfMalware(alert["Threat_Name"],  # malware
+            self.prepareDataForRemediationOfMalware(alert["Threat_Category"],  # malware
                                                     alert["Threat_Label"],  # command_control / Cridex / Zeus
                                                     alert["Threat_Finding"]["Source_Address"],
                                                     # alert["Threat_Finding"]["Source_Address"],
@@ -412,7 +411,7 @@ class Remediator():
                                                     alert["Threat_Finding"][
                                                         "Destination_Address"])  # alert["Threat_Finding"]["Destination_Address"]) # 54.154.132.12
 
-            bestRecipeName = self.selectBestRecipe(alert["Threat_Name"], alert["Threat_Label"])
+            bestRecipeName = self.selectBestRecipe(alert["Threat_Category"], alert["Threat_Label"])
             self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
             self.setCapabilitiesToSecurityControlMappings(self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
 
@@ -711,7 +710,7 @@ class Remediator():
 
             logging.info(tokens[0] + " " + f"{functionName}")
             function = EnvironmentFunctions.FunctionMappings[functionName]
-            if len(tokens)>2:
+            if len(tokens) > 2:
                 function(self.GlobalScope[tokens[2]])
             else:
                 function()
@@ -929,8 +928,8 @@ class Remediator():
             if result == 1:  # for ending iteration and if blocks
                 break
 
-def main():
 
+def main():
     ####################### CLI input examples ########################
     # malware command_control 10.1.0.10 22 12.12.12.12                #
     # malware Cridex 10.1.0.10 22 12.12.12.12                         #
@@ -946,10 +945,11 @@ def main():
     remediator = Remediator(SecurityControlRepository=securityControlRepository,
                             ThreatRepository=threatRepository)
 
-    #remediator.fileInput()
-    #remediator.cliInput()
-    remediator.stringInputNetflow("[{ \"Threat_Finding\": { \"Time_Start\": \"2021-06-03 01:32:07\", \"Time_End\": \"2021-06-03 03:41:22\", \"Time_Duration\": 7755.566, \"Source_Address\": \"10.1.0.10\", \"Destination_Address\": \"1.2.3.4\", \"Source_Port\": 4897, \"Destination_Port\": 443, \"Protocol\": \"TCP\", \"Flag\": \"...A.R..\",  \"Soure_tos\": 0, \"Input_packets\": 6, \"Input_bytes\": 276}, \"Threat_Label\": \"Cridex\", \"Classification_Confidence\": 0.92, \"Outlier_Score\": -0.5}]")
+    # remediator.fileInput()
+    # remediator.cliInput()
+    remediator.stringInputNetflow(
+        "[{ \"Threat_Finding\": { \"Time_Start\": \"2021-06-03 01:32:07\", \"Time_End\": \"2021-06-03 03:41:22\", \"Time_Duration\": 7755.566, \"Source_Address\": \"10.1.0.10\", \"Destination_Address\": \"1.2.3.4\", \"Source_Port\": 4897, \"Destination_Port\": 443, \"Protocol\": \"TCP\", \"Flag\": \"...A.R..\",  \"Soure_tos\": 0, \"Input_packets\": 6, \"Input_bytes\": 276}, \"Threat_Label\": \"Cridex\", \"Classification_Confidence\": 0.92, \"Outlier_Score\": -0.5}]")
+
 
 if __name__ == "__main__":
-
     main()
