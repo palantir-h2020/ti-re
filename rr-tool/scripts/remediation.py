@@ -416,7 +416,7 @@ class Remediator():
                                                     # alert["Threat_Finding"]["Destination_Port"],  # 22
                                                     alert["Threat_Finding"]["Destination_Address"])  # alert["Threat_Finding"]["Destination_Address"]) # 54.154.132.12
             except KeyError as ex:
-                logging.ERROR("Malformed alert reiceved, skipping...")
+                logging.error("Malformed alert reiceved, skipping...")
                 return
             bestRecipeName = self.selectBestRecipe(alert["Threat_Category"], alert["Threat_Label"])
             self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
