@@ -413,8 +413,7 @@ class Remediator():
                                                     # alert["Threat_Finding"]["Source_Address"],
                                                     alert["Threat_Finding"]["Destination_Port"],
                                                     # alert["Threat_Finding"]["Destination_Port"],  # 22
-                                                    alert["Threat_Finding"][
-                                                        "Destination_Address"])  # alert["Threat_Finding"]["Destination_Address"]) # 54.154.132.12
+                                                    alert["Threat_Finding"]["Destination_Address"])  # alert["Threat_Finding"]["Destination_Address"]) # 54.154.132.12
 
             bestRecipeName = self.selectBestRecipe(alert["Threat_Category"], alert["Threat_Label"])
             self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
