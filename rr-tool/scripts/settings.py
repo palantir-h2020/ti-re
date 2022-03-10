@@ -11,6 +11,7 @@ KAFKA_CONSUMER_PROPERTIES = {
         "group.id": "test-consumer-group",
         #"auto.offset.reset": "earliest"
     }
+KAFKA_POLLING_TIMEOUT = (os.environ['KAFKA_POLLING_TIMEOUT'])
 
 TOPIC_TI_NETFLOW = (os.environ['TOPIC_TI_NETFLOW'])
 TOPIC_TI_SYSLOG = (os.environ['TOPIC_TI_SYSLOG'])

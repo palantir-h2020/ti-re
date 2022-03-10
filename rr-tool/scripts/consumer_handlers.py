@@ -24,7 +24,7 @@ def start_kafka_consumer(stop_event, logger, remediator):
     logger.info("Before while loop ...")
 
     while not stop_event.is_set():
-        msg = kafka_consumer.poll(1.0)
+        msg = kafka_consumer.poll(KAFKA_POLLING_TIMEOUT)
 
         if msg is None:
             logger.info("No message found!")

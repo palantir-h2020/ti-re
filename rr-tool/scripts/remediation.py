@@ -373,46 +373,48 @@ class Remediator():
             self.jsonInput(alert)
 
     def stringInputNetflow(self,threat_report_netflow):
-        alerts = json.loads(threat_report_netflow)
-        for alert in alerts:
-            alert["Threat_Name"] = "malware"
-        self.jsonInput(alerts)
+        logging.info("Threat report netflow: "+threat_report_netflow)
+        alert = json.loads(threat_report_netflow)
+        #for alert in alerts:
+        alert["Threat_Name"] = "malware"
+        self.jsonInput(alert)
 
     def stringInputSyslog(self,threat_report_syslog):
-        alerts = json.loads(threat_report_syslog)
-        for alert in alerts:
-            alert["Threat_Name"] = "unauthorized_access"
-        self.jsonInput(alerts)
+        logging.info("Threat report syslog: " + threat_report_syslog)
+        alert = json.loads(threat_report_syslog)
+        #for alert in alerts:
+        alert["Threat_Name"] = "unauthorized_access"
+        self.jsonInput(alert)
 
-    def jsonInput(self, alerts):
+    def jsonInput(self, alert):
 
-        logging.info(alerts)
+        logging.info(alert)
 
         self.ServiceGraph.plot()
 
-        for alert in alerts:
-            if alert["Threat_Name"] == "unauthorized_access":
-                # alert of type unauthorized_access
-                self.prepareDataForRemediationOfUnauthorizedAccess(alert)
-                bestRecipeName = self.selectBestRecipe(alert["Threat_Name"], alert["Threat_Label"])
-                self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
-                self.setCapabilitiesToSecurityControlMappings(self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
-            else:
-                # alert of type malware
-                self.prepareDataForRemediationOfMalware(alert["Threat_Name"],  # malware
-                                                        alert["Threat_Label"],  # command_control / Cridex / Zeus
-                                                        alert["Threat_Finding"]["Source_Address"],
-                                                        # alert["Threat_Finding"]["Source_Address"],
-                                                        alert["Threat_Finding"]["Destination_Port"],
-                                                        # alert["Threat_Finding"]["Destination_Port"],  # 22
-                                                        alert["Threat_Finding"][
-                                                            "Destination_Address"])  # alert["Threat_Finding"]["Destination_Address"]) # 54.154.132.12
+        #for alert in alerts:
+        if alert["Threat_Name"] == "unauthorized_access":
+            # alert of type unauthorized_access
+            self.prepareDataForRemediationOfUnauthorizedAccess(alert)
+            bestRecipeName = self.selectBestRecipe(alert["Threat_Name"], alert["Threat_Label"])
+            self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
+            self.setCapabilitiesToSecurityControlMappings(self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
+        else:
+            # alert of type malware
+            self.prepareDataForRemediationOfMalware(alert["Threat_Name"],  # malware
+                                                    alert["Threat_Label"],  # command_control / Cridex / Zeus
+                                                    alert["Threat_Finding"]["Source_Address"],
+                                                    # alert["Threat_Finding"]["Source_Address"],
+                                                    alert["Threat_Finding"]["Destination_Port"],
+                                                    # alert["Threat_Finding"]["Destination_Port"],  # 22
+                                                    alert["Threat_Finding"][
+                                                        "Destination_Address"])  # alert["Threat_Finding"]["Destination_Address"]) # 54.154.132.12
 
-                bestRecipeName = self.selectBestRecipe(alert["Threat_Name"], alert["Threat_Label"])
-                self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
-                self.setCapabilitiesToSecurityControlMappings(self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
+            bestRecipeName = self.selectBestRecipe(alert["Threat_Name"], alert["Threat_Label"])
+            self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
+            self.setCapabilitiesToSecurityControlMappings(self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
 
-            self.remediate()
+        self.remediate()
 
     def remediate(self):
 
