@@ -35,7 +35,7 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
         topic_list.append(topic)
 
     logger.info("Kafka consumer: started polling on Kafka Broker " + (os.environ['KAFKA_IP']) + ":" + (
-        os.environ['KAFKA_PORT']) + "for topics "+str(topic_list))
+        os.environ['KAFKA_PORT']) + " for topics "+str(topic_list))
 
     i = 0
     while not stop_event.is_set():
