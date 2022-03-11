@@ -113,7 +113,7 @@ def refreshAndSave(graph):
     del graph
 
 
-class ServiceGraph():
+class ServiceGraph:
 
     def __init__(self):
 

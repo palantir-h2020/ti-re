@@ -1,10 +1,12 @@
 import xml.etree.ElementTree as ET
 import subprocess
 
+
 def visit(root):
     for child in root:
         print(child.tag, child.attrib)
         visit(child)
+
 
 def globalFind(root: ET.Element, item: str) -> ET.Element:
     """ Retrieves the first element with name `item`, found left discending
@@ -19,7 +21,8 @@ def globalFind(root: ET.Element, item: str) -> ET.Element:
     else:
         return result
 
-def modifyElement(root:ET.Element, item:str, value:str):
+
+def modifyElement(root: ET.Element, item: str, value: str):
     """ Sets the value of the first element called `item`, found using the globalFind function on the `root`
     element, to the value passed in `value`"""
 
@@ -28,7 +31,6 @@ def modifyElement(root:ET.Element, item:str, value:str):
 
 
 def getIptablesCommand(srcIp, dstIp, dstPort, proto, chain):
-
     tree = ET.parse('iptables_model.xml')
     root = tree.getroot()
 
@@ -43,16 +45,17 @@ def getIptablesCommand(srcIp, dstIp, dstPort, proto, chain):
 
     tree.write("iptables_input_for_translator.xml")
 
-    code = subprocess.call(['java', '-jar', 'newTranslator.jar', 'iptables.xsd', 'catalogue.xml', 'iptables_input_for_translator.xml', 'iptables_output.txt'])
+    code = subprocess.call(
+        ['java', '-jar', 'newTranslator.jar', 'iptables.xsd', 'catalogue.xml', 'iptables_input_for_translator.xml',
+         'iptables_output.txt'])
     if code != 0:
         raise Exception("Error during iptables rule translation")
 
     with open("./iptables_output.txt", "r", encoding='utf8') as file:
-        return file.read().replace(' \n','')
+        return file.read().replace(' \n', '')
 
 
 if __name__ == "__main__":
-
     # tree = ET.parse('iptables_model.xml')
     # root = tree.getroot()
     # print(root.attrib)

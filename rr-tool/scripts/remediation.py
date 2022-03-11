@@ -87,7 +87,7 @@ isolate_recipe = "iterate_on impacted_nodes                                     
 fbm_recipe = " execute 'fbm_function' UnauthorizedAccessAlert UnauthorizedAccessAlertSourceIp"
 
 
-class Remediator():
+class Remediator:
 
     def __init__(self, SecurityControlRepository=None, ThreatRepository=None, recipeToRun=None,
                  GlobalScope=None) -> None:
@@ -257,10 +257,9 @@ class Remediator():
         self.GlobalScope["c2serversPort"] = attacker_port  # 22
         self.GlobalScope["attacker_ip"] = attacker_ip  # 12.12.12.12
 
-        #TODO remove this temporary fix after having landscape information/ip changes in alerts
-        self.ServiceGraph.changeNodeIP("victim",impacted_host_ip)
+        # TODO remove this temporary fix after having landscape information/ip changes in alerts
+        self.ServiceGraph.changeNodeIP("victim", impacted_host_ip)
         self.ServiceGraph.changeNodeIP("attacker", attacker_ip)
-
 
         if threatName in self.ThreatRepository[threatType]:
             logging.info("Threat found in the repository, applying specific countermeasures ...")
@@ -285,7 +284,7 @@ class Remediator():
 
             # if the threat repository doesn't contain specific level_4_filtering rules
             # for this specific malware then generate them from the information gathered from the CLI
-            if (len(self.GlobalScope["rules_level_4"]) == 0):
+            if len(self.GlobalScope["rules_level_4"]) == 0:
                 self.GlobalScope["rules_level_4"] = [{"level": 4, "victimIP": impacted_host_ip,
                                                       "c2serversPort": attacker_port,
                                                       "c2serversIP": attacker_ip,
@@ -351,7 +350,7 @@ class Remediator():
             else:
                 inputDataSplit = inputData.split()
 
-            if (inputDataSplit[0] == "malware"):
+            if inputDataSplit[0] == "malware":
                 logging.info("Remediating malware ...")
                 self.prepareDataForRemediationOfMalware(inputDataSplit[0],
                                                         inputDataSplit[1],
@@ -368,7 +367,7 @@ class Remediator():
 
     def fileInput(self):
 
-        if (len(sys.argv) < 2):
+        if len(sys.argv) < 2:
             # In case no input filename is given exit
             # logging.info("No input file given, terminating...")
             # sys.exit()
@@ -413,7 +412,8 @@ class Remediator():
                 self.prepareDataForRemediationOfUnauthorizedAccess(alert)
                 bestRecipeName = self.selectBestRecipe(alert["Threat_Category"], alert["Threat_Label"])
                 self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
-                self.setCapabilitiesToSecurityControlMappings(self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
+                self.setCapabilitiesToSecurityControlMappings(
+                    self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
             except KeyError as ex:
                 logging.error("Malformed alert reiceved, skipping...")
                 return
@@ -421,12 +421,13 @@ class Remediator():
             # alert of type malware
             try:
                 self.prepareDataForRemediationOfMalware(alert["Threat_Category"],  # malware
-                                                    alert["Threat_Label"],  # unknown / Cridex / Zeus
-                                                    alert["Threat_Finding"]["Source_Address"],
-                                                    # alert["Threat_Finding"]["Source_Address"],
-                                                    alert["Threat_Finding"]["Destination_Port"],
-                                                    # alert["Threat_Finding"]["Destination_Port"],  # 22
-                                                    alert["Threat_Finding"]["Destination_Address"])  # alert["Threat_Finding"]["Destination_Address"]) # 54.154.132.12
+                                                        alert["Threat_Label"],  # unknown / Cridex / Zeus
+                                                        alert["Threat_Finding"]["Source_Address"],
+                                                        # alert["Threat_Finding"]["Source_Address"],
+                                                        alert["Threat_Finding"]["Destination_Port"],
+                                                        # alert["Threat_Finding"]["Destination_Port"],  # 22
+                                                        alert["Threat_Finding"][
+                                                            "Destination_Address"])  # alert["Threat_Finding"]["Destination_Address"]) # 54.154.132.12
             except KeyError as ex:
                 logging.error("Malformed alert reiceved, skipping...")
                 return
@@ -456,11 +457,12 @@ class Remediator():
         # self.getSTIXReport()
         # self.getCACAORemediationPlaybook()
 
-    def selectRecipeManually(self):
+    @staticmethod
+    def selectRecipeManually():
         """Manually select which recipe to apply, according to the list shown in the terminal.
         Returns the string of the selected recipe."""
 
-        while (True):
+        while True:
             print(
                 "1) Filter payload on impacted node\n"
                 "2) Filter ip and port on impacted node\n"
@@ -869,7 +871,7 @@ class Remediator():
             condition = (not self.getContextVar(tokens[2], scope)) if tokens[1] == "not" else self.getContextVar(
                 tokens[1], scope)
 
-            if (condition):
+            if condition:
                 # condition true -> take if branch
                 # execute normally with interpret. when encountering else or endif will return here and set outer rowCursor to after the endif
                 ifScope["rowCursor"] = self.getContextVar("rowCursor", scope) + 1
@@ -942,7 +944,7 @@ class Remediator():
         self.ServiceGraph.plot()
 
         logging.info("Starting interpreter parsing ...")
-        while (self.getContextVar("rowCursor", scope) < lenght):
+        while self.getContextVar("rowCursor", scope) < lenght:
             result = self.evaluateRow(statements[self.getContextVar("rowCursor", scope)], scope, statements)
             if result == 1:  # for ending iteration and if blocks
                 break

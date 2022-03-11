@@ -2,9 +2,11 @@ import json
 import logging
 from settings import *
 
+# noinspection PyUnresolvedReferences
 from confluent_kafka import Producer
 
 kafka_producer = Producer(KAFKA_PRODUCER_PROPERTIES)
+
 
 def notify_ir(detectedIncident: str, incidentLocation: str, incidentDescription: str):
     notification_content = {
@@ -13,6 +15,7 @@ def notify_ir(detectedIncident: str, incidentLocation: str, incidentDescription:
         "incidentDescription": incidentDescription
     }
     kafka_producer.produce(TOPIC_IR_INCIDENT_DETECTED, json.dumps(notification_content), callback=delivery_report)
+
 
 def delivery_report(err, msg):
     if err is not None:

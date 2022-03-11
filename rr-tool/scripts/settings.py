@@ -2,15 +2,15 @@ import os
 
 # KAFKA CONFIGURATION
 KAFKA_PRODUCER_PROPERTIES = {
-        "bootstrap.servers": (os.environ['KAFKA_IP'])+":"+(os.environ['KAFKA_PORT']),
-        "compression.type": "none"
-    }
+    "bootstrap.servers": (os.environ['KAFKA_IP']) + ":" + (os.environ['KAFKA_PORT']),
+    "compression.type": "none"
+}
 
 KAFKA_CONSUMER_PROPERTIES = {
-        "bootstrap.servers": (os.environ['KAFKA_IP'])+":"+(os.environ['KAFKA_PORT']),
-        "group.id": "test-consumer-group",
-        #"auto.offset.reset": "earliest"
-    }
+    "bootstrap.servers": (os.environ['KAFKA_IP']) + ":" + (os.environ['KAFKA_PORT']),
+    "group.id": "test-consumer-group",
+    # "auto.offset.reset": "earliest"
+}
 KAFKA_POLLING_TIMEOUT = float(os.environ['KAFKA_POLLING_TIMEOUT'])
 
 TOPIC_TI_NETFLOW = (os.environ['TOPIC_TI_NETFLOW'])

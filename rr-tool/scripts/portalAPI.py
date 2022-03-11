@@ -2,9 +2,11 @@ import json
 import logging
 from settings import *
 
+# noinspection PyUnresolvedReferences
 from confluent_kafka import Producer
 
 kafka_producer = Producer(KAFKA_PRODUCER_PROPERTIES)
+
 
 def notify_portal(componentType: str, componentId: str, actionName: str, actionDescription: str, onips: [str]):
     notification_content = {
@@ -16,6 +18,7 @@ def notify_portal(componentType: str, componentId: str, actionName: str, actionD
         "onIps": onips
     }
     kafka_producer.produce(TOPIC_PORTAL_NOTIFICATIONS, json.dumps(notification_content), callback=delivery_report)
+
 
 def delivery_report(err, msg):
     if err is not None:

@@ -1,26 +1,30 @@
 from iptables_translator import getIptablesCommand
 
-#this function is a stub, just return the rule
+
+# this function is a stub, just return the rule
 def generic_level_7_filter_command_generator(rule, *args):
-    del args # just to hide the alert about the arg not being used
+    del args  # just to hide the alert about the arg not being used
 
     return rule
 
-#this function is a stub, just return the rule
+
+# this function is a stub, just return the rule
 def generic_network_traffic_monitor_command_generator(rule, *args):
-    del args # just to hide the alert about the arg not being used
+    del args  # just to hide the alert about the arg not being used
 
     return rule
+
 
 def iptables_comand_generator(rule, *args):
-    del args # just to hide the alert about the arg not being used
+    del args  # just to hide the alert about the arg not being used
     generatedRule = getIptablesCommand(rule["victimIP"],
-                                            rule["c2serversIP"],
-                                            rule["c2serversPort"],
-                                            rule["proto"],
-                                            "FORWARD")
+                                       rule["c2serversIP"],
+                                       rule["c2serversPort"],
+                                       rule["proto"],
+                                       "FORWARD")
 
     return generatedRule
+
 
 def testFunction(*args):
     del args
@@ -36,8 +40,9 @@ def testFunction(*args):
 
     testFunction.counter += 1
 
+
 FunctionMappings = {
-    "iptables": iptables_comand_generator, #iptables_comand_generator #testFunction
+    "iptables": iptables_comand_generator,  # iptables_comand_generator #testFunction
     "generic_level_7_filter": generic_level_7_filter_command_generator,
     "generic_network_traffic_monitor": generic_network_traffic_monitor_command_generator
 }
