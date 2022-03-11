@@ -50,11 +50,10 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
             logger.info("Kafka consumer: received message has None topic")
             continue
 
-        logger.info("Kafka consumer: received message: %s", msg.value().decode('utf-8'))
+        logger.info("Kafka consumer: received message on topic %s: %s", msg.topic(), msg.value().decode('utf-8'))
         receivedMessageCounters[msg.topic()] += 1
 
         msgHash = hash(msg.value())
-        logger.info(msgHash)
         duplicated = False
         if msgHash in receivedMessageHashes[msg.topic()]:
             duplicated = True
@@ -62,7 +61,6 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
             receivedDuplicatedMessageCounters[msg.topic()] += 1
         else:
             receivedMessageHashes[msg.topic()].append(msgHash)
-        logger.info(receivedMessageHashes[msg.topic()])
 
         for topic in switch_consumer_handlers.keys():
             logger.info("Kafka consumer: messages received on topic " + topic + ": "
