@@ -52,8 +52,7 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
         logger.info("Kafka consumer: received message: %s", msg.value().decode('utf-8'))
         receivedMessageCounters[msg.topic()] += 1
 
-        logger.info(type(msg))
-        msgHash = hash(msg)
+        msgHash = hash(str(msg))
         logger.info(msgHash)
         duplicated = False
         if msgHash in receivedMessageHashes:
@@ -72,7 +71,7 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
             switch_consumer_handlers[msg.topic()](msg.value().decode('utf-8'), logger)
 
         logger.info("Kafka consumer: waiting for new messages from Kafka Broker " + (os.environ['KAFKA_IP']) + ":" + (
-            os.environ['KAFKA_PORT']) + "for topics "+topic_list)
+            os.environ['KAFKA_PORT']) + " for topics "+topic_list)
     kafka_consumer.close()
 
 
