@@ -52,9 +52,7 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
         logger.info("Kafka consumer: received message: %s", msg.value().decode('utf-8'))
         receivedMessageCounters[msg.topic()] += 1
 
-        strMsg = str(msg)
-        logger.info(strMsg)
-        msgHash = hash(strMsg)
+        msgHash = hash(msg.value())
         logger.info(msgHash)
         duplicated = False
         if msgHash in receivedMessageHashes:
