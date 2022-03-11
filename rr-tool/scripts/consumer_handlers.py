@@ -45,7 +45,7 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
             print(".", end='', flush=True)
             print(".", end='', flush=True)
             print(".", end='', flush=True)
-            print("\r", end='', flush=True)
+            print("\r   ", end='', flush=True)
             continue
         if msg.error():
             print()
