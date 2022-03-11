@@ -42,6 +42,7 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
 
         if msg is None:
             # logger.info("No message found!")
+            print(".", end='', flush=True)
             continue
         if msg.error():
             logger.error("Kafka consumer: consumer error: {}".format(msg.error()))
