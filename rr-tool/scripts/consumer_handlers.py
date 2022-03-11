@@ -45,12 +45,15 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
             print(".", end='', flush=True)
             continue
         if msg.error():
+            print()
             logger.error("Kafka consumer: consumer error: {}".format(msg.error()))
             continue
         if msg.topic() is None:
+            print()
             logger.info("Kafka consumer: received message has None topic")
             continue
 
+        print()
         logger.info("Kafka consumer: received message on topic %s: %s", msg.topic(), msg.value().decode('utf-8'))
         receivedMessageCounters[msg.topic()] += 1
 
