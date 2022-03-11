@@ -402,7 +402,7 @@ class Remediator():
         if alert["Threat_Category"] == "unauthorized_access":
             # alert of type unauthorized_access
             self.prepareDataForRemediationOfUnauthorizedAccess(alert)
-            bestRecipeName = self.selectBestRecipe(alert["Threat_Name"], alert["Threat_Label"])
+            bestRecipeName = self.selectBestRecipe(alert["Threat_Category"], alert["Threat_Label"])
             self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
             self.setCapabilitiesToSecurityControlMappings(self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
         elif alert["Threat_Category"] == "Botnet":
