@@ -26,12 +26,15 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
         TOPIC_TI_SYSLOG: handle_threat_findings_syslog
     }
 
+    topic_list = ""
+
     for topic in switch_consumer_handlers.keys():
         receivedMessageCounters[topic] = 0
         receivedDuplicatedMessageCounters[topic] = 0
+        topic_list = topic_list+topic+" "
 
     logger.info("Kafka consumer: started polling on Kafka Broker " + (os.environ['KAFKA_IP']) + ":" + (
-        os.environ['KAFKA_PORT']))
+        os.environ['KAFKA_PORT']) + "for topics "+topic_list)
 
     while not stop_event.is_set():
         msg = kafka_consumer.poll(KAFKA_POLLING_TIMEOUT)
@@ -65,6 +68,8 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
         if not duplicated:
             switch_consumer_handlers[msg.topic()](msg.value().decode('utf-8'), logger)
 
+        logger.info("Kafka consumer: waiting for new messages from Kafka Broker " + (os.environ['KAFKA_IP']) + ":" + (
+            os.environ['KAFKA_PORT']) + "for topics "+topic_list)
     kafka_consumer.close()
 
 
