@@ -401,7 +401,13 @@ class Remediator():
         self.ServiceGraph.plot()
 
         # for alert in alerts:
-        if alert["Threat_Category"] == "unauthorized_access":
+        try:
+            alert_threat_category = alert["Threat_Category"]
+        except KeyError as ex:
+            logging.error("Malformed alert reiceved (threat category missing), skipping...")
+            return
+
+        if alert_threat_category == "unauthorized_access":
             # alert of type unauthorized_access
             try:
                 self.prepareDataForRemediationOfUnauthorizedAccess(alert)
@@ -411,7 +417,7 @@ class Remediator():
             except KeyError as ex:
                 logging.error("Malformed alert reiceved, skipping...")
                 return
-        elif alert["Threat_Category"] == "Botnet":
+        elif alert_threat_category == "Botnet":
             # alert of type malware
             try:
                 self.prepareDataForRemediationOfMalware(alert["Threat_Category"],  # malware
