@@ -45,6 +45,7 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
             # logger.info("No message found!")
             if i < 3:
                 print(".", end='', flush=True)
+                i += 1
             else:
                 i = 0
                 print("\r   ", end='\r', flush=True)
