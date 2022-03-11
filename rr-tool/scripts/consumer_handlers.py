@@ -37,25 +37,30 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
     logger.info("Kafka consumer: started polling on Kafka Broker " + (os.environ['KAFKA_IP']) + ":" + (
         os.environ['KAFKA_PORT']) + "for topics "+str(topic_list))
 
+    i = 0
     while not stop_event.is_set():
         msg = kafka_consumer.poll(KAFKA_POLLING_TIMEOUT)
 
         if msg is None:
             # logger.info("No message found!")
-            print(".", end='', flush=True)
-            print(".", end='', flush=True)
-            print(".", end='', flush=True)
-            print("\r   ", end='', flush=True)
+            if i < 3:
+                print(".", end='', flush=True)
+            else:
+                i = 0
+                print("\r   ", end='\r', flush=True)
             continue
         if msg.error():
+            i = 0
             print()
             logger.error("Kafka consumer: consumer error: {}".format(msg.error()))
             continue
         if msg.topic() is None:
+            i = 0
             print()
             logger.info("Kafka consumer: received message has None topic")
             continue
 
+        i = 0
         print()
         logger.info("Kafka consumer: received message on topic %s: %s", msg.topic(), msg.value().decode('utf-8'))
         receivedMessageCounters[msg.topic()] += 1
