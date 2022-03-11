@@ -401,10 +401,14 @@ class Remediator():
         # for alert in alerts:
         if alert["Threat_Category"] == "unauthorized_access":
             # alert of type unauthorized_access
-            self.prepareDataForRemediationOfUnauthorizedAccess(alert)
-            bestRecipeName = self.selectBestRecipe(alert["Threat_Category"], alert["Threat_Label"])
-            self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
-            self.setCapabilitiesToSecurityControlMappings(self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
+            try:
+                self.prepareDataForRemediationOfUnauthorizedAccess(alert)
+                bestRecipeName = self.selectBestRecipe(alert["Threat_Category"], alert["Threat_Label"])
+                self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
+                self.setCapabilitiesToSecurityControlMappings(self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
+            except KeyError as ex:
+                logging.error("Malformed alert reiceved, skipping...")
+                return
         elif alert["Threat_Category"] == "Botnet":
             # alert of type malware
             try:
