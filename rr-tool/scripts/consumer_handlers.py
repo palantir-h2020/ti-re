@@ -44,7 +44,7 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
 
         logger.info("Kafka consumer: received message: %s", msg.value().decode('utf-8'))
 
-        receivedMessageCounters[msg.topic] += 1
+        receivedMessageCounters[msg.topic()] += 1
         for topic in switch_consumer_handlers.keys():
             logger.info("Kafka consumer: messages received on topic "+topic+": "+receivedMessageCounters[topic])
         switch_consumer_handlers[msg.topic()](msg.value().decode('utf-8'), logger)
