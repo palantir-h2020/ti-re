@@ -6,6 +6,7 @@ import json
 import serviceGraph
 import SecurityControlFunctions
 import EnvironmentFunctions
+import settings
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -83,7 +84,7 @@ isolate_recipe = "iterate_on impacted_nodes                                     
                     isolate iteration_element                                                                      \n\
                 enditeration"
 
-fbm_recipe = " execute 'fbm_function' UnauthorizedAccessAlert"
+fbm_recipe = " execute 'fbm_function' UnauthorizedAccessAlert UnauthorizedAccessAlertSourceIp"
 
 
 class Remediator():
@@ -336,6 +337,7 @@ class Remediator():
         # self.GlobalScope["Outlier_Score"] = alert("Outlier_Score")
 
         self.GlobalScope["UnauthorizedAccessAlert"] = alert
+        self.GlobalScope["UnauthorizedAccessAlertSourceIp"] = alert[settings.TI_SYSLOG_VICTIM_IP_FIELD_NAME]
 
     def cliInput(self):
 
@@ -717,17 +719,17 @@ class Remediator():
         if functionName == tokens[1]:
             functionName = self.getContextVar(functionName, scope)
 
-        #try:
-
-        logging.info(tokens[0] + " " + f"{functionName}")
-        function = EnvironmentFunctions.FunctionMappings[functionName]
-        if len(tokens) > 2:
-            function(self.GlobalScope[tokens[2]])
-        else:
-            function()
-
-        # except Exception as ex:
-        #     raise ex  # just rethrow it for now
+        try:
+            logging.info(tokens[0] + " " + f"{functionName}")
+            function = EnvironmentFunctions.FunctionMappings[functionName]
+            if len(tokens) > 3:
+                function(self.GlobalScope[tokens[2]], self.GlobalScope[tokens[3]])
+            elif len(tokens) > 2:
+                function(self.GlobalScope[tokens[2]])
+            else:
+                function()
+        except Exception as ex:
+            raise ex  # just rethrow it for now
 
     def getContextVar(self, key, scope):
         # gets the value of the given variable found searching starting from the innermost scope
