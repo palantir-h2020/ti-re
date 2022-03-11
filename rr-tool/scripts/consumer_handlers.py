@@ -10,7 +10,7 @@ remediator_instance: Remediator = None
 def start_kafka_consumer(stop_event, logger, remediator: Remediator):
     receivedMessageCounters = {}
     receivedDuplicatedMessageCounters = {}
-    receivedMessageHashes = []
+    receivedMessageHashes = {}
 
     logger.info("Kafka consumer: starting setup")
 
@@ -26,15 +26,16 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
         TOPIC_TI_SYSLOG: handle_threat_findings_syslog
     }
 
-    topic_list = ""
+    topic_list = []
 
     for topic in switch_consumer_handlers.keys():
         receivedMessageCounters[topic] = 0
         receivedDuplicatedMessageCounters[topic] = 0
-        topic_list = topic_list+topic+" "
+        receivedMessageHashes[topic] = []
+        topic_list.append(topic)
 
     logger.info("Kafka consumer: started polling on Kafka Broker " + (os.environ['KAFKA_IP']) + ":" + (
-        os.environ['KAFKA_PORT']) + "for topics "+topic_list)
+        os.environ['KAFKA_PORT']) + "for topics "+str(topic_list))
 
     while not stop_event.is_set():
         msg = kafka_consumer.poll(KAFKA_POLLING_TIMEOUT)
@@ -55,13 +56,13 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
         msgHash = hash(msg.value())
         logger.info(msgHash)
         duplicated = False
-        if msgHash in receivedMessageHashes:
+        if msgHash in receivedMessageHashes[msg.topic()]:
             duplicated = True
             logger.info("Kafka consumer: duplicated message received on topic " + msg.topic())
             receivedDuplicatedMessageCounters[msg.topic()] += 1
         else:
-            receivedMessageHashes.append(msgHash)
-        logger.info(receivedMessageHashes)
+            receivedMessageHashes[msg.topic()].append(msgHash)
+        logger.info(receivedMessageHashes[msg.topic()])
 
         for topic in switch_consumer_handlers.keys():
             logger.info("Kafka consumer: messages received on topic " + topic + ": "
@@ -71,7 +72,7 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
             switch_consumer_handlers[msg.topic()](msg.value().decode('utf-8'), logger)
 
         logger.info("Kafka consumer: waiting for new messages from Kafka Broker " + (os.environ['KAFKA_IP']) + ":" + (
-            os.environ['KAFKA_PORT']) + " for topics "+topic_list)
+            os.environ['KAFKA_PORT']) + " for topics "+str(topic_list))
     kafka_consumer.close()
 
 
