@@ -717,17 +717,17 @@ class Remediator():
         if functionName == tokens[1]:
             functionName = self.getContextVar(functionName, scope)
 
-        try:
+        #try:
 
-            logging.info(tokens[0] + " " + f"{functionName}")
-            function = EnvironmentFunctions.FunctionMappings[functionName]
-            if len(tokens) > 2:
-                function(self.GlobalScope[tokens[2]])
-            else:
-                function()
+        logging.info(tokens[0] + " " + f"{functionName}")
+        function = EnvironmentFunctions.FunctionMappings[functionName]
+        if len(tokens) > 2:
+            function(self.GlobalScope[tokens[2]])
+        else:
+            function()
 
-        except Exception as ex:
-            raise ex  # just rethrow it for now
+        # except Exception as ex:
+        #     raise ex  # just rethrow it for now
 
     def getContextVar(self, key, scope):
         # gets the value of the given variable found searching starting from the innermost scope
