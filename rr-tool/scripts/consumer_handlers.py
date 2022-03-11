@@ -6,9 +6,12 @@ from settings import *
 
 remediator_instance: Remediator = None
 
-receivedMessageCounters = {}
 
 def start_kafka_consumer(stop_event, logger, remediator: Remediator):
+    receivedMessageCounters = {}
+    receivedDuplicatedMessageCounters = {}
+    receivedMessageHashes = []
+
     logger.info("Kafka consumer: starting setup")
 
     global remediator_instance
@@ -25,6 +28,7 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
 
     for topic in switch_consumer_handlers.keys():
         receivedMessageCounters[topic] = 0
+        receivedDuplicatedMessageCounters[topic] = 0
 
     logger.info("Kafka consumer: started polling on Kafka Broker " + (os.environ['KAFKA_IP']) + ":" + (
         os.environ['KAFKA_PORT']))
@@ -43,11 +47,23 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
             continue
 
         logger.info("Kafka consumer: received message: %s", msg.value().decode('utf-8'))
-
         receivedMessageCounters[msg.topic()] += 1
+
+        msgHash = hash(msg)
+        duplicated = False
+        if msgHash in receivedMessageHashes:
+            duplicated = True
+            logger.info("Kafka consumer: duplicated message received on topic " + msg.topic())
+            receivedDuplicatedMessageCounters
+        else:
+            receivedMessageHashes += msgHash
+
         for topic in switch_consumer_handlers.keys():
-            logger.info("Kafka consumer: messages received on topic "+topic+": "+str(receivedMessageCounters[topic]))
-        switch_consumer_handlers[msg.topic()](msg.value().decode('utf-8'), logger)
+            logger.info("Kafka consumer: messages received on topic " + topic + ": "
+                        + str(receivedMessageCounters[topic]) + "("
+                        + str(receivedDuplicatedMessageCounters[topic]) + ")")
+        if not duplicated:
+            switch_consumer_handlers[msg.topic()](msg.value().decode('utf-8'), logger)
 
     kafka_consumer.close()
 
