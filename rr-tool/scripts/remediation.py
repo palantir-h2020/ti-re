@@ -354,16 +354,16 @@ class Remediator:
         self.ServiceGraph.changeNodeIP("victim", self.GlobalScope["UnauthorizedAccessAlertSourceIp"])
 
         self.GlobalScope["rules_level_4"] = [
+           {"level": 4, "victimIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
+            "c2serversPort": "", "action": "DENY"},
+           {"level": 4, "c2serversIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
+            "c2serversPort": "", "action": "DENY"},
             {"level": 4, "victimIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
              "c2serversPort": "", "c2serversIP": settings.BACKUP_SERVER_IP,
              "proto": "", "action": "ALLOW"},
             {"level": 4, "victimIP": settings.BACKUP_SERVER_IP,
              "c2serversPort": "", "c2serversIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
-             "proto": "", "action": "ALLOW"},
-            {"level": 4, "victimIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
-             "c2serversPort": "", "action": "DENY"},
-            {"level": 4, "c2serversIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
-             "c2serversPort": "", "action": "DENY"}
+             "proto": "", "action": "ALLOW"}
         ]
 
     def cliInput(self):
