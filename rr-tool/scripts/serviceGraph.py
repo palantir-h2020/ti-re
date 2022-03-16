@@ -118,11 +118,11 @@ class ServiceGraph:
     def __init__(self):
 
         gnet1 = ig.Graph(4)
-        gnet1.vs["name"] = ["victim", "attacker", "border_firewall"]
-        gnet1.add_edges([("victim", "border_firewall"), ("border_firewall", "attacker")])
-        gnet1.vs["ipAddress"] = ["10.1.0.10", "1.2.3.4", "10.1.0.11"]
-        gnet1.vs["subnetMask"] = ["16", "16", "16"]
-        gnet1.vs["nodeType"] = ["host", "firewall", "attacker"]
+        gnet1.vs["name"] = ["victim", "attacker", "border_firewall", "backup_server"]
+        gnet1.add_edges([("victim", "border_firewall"), ("border_firewall", "attacker"), ("border_firewall", "backup_server")])
+        gnet1.vs["ipAddress"] = ["10.1.0.10", "1.2.3.4", "10.1.0.11", settings.BACKUP_SERVER_IP]
+        gnet1.vs["subnetMask"] = ["16", "16", "16", "16"]
+        gnet1.vs["nodeType"] = ["host", "firewall", "attacker", "host"]
 
         self.sgraph: ig.Graph = gnet1
 
@@ -243,6 +243,7 @@ class ServiceGraph:
         node1 = self.returnNodeName(node1)
         node: ig.Vertex = self.sgraph.vs.find(node1)
         logging.info(msg=f"Got reference to {node1}")
+
         for rule in rules:
             if rule["type"] == "level_4_filtering":
                 if "level_4_filtering" in node["capabilities"]:
@@ -261,6 +262,10 @@ class ServiceGraph:
                     logging.info("This firewall doesn't support level 7 filtering!")
                     break
         logging.info(node)
+
+    def get_filtering_rules(self, nodeName, level):
+        node: ig.Vertex = self.sgraph.vs.find(nodeName)
+        return node["rules_level_"+str(level)]
 
     def add_dns_policy(self, domain, rule_type):
 

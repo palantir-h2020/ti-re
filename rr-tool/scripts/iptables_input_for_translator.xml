@@ -1,4 +1,4 @@
-<policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" nsfName="IpTables" targetRuleSet="INPUT" xsi:noNamespaceSchemaLocation="language_ipTables.xsd">
+<policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" nsfName="IpTables" targetRuleSet="INPUT" xsi:noNamespaceSchemaLocation="iptables.xsd">
 	
 	<rule id="0">
 		<externalData type="priority">1</externalData>
@@ -10,15 +10,10 @@
 				<exactMatch>TCP</exactMatch>
 			</capabilityValue>
 		</ipProtocolTypeConditionCapability>
-		<destinationPortConditionCapability operator="exactMatch">
-			<capabilityValue>
-				<exactMatch>443</exactMatch>
-			</capabilityValue>
-		</destinationPortConditionCapability>
 		<ipSourceAddressConditionCapability operator="rangeCIDR">
 			<capabilityIpValue>
 				<rangeCIDR>
-					<address>10.1.0.10</address>
+					<address>10.0.2.108</address>
 					<maskCIDR>32</maskCIDR>
 				</rangeCIDR>
 			</capabilityIpValue>
@@ -26,7 +21,7 @@
 		<ipDestinationAddressConditionCapability operator="rangeCIDR">
 			<capabilityIpValue>
 				<rangeCIDR>
-					<address>1.2.3.4</address>
+					<address>87.236.215.56</address>
 					<maskCIDR>32</maskCIDR>
 				</rangeCIDR>
 			</capabilityIpValue>

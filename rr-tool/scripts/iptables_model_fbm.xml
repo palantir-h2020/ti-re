@@ -1,0 +1,79 @@
+<policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" nsfName="IpTables" targetRuleSet="INPUT" xsi:noNamespaceSchemaLocation="iptables.xsd">
+	
+	<rule id="0">
+		<externalData type="priority">1</externalData>
+        <appendRuleActionCapability>
+			<chain>FORWARD</chain>
+		</appendRuleActionCapability>
+		<ipSourceAddressConditionCapability operator="rangeCIDR">
+			<capabilityIpValue>
+				<rangeCIDR>
+					<address>10.1.0.10</address>
+					<maskCIDR>32</maskCIDR>
+				</rangeCIDR>
+			</capabilityIpValue>
+		</ipSourceAddressConditionCapability>
+		<ipDestinationAddressConditionCapability operator="rangeCIDR">
+			<capabilityIpValue>
+				<rangeCIDR>
+					<address>1.2.3.4</address>
+					<maskCIDR>32</maskCIDR>
+				</rangeCIDR>
+			</capabilityIpValue>
+		</ipDestinationAddressConditionCapability>
+		<acceptActionCapability />
+	</rule>
+	<rule id="1">
+		<externalData type="priority">1</externalData>
+        <appendRuleActionCapability>
+			<chain>FORWARD</chain>
+		</appendRuleActionCapability>
+		<ipSourceAddressConditionCapability operator="rangeCIDR">
+			<capabilityIpValue>
+				<rangeCIDR>
+					<address>10.1.0.10</address>
+					<maskCIDR>32</maskCIDR>
+				</rangeCIDR>
+			</capabilityIpValue>
+		</ipSourceAddressConditionCapability>
+		<ipDestinationAddressConditionCapability operator="rangeCIDR">
+			<capabilityIpValue>
+				<rangeCIDR>
+					<address>1.2.3.4</address>
+					<maskCIDR>32</maskCIDR>
+				</rangeCIDR>
+			</capabilityIpValue>
+		</ipDestinationAddressConditionCapability>
+		<acceptActionCapability />
+	</rule>
+	<rule id="2">
+		<externalData type="priority">1</externalData>
+        <appendRuleActionCapability>
+			<chain>FORWARD</chain>
+		</appendRuleActionCapability>
+		<ipSourceAddressConditionCapability operator="rangeCIDR">
+			<capabilityIpValue>
+				<rangeCIDR>
+					<address>10.1.0.10</address>
+					<maskCIDR>32</maskCIDR>
+				</rangeCIDR>
+			</capabilityIpValue>
+		</ipSourceAddressConditionCapability>
+		<rejectActionCapability />
+	</rule>
+	<rule id="3">
+		<externalData type="priority">1</externalData>
+        <appendRuleActionCapability>
+			<chain>FORWARD</chain>
+		</appendRuleActionCapability>
+		<ipDestinationAddressConditionCapability operator="rangeCIDR">
+			<capabilityIpValue>
+				<rangeCIDR>
+					<address>1.2.3.4</address>
+					<maskCIDR>32</maskCIDR>
+				</rangeCIDR>
+			</capabilityIpValue>
+		</ipDestinationAddressConditionCapability>
+		<rejectActionCapability />
+	</rule>
+</policy>

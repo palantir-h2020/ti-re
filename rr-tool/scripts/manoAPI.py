@@ -20,20 +20,27 @@ def add_filtering_rules(node1, iptables_rule):
     headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
     url = 'http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns/action?id=' + IPTABLES_SC_ID
     payload = {"action_name": "run", "action_params": {"cmd": iptables_rule["rule"]}}
-    r = requests.post(url, headers=headers, json=payload)
-    logging.info("MANO API: response code from orchestrator " + str(r.status_code))
-    if r.ok:
-        logging.info("MANO API: new rule added")
-        portalAPI.notify_portal(componentType="Recommendation and Remediation",
-                                componentId="0",
-                                actionName="Added filtering rule to iptables SC",
-                                actionDescription="iptables SC reconfigured with command: " + iptables_rule["rule"],
-                                onips=[node1["ipAddress"]])
-    else:
-        logging.info("MANO API: failed adding filtering rule to iptables instance")
-        logging.info("MANO API: response headers from orchestrator " + str(r.headers))
-        logging.info("MANO API: response text from orchestrator " + str(r.text))
 
+    if ENABLE_MANO_API == "1":
+        r = requests.post(url, headers=headers, json=payload)
+
+        logging.info("MANO API: response code from orchestrator " + str(r.status_code))
+        if r.ok:
+            logging.info("MANO API: new rule added")
+            portalAPI.notify_portal(componentType="Recommendation and Remediation",
+                                    componentId="0",
+                                    actionName="Added filtering rule to iptables SC",
+                                    actionDescription="iptables SC reconfigured with command: " + iptables_rule["rule"],
+                                    onips=[node1["ipAddress"]])
+        else:
+            logging.info("MANO API: failed adding filtering rule to iptables instance")
+            logging.info("MANO API: response headers from orchestrator " + str(r.headers))
+            logging.info("MANO API: response text from orchestrator " + str(r.text))
+    else:
+        logging.info("MANO API: disabled, logging request data")
+        logging.info("MANO API: request headers: "+str(headers))
+        logging.info("MANO API: request url: "+str(url))
+        logging.info("MANO API: request payload: " + str(payload))
 
 def add_dns_policy(domain, rule):
     logging.info("Calling MANO API")

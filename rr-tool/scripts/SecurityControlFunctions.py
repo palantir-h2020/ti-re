@@ -17,14 +17,24 @@ def generic_network_traffic_monitor_command_generator(rule, *args):
 
 def iptables_comand_generator(rule, *args):
     del args  # just to hide the alert about the arg not being used
+    for key in ["victimIP", "c2serversIP", "c2serversPort", "proto", "action"]:
+        if key not in rule:
+            rule[key] = ""
+
     generatedRule = getIptablesCommand(rule["victimIP"],
                                        rule["c2serversIP"],
                                        rule["c2serversPort"],
                                        rule["proto"],
-                                       "FORWARD")
+                                       "FORWARD",
+                                       rule["action"])
 
     return generatedRule
 
+# def iptables_fbm_comand_generator(rule, *args):
+#     del args  # just to hide the alert about the arg not being used
+#     generatedRule = getIptablesFbmCommand(rule["victimIP"], rule["backupServerIp"], "FORWARD")
+#
+#     return generatedRule
 
 def testFunction(*args):
     del args

@@ -63,15 +63,18 @@
                 "rules": [{
                     "level": 4,
                     "proto": "TCP",
-                    "c2serversIP": "43.234.233.2"
+                    "c2serversIP": "43.234.233.2",
+                    "action": "DENY"
                 },{
                     "level": 4,
                     "proto": "TCP",
-                    "c2serversIP": "1.2.3.4"
+                    "c2serversIP": "1.2.3.4",
+                    "action": "DENY"
                 },{
                     "level": 4,
                     "proto": "TCP",
-                    "c2serversIP": "2.3.4.5"
+                    "c2serversIP": "2.3.4.5",
+                    "action": "DENY"
                 }],
                 "_comment": "the key suggestedRecipe is present only for retro compatibility with prepareDataForRemediation() function, use priorities in the recipe list in the future",
                 "suggestedRecipe": "filter_ip_port_recipe",

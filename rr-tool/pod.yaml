@@ -27,10 +27,14 @@ spec:
           value: "10.101.41.42"
         - name: SC_ORCHESTRATOR_IP
           value: "10.101.41.168"
+        - name: ENABLE_MANO_API
+          value: "1"
         - name: SC_CLUSTER_PORT
           value: "50101"
         - name: TI_SYSLOG_VICTIM_IP_FIELD_NAME
           value: "Source_IP"
+        - name: BACKUP_SERVER_IP
+          value: "10.225.1.73"
         - name: IPTABLES_SC_ID
           value: "dfbba196-c6b9-406c-9853-6eabfd865794"
         - name: IGRAPH_PICTURES_OUTPUT_FOLDER

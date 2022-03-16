@@ -1,12 +1,13 @@
+import settings
 import copy
 import logging
+
 import nltk
 import sys
 import json
 import serviceGraph
 import SecurityControlFunctions
 import EnvironmentFunctions
-import settings
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -84,7 +85,17 @@ isolate_recipe = "iterate_on impacted_nodes                                     
                     isolate iteration_element                                                                      \n\
                 enditeration"
 
-fbm_recipe = " execute 'fbm_function' UnauthorizedAccessAlert UnauthorizedAccessAlertSourceIp"
+fbm_recipe = "list_paths from UnauthorizedAccessAlertSourceIp to BackupServerIp                            \n\
+                iterate_on path_list                                                                       \n\
+                    find_node of type 'firewall' in iteration_element with 'level_4_filtering'             \n\
+                    if not found                                                                           \n\
+                        add_firewall behind impacted_host_ip in iteration_element with 'level_4_filtering' \n\
+                        add_filtering_rules rules_level_4 to new_node                                      \n\
+                    else                                                                                   \n\
+                        add_filtering_rules rules_level_4 to found_node                                    \n\
+                    endif                                                                                  \n\
+             enditeration                                                                               \n\
+             execute 'fbm_function' UnauthorizedAccessAlert UnauthorizedAccessAlertSourceIp"
 
 
 class Remediator:
@@ -208,7 +219,8 @@ class Remediator:
 
         newRule = {"type": capability,
                    "enforcingSecurityControl": securityControlName,
-                   "rule": generatedRule}
+                   "rule": generatedRule,
+                   "policy": policy}
 
         return newRule
 
@@ -311,8 +323,8 @@ class Remediator:
             # logging.info("Generic command and control threat detected, apply countermeasures ...")
             logging.info("Threat not found in the repository, applying generic countermeasures ...")
             self.GlobalScope["rules_level_4"] = [
-                {"level": 4, "victimIP": impacted_host_ip, "c2serversPort": attacker_port, "c2serversIP": attacker_ip,
-                 "proto": "TCP"}]
+                {"level": 4, "victimIP": impacted_host_ip, "c2serversIP": attacker_ip,
+                 "proto": "TCP", "action": "DENY"}]
 
             suggestedRecipe = self.ThreatRepository[threatType]["unknown"]["suggestedRecipe"]
             logging.info(
@@ -334,9 +346,25 @@ class Remediator:
         # self.GlobalScope["Threat_Label"] = alert.get("Threat_Label")
         # self.GlobalScope["Classification_Confidence"] = alert("Classification_Confidence")
         # self.GlobalScope["Outlier_Score"] = alert("Outlier_Score")
-
         self.GlobalScope["UnauthorizedAccessAlert"] = alert
         self.GlobalScope["UnauthorizedAccessAlertSourceIp"] = alert[settings.TI_SYSLOG_VICTIM_IP_FIELD_NAME]
+        self.GlobalScope["BackupServerIp"] = settings.BACKUP_SERVER_IP
+
+        # TODO remove this temporary fix after having landscape information/ip changes in alerts
+        self.ServiceGraph.changeNodeIP("victim", self.GlobalScope["UnauthorizedAccessAlertSourceIp"])
+
+        self.GlobalScope["rules_level_4"] = [
+            {"level": 4, "victimIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
+             "c2serversPort": "", "c2serversIP": settings.BACKUP_SERVER_IP,
+             "proto": "", "action": "ALLOW"},
+            {"level": 4, "victimIP": settings.BACKUP_SERVER_IP,
+             "c2serversPort": "", "c2serversIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
+             "proto": "", "action": "ALLOW"},
+            {"level": 4, "victimIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
+             "c2serversPort": "", "action": "DENY"},
+            {"level": 4, "c2serversIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
+             "c2serversPort": "", "action": "DENY"}
+        ]
 
     def cliInput(self):
 
@@ -365,20 +393,26 @@ class Remediator:
 
             self.remediate()
 
-    def fileInput(self):
+    def fileInput(self, fileName, alert_type):
 
-        if len(sys.argv) < 2:
-            # In case no input filename is given exit
-            # logging.info("No input file given, terminating...")
-            # sys.exit()
-            fileName = "alert2.json"
-        else:
-            # In case no input filename is given use by default alert.json
-            fileName = sys.argv[1]
+        # if len(sys.argv) < 2:
+        #     # In case no input filename is given exit
+        #     # logging.info("No input file given, terminating...")
+        #     # sys.exit()
+        #     fileName = "alert_netflow.json"
+        # else:
+        #     # In case no input filename is given use by default alert_netflow.json
+        #     fileName = sys.argv[1]
 
         with open(fileName, "r", encoding='utf8') as alertFile:
             alert = json.load(alertFile)
-            self.jsonInput(alert)
+            if alert_type == "netflow":
+                self.jsonInput(alert)
+            elif alert_type == "syslog":
+                alert["Threat_Category"] = "unauthorized_access"
+                self.jsonInput(alert)
+            else:
+                logging.error("Unknown alert type: " + alert_type)
 
     def stringInputNetflow(self, threat_report_netflow):
         logging.info("Threat report netflow: " + threat_report_netflow)
@@ -612,9 +646,21 @@ class Remediator:
             logging.info(tokens[0] + " " + "rules" + " " + tokens[
                 2] + " " + f"{node}")  # logging only "rules" otherwise output gets jammed
 
+            # logging.debug(self.ServiceGraph.get_filtering_rules(node,4))
+            # logging.debug(rules)
+
             translatedRules = []
             for rule in rules:
                 if rule["level"] == 4:
+                    # rule_existing = False
+                    # for existing_rule in self.ServiceGraph.get_filtering_rules(node, 4):
+                    #     for key in existing_rule
+                    #     if existing_rule['policy'] == rule:
+                    #         rule_existing = True
+                    #         break
+                    # if rule_existing:
+                    #     logging.info("Identical rule already applied, skipping...")
+                    #     continue
                     translatedRules.append(self.generateRule("level_4_filtering", rule))
                 else:
                     translatedRules.append(self.generateRule("level_7_filtering", rule))
@@ -950,6 +996,10 @@ class Remediator:
                 break
 
 
+
+
+
+
 def main():
     ####################### CLI input examples ########################
     # malware unknown 10.1.0.10 22 12.12.12.12                #
@@ -965,11 +1015,12 @@ def main():
 
     remediator = Remediator(SecurityControlRepository=securityControlRepository,
                             ThreatRepository=threatRepository)
-
-    # remediator.fileInput()
+    # remediator.fileInput(sys.argv[1], sys.argv[2])
+    remediator.fileInput("alert_netflow.json", sys.argv[2])
+    remediator.fileInput("alert_netflow2.json", sys.argv[2])
     # remediator.cliInput()
-    remediator.stringInputNetflow(
-        "[{ \"Threat_Finding\": { \"Time_Start\": \"2021-06-03 01:32:07\", \"Time_End\": \"2021-06-03 03:41:22\", \"Time_Duration\": 7755.566, \"Source_Address\": \"10.1.0.10\", \"Destination_Address\": \"1.2.3.4\", \"Source_Port\": 4897, \"Destination_Port\": 443, \"Protocol\": \"TCP\", \"Flag\": \"...A.R..\",  \"Soure_tos\": 0, \"Input_packets\": 6, \"Input_bytes\": 276}, \"Threat_Label\": \"Cridex\", \"Classification_Confidence\": 0.92, \"Outlier_Score\": -0.5}]")
+    # remediator.stringInputNetflow(
+    # "[{ \"Threat_Finding\": { \"Time_Start\": \"2021-06-03 01:32:07\", \"Time_End\": \"2021-06-03 03:41:22\", \"Time_Duration\": 7755.566, \"Source_Address\": \"10.1.0.10\", \"Destination_Address\": \"1.2.3.4\", \"Source_Port\": 4897, \"Destination_Port\": 443, \"Protocol\": \"TCP\", \"Flag\": \"...A.R..\",  \"Soure_tos\": 0, \"Input_packets\": 6, \"Input_bytes\": 276}, \"Threat_Label\": \"Cridex\", \"Classification_Confidence\": 0.92, \"Outlier_Score\": -0.5}]")
 
 
 if __name__ == "__main__":

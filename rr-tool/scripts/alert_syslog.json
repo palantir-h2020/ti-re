@@ -1,0 +1,7 @@
+{
+    "AnomalyDetectionSyslog": "Mar 9 14:35:40 kafka-broker-2 sshd[28028]: Failed password for invalid user localadmin from 10.225.1.72 port 38886 ssh2",
+    "Threat_Label": "0",
+    "Classification_Confidence": 0.46448994712627345,
+    "Outlier_Score": "13.107875",
+    "Source_IP": "10.101.41.33"
+}

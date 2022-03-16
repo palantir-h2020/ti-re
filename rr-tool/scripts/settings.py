@@ -1,5 +1,14 @@
 import os
 
+if os.getenv('YAML_MANUAL_LOADING') == "1":
+    import yaml
+    from yaml.loader import SafeLoader
+    with open('../pod.yaml') as f:
+        data = yaml.load(f, Loader=SafeLoader)
+        for var in data['spec']['containers'][0]['env']:
+            os.environ[var['name']] = var['value']
+        os.environ['ENABLE_MANO_API'] = "0"
+
 # KAFKA CONFIGURATION
 KAFKA_PRODUCER_PROPERTIES = {
     "bootstrap.servers": (os.environ['KAFKA_IP']) + ":" + (os.environ['KAFKA_PORT']),
@@ -20,9 +29,11 @@ TOPIC_IR_INCIDENT_DETECTED = (os.environ['TOPIC_IR_INCIDENT_DETECTED'])
 # SC CONFIGURATION
 
 RR_TOOL_IP = (os.environ['RR_TOOL_IP'])
+BACKUP_SERVER_IP = (os.environ['BACKUP_SERVER_IP'])
 SC_ORCHESTRATOR_IP = (os.environ['SC_ORCHESTRATOR_IP'])
 SC_CLUSTER_PORT = (os.environ['SC_CLUSTER_PORT'])
 IPTABLES_SC_ID = (os.environ['IPTABLES_SC_ID'])
+ENABLE_MANO_API = (os.environ['ENABLE_MANO_API'])
 
 TI_SYSLOG_VICTIM_IP_FIELD_NAME = (os.environ['TI_SYSLOG_VICTIM_IP_FIELD_NAME'])
 

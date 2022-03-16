@@ -2,8 +2,11 @@ import json
 import logging
 from settings import *
 
-# noinspection PyUnresolvedReferences
-from confluent_kafka import Producer
+try:
+    # noinspection PyUnresolvedReferences
+    from confluent_kafka import Producer
+except ImportError:
+    from Producer import Producer
 
 kafka_producer = Producer(KAFKA_PRODUCER_PROPERTIES)
 

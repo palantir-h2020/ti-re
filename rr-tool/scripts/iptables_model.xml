@@ -1,4 +1,4 @@
-<policy nsfName="IpTables" targetRuleSet="INPUT" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="language_ipTables.xsd">
+<policy nsfName="IpTables" targetRuleSet="INPUT" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="iptables.xsd">
 	<!-- iptables -A FORWARD -p TCP -s 10.1.0.10/32 -d 2.2.2.2/32 -j DROP -->
 	<rule id="0">
 		<externalData type="priority">1</externalData>
