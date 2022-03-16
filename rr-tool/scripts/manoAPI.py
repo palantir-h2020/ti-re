@@ -15,12 +15,11 @@ def addFirewall(newNodeName, path, capabilities):
 
 
 def add_filtering_rules(node1, iptables_rule):
-    iptables_rule = iptables_rule.replace("iptables -A FORWARD","iptables -I FORWARD 1")
     logging.info("Calling MANO API")
     logging.info("MANO API: adding filtering rule to iptables instance")
     headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
     url = 'http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns/action?id=' + IPTABLES_SC_ID
-    payload = {"action_name": "run", "action_params": {"cmd": iptables_rule["rule"]}}
+    payload = {"action_name": "run", "action_params": {"cmd": iptables_rule["rule"].replace("iptables -A FORWARD","iptables -I FORWARD 1")}}
 
     if ENABLE_MANO_API == "1":
         r = requests.post(url, headers=headers, json=payload)
