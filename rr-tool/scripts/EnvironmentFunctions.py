@@ -11,7 +11,7 @@ def fbm_function(alert, alertSourceIp):
                             componentId="0",
                             actionName="Call Incident Response",
                             actionDescription="Reaction to following alert: " + str(alert),
-                            onips=alertSourceIp)
+                            onips=[alertSourceIp])
     irAPI.notify_ir("brute-force-attack", alertSourceIp, "Data breach attempt detected: " + str(alert))
 
 
