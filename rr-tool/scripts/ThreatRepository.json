@@ -14,11 +14,7 @@
         },
         "Botnet": {
             "Cridex": {
-                "rules": [{
-                    "level": 7,
-                    "proto": "HTTP",
-                    "payload": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBi QKBgQCvR7x8oHW63g45dwL84Xyga4jdsEUyYc9taOLTZ+kEhwauB7UbvXliNZZsq1HzsNgz+Ge7j VT2nyBIvDwx6CozX0iNM2QG7ZalwB6zBVyvpg TNTQqE8ODZrDGIkabg4OT3YeRrux4Z8GZ14Jja /jITSQZBMvsWguP/wFpUJ35v2wIDAQAB"
-                }],
+                "rules": [],
                 "_comment": "the key suggestedRecipe is present only for retro compatibility with prepareDataForRemediation() function, use priorities in the recipe list in the future",
                 "suggestedRecipe": "filter_payload_recipe",
                 "recipes": [
@@ -60,22 +56,7 @@
                 ]
             },
             "Zeus": {
-                "rules": [{
-                    "level": 4,
-                    "proto": "TCP",
-                    "c2serversIP": "43.234.233.2",
-                    "action": "DENY"
-                },{
-                    "level": 4,
-                    "proto": "TCP",
-                    "c2serversIP": "1.2.3.4",
-                    "action": "DENY"
-                },{
-                    "level": 4,
-                    "proto": "TCP",
-                    "c2serversIP": "2.3.4.5",
-                    "action": "DENY"
-                }],
+                "rules": [],
                 "_comment": "the key suggestedRecipe is present only for retro compatibility with prepareDataForRemediation() function, use priorities in the recipe list in the future",
                 "suggestedRecipe": "filter_ip_port_recipe",
                 "recipes": [
@@ -117,19 +98,7 @@
                 ]
             },
             "Neptune": {
-                "rules": [{
-                    "level": 7,
-                    "proto": "DNS",
-                    "domain": "dns.olympus.com"
-                },{
-                    "level": 7,
-                    "proto": "DNS",
-                    "domain": "12.hjlk.com"
-                },{
-                    "level": 7,
-                    "proto": "DNS",
-                    "domain": "13.hjlk.com"
-                }],
+                "rules": [],
                 "_comment": "the key suggestedRecipe is present only for retro compatibility with prepareDataForRemediation() function, use priorities in the recipe list in the future",
                 "suggestedRecipe": "redirect_domains_recipe",
                 "recipes": [

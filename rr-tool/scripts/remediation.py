@@ -291,16 +291,17 @@ class Remediator:
             if attacker_ip not in threatRepositoryAttackers:
                 self.GlobalScope["rules_level_4"].append({"level": 4, "victimIP": impacted_host_ip,
                                                           "c2serversPort": attacker_port,
-                                                          "c2serversIP": attacker_ip,
-                                                          "proto": "TCP"})
+                                                          # "proto": "TCP",
+                                                          "c2serversIP": attacker_ip})
 
             # if the threat repository doesn't contain specific level_4_filtering rules
             # for this specific malware then generate them from the information gathered from the CLI
             if len(self.GlobalScope["rules_level_4"]) == 0:
                 self.GlobalScope["rules_level_4"] = [{"level": 4, "victimIP": impacted_host_ip,
                                                       "c2serversPort": attacker_port,
-                                                      "c2serversIP": attacker_ip,
-                                                      "proto": "TCP"}]
+                                                      # "proto": "TCP",
+                                                      "c2serversIP": attacker_ip
+                                                      }]
 
             # get dns rules
             self.GlobalScope["domains"] = [rule["domain"] for rule in mitigation_rules if rule.get("proto") == "DNS"]
@@ -324,7 +325,8 @@ class Remediator:
             logging.info("Threat not found in the repository, applying generic countermeasures ...")
             self.GlobalScope["rules_level_4"] = [
                 {"level": 4, "victimIP": impacted_host_ip, "c2serversIP": attacker_ip,
-                 "proto": "TCP", "action": "DENY"}]
+                 # "proto": "TCP",
+                 "action": "DENY"}]
 
             suggestedRecipe = self.ThreatRepository[threatType]["unknown"]["suggestedRecipe"]
             logging.info(
