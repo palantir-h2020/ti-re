@@ -654,19 +654,19 @@ class Remediator:
             translatedRules = []
             for rule in rules:
                 if rule["level"] == 4:
-                    rule_existing = False
-                    for existing_rule in self.ServiceGraph.get_filtering_rules(node, 4):
-                        same_rule = True
-                        for key in rule:
-                            if rule[key] != existing_rule["policy"][key]:
-                                same_rule = False
-                            break
-                        if same_rule:
-                            rule_existing = same_rule
-                            break
-                    if rule_existing:
-                        logging.info("Identical rule already applied, skipping...")
-                        continue
+                    # rule_existing = False
+                    # for existing_rule in self.ServiceGraph.get_filtering_rules(node, 4):
+                    #     same_rule = True
+                    #     for key in rule:
+                    #         if rule[key] != existing_rule["policy"][key]:
+                    #             same_rule = False
+                    #         break
+                    #     if same_rule:
+                    #         rule_existing = same_rule
+                    #         break
+                    # if rule_existing:
+                    #     logging.info("Identical rule already applied, skipping...")
+                    #     continue
                     translatedRules.append(self.generateRule("level_4_filtering", rule))
                 else:
                     translatedRules.append(self.generateRule("level_7_filtering", rule))
