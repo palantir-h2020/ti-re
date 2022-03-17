@@ -1,1 +1,1 @@
-iptables -A FORWARD -p TCP -s 10.0.2.108/32 -d 87.236.215.56/32 -j DROP 
+iptables -A FORWARD -s 10.225.1.73/32 -d 10.101.41.33/32 -j ACCEPT 

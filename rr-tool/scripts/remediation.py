@@ -652,15 +652,19 @@ class Remediator:
             translatedRules = []
             for rule in rules:
                 if rule["level"] == 4:
-                    # rule_existing = False
-                    # for existing_rule in self.ServiceGraph.get_filtering_rules(node, 4):
-                    #     for key in existing_rule
-                    #     if existing_rule['policy'] == rule:
-                    #         rule_existing = True
-                    #         break
-                    # if rule_existing:
-                    #     logging.info("Identical rule already applied, skipping...")
-                    #     continue
+                    rule_existing = False
+                    for existing_rule in self.ServiceGraph.get_filtering_rules(node, 4):
+                        same_rule = True
+                        for key in rule:
+                            if rule[key] != existing_rule["policy"][key]:
+                                same_rule = False
+                            break
+                        if same_rule:
+                            rule_existing = same_rule
+                            break
+                    if rule_existing:
+                        logging.info("Identical rule already applied, skipping...")
+                        continue
                     translatedRules.append(self.generateRule("level_4_filtering", rule))
                 else:
                     translatedRules.append(self.generateRule("level_7_filtering", rule))
@@ -1015,9 +1019,10 @@ def main():
 
     remediator = Remediator(SecurityControlRepository=securityControlRepository,
                             ThreatRepository=threatRepository)
-    # remediator.fileInput(sys.argv[1], sys.argv[2])
-    remediator.fileInput("alert_netflow.json", sys.argv[2])
-    remediator.fileInput("alert_netflow2.json", sys.argv[2])
+    for i in {0,3}:
+        remediator.fileInput(sys.argv[1], sys.argv[2])
+    # remediator.fileInput("alert_netflow.json", sys.argv[2])
+    # remediator.fileInput("alert_netflow2.json", sys.argv[2])
     # remediator.cliInput()
     # remediator.stringInputNetflow(
     # "[{ \"Threat_Finding\": { \"Time_Start\": \"2021-06-03 01:32:07\", \"Time_End\": \"2021-06-03 03:41:22\", \"Time_Duration\": 7755.566, \"Source_Address\": \"10.1.0.10\", \"Destination_Address\": \"1.2.3.4\", \"Source_Port\": 4897, \"Destination_Port\": 443, \"Protocol\": \"TCP\", \"Flag\": \"...A.R..\",  \"Soure_tos\": 0, \"Input_packets\": 6, \"Input_bytes\": 276}, \"Threat_Label\": \"Cridex\", \"Classification_Confidence\": 0.92, \"Outlier_Score\": -0.5}]")
