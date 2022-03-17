@@ -8,7 +8,7 @@
 		<ipSourceAddressConditionCapability operator="rangeCIDR">
 			<capabilityIpValue>
 				<rangeCIDR>
-					<address>10.225.1.73</address>
+					<address>10.0.2.108</address>
 					<maskCIDR>32</maskCIDR>
 				</rangeCIDR>
 			</capabilityIpValue>
@@ -16,12 +16,12 @@
 		<ipDestinationAddressConditionCapability operator="rangeCIDR">
 			<capabilityIpValue>
 				<rangeCIDR>
-					<address>10.101.41.33</address>
+					<address>87.236.215.56</address>
 					<maskCIDR>32</maskCIDR>
 				</rangeCIDR>
 			</capabilityIpValue>
 		</ipDestinationAddressConditionCapability>
-		<acceptActionCapability />
+		<rejectActionCapability />
 	</rule>
 
 </policy>
