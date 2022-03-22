@@ -261,7 +261,11 @@ class ServiceGraph:
                 else:
                     logging.info("This firewall doesn't support level 7 filtering!")
                     break
-        logging.info(node)
+        logging.debug("Rules for firewall "+node['name'])
+        i = 1
+        for rule in node['rules_level_4']:
+            logging.debug(node['name']+' rule #'+str(i)+" "+str(rule))
+            i += 1
 
     def get_filtering_rules(self, nodeName, level):
         node: ig.Vertex = self.sgraph.vs.find(nodeName)

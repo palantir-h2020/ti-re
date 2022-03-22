@@ -1,3 +1,5 @@
+import os
+
 import settings
 import copy
 import logging
@@ -217,6 +219,10 @@ class Remediator:
         else:
             generatedRule = ruleGenerator(policy)
 
+        # check if the generation of rule was not successful
+        if generatedRule == "":
+            return ""
+
         newRule = {"type": capability,
                    "enforcingSecurityControl": securityControlName,
                    "rule": generatedRule,
@@ -261,10 +267,12 @@ class Remediator:
         else:
             return False
 
-    def prepareDataForRemediationOfMalware(self, threatType, threatName, impacted_host_ip, attacker_port, attacker_ip):
+    def prepareDataForRemediationOfMalware(self, threatType, threatName, protocol, impacted_host_port, impacted_host_ip, attacker_port, attacker_ip):
 
         self.GlobalScope["threat_type"] = threatType  # malware
         self.GlobalScope["threat_name"] = threatName  # unknown / Cridex / Zeus
+        self.GlobalScope["protocol"] = protocol
+        self.GlobalScope["impacted_host_port"] = impacted_host_port
         self.GlobalScope["impacted_host_ip"] = impacted_host_ip  # 10.1.0.10
         self.GlobalScope["c2serversPort"] = attacker_port  # 22
         self.GlobalScope["attacker_ip"] = attacker_ip  # 12.12.12.12
@@ -284,12 +292,15 @@ class Remediator:
             # complete ThreatRepository data with fresh information regarding port and victim host received as alert
             for rule in self.GlobalScope["rules_level_4"]:
                 rule["victimIP"] = impacted_host_ip
+                rule["victimPort"] = impacted_host_port
                 rule["c2serversPort"] = attacker_port
 
             # add a blocking rule if the attacker ip present in the alert isn't already in the ThreatRepository
             threatRepositoryAttackers = [rule["c2serversIP"] for rule in mitigation_rules if rule.get("level") == 4]
             if attacker_ip not in threatRepositoryAttackers:
-                self.GlobalScope["rules_level_4"].append({"level": 4, "victimIP": impacted_host_ip,
+                self.GlobalScope["rules_level_4"].append({"level": 4,
+                                                          "victimPort": impacted_host_port,
+                                                          "victimIP": impacted_host_ip,
                                                           "c2serversPort": attacker_port,
                                                           # "proto": "TCP",
                                                           "c2serversIP": attacker_ip})
@@ -298,17 +309,32 @@ class Remediator:
             # for this specific malware then generate them from the information gathered from the CLI
             if len(self.GlobalScope["rules_level_4"]) == 0:
                 self.GlobalScope["rules_level_4"] = [
-                    {"level": 4, "victimIP": impacted_host_ip,
-                     # "c2serversPort": attacker_port,
-                     # "proto": "TCP",
+                    {"level": 4,
+                     #"victimIP": impacted_host_ip,
+                     # # "c2serversPort": attacker_port,
+                     # # "proto": "TCP",
                      "c2serversIP": attacker_ip
                      },
-                    {"level": 4, "victimIP": attacker_ip,
-                     # "c2serversPort": attacker_port,
-                     # "proto": "TCP",
-                     "c2serversIP": impacted_host_ip
+                    {"level": 4,
+                     "victimIP": attacker_ip
+                        #,
+                     # # "c2serversPort": attacker_port,
+                     # # "proto": "TCP",
+                     # "c2serversIP": impacted_host_ip
                      }
                 ]
+                if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_VICTIM_IP == '1':
+                    self.GlobalScope["rules_level_4"][0]["victimIP"] = impacted_host_ip
+                    self.GlobalScope["rules_level_4"][1]["c2serversIP"] = impacted_host_ip
+                if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_ATTACKER_PORT == '1':
+                    self.GlobalScope["rules_level_4"][0]["c2serversPort"] = attacker_port
+                    self.GlobalScope["rules_level_4"][1]["victimPort"] = attacker_port
+                if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_VICTIM_PORT == '1':
+                    self.GlobalScope["rules_level_4"][0]["victimPort"] = impacted_host_port
+                    self.GlobalScope["rules_level_4"][1]["c2serversPort"] = impacted_host_port
+                if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_PROTOCOL == '1':
+                    self.GlobalScope["rules_level_4"][0]["proto"] = protocol
+                    self.GlobalScope["rules_level_4"][1]["proto"] = protocol
 
             # get dns rules
             self.GlobalScope["domains"] = [rule["domain"] for rule in mitigation_rules if rule.get("proto") == "DNS"]
@@ -331,13 +357,32 @@ class Remediator:
             # logging.info("Generic command and control threat detected, apply countermeasures ...")
             logging.info("Threat not found in the repository, applying generic countermeasures ...")
             self.GlobalScope["rules_level_4"] = [
-                {"level": 4, "victimIP": impacted_host_ip, "c2serversIP": attacker_ip,
-                 # "proto": "TCP",
-                 "action": "DENY"},
-                {"level": 4, "c2serversIP": impacted_host_ip, "victimIP": attacker_ip,
-                 # "proto": "TCP",
-                 "action": "DENY"}
+                {"level": 4,
+                 # "victimIP": impacted_host_ip,
+                 # # "c2serversPort": attacker_port,
+                 # # "proto": "TCP",
+                 "c2serversIP": attacker_ip
+                 },
+                {"level": 4,
+                 "victimIP": attacker_ip
+                 # ,
+                 # # "c2serversPort": attacker_port,
+                 # # "proto": "TCP",
+                 # "c2serversIP": impacted_host_ip
+                 }
             ]
+            if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_VICTIM_IP == '1':
+                self.GlobalScope["rules_level_4"][0]["victimIP"] = impacted_host_ip
+                self.GlobalScope["rules_level_4"][1]["c2serversIP"] = impacted_host_ip
+            if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_ATTACKER_PORT == '1':
+                self.GlobalScope["rules_level_4"][0]["c2serversPort"] = attacker_port
+                self.GlobalScope["rules_level_4"][1]["victimPort"] = attacker_port
+            if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_VICTIM_PORT == '1':
+                self.GlobalScope["rules_level_4"][0]["victimPort"] = impacted_host_port
+                self.GlobalScope["rules_level_4"][1]["c2serversPort"] = impacted_host_port
+            if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_PROTOCOL == '1':
+                self.GlobalScope["rules_level_4"][0]["proto"] = protocol
+                self.GlobalScope["rules_level_4"][1]["proto"] = protocol
 
             suggestedRecipe = self.ThreatRepository[threatType]["unknown"]["suggestedRecipe"]
             logging.info(
@@ -406,6 +451,12 @@ class Remediator:
 
             self.remediate()
 
+    def folderInput(self, folderName, alert_type):
+        onlyfiles = [f for f in os.listdir(folderName) if os.path.isfile(os.path.join(folderName, f))]
+        for f in onlyfiles:
+            logging.info("Reading alert file "+folderName+os.sep+f)
+            self.fileInput(folderName+os.sep+f,alert_type)
+
     def fileInput(self, fileName, alert_type):
 
         # if len(sys.argv) < 2:
@@ -450,7 +501,7 @@ class Remediator:
         try:
             alert_threat_category = alert["Threat_Category"]
         except KeyError as ex:
-            logging.error("Malformed alert reiceved (threat category missing), skipping...")
+            logging.error("Malformed alert received (threat category missing), skipping...")
             return
 
         if alert_threat_category == "unauthorized_access":
@@ -462,21 +513,20 @@ class Remediator:
                 self.setCapabilitiesToSecurityControlMappings(
                     self.RecipeRepository[bestRecipeName]["requiredCapabilities"])
             except KeyError as ex:
-                logging.error("Malformed alert reiceved, skipping...")
+                logging.error("Malformed alert received, skipping...")
                 return
         elif alert_threat_category == "Botnet":
             # alert of type malware
             try:
                 self.prepareDataForRemediationOfMalware(alert["Threat_Category"],  # malware
                                                         alert["Threat_Label"],  # unknown / Cridex / Zeus
+                                                        alert["Threat_Finding"]["Protocol"],
+                                                        alert["Threat_Finding"]["Source_Port"],
                                                         alert["Threat_Finding"]["Source_Address"],
-                                                        # alert["Threat_Finding"]["Source_Address"],
                                                         alert["Threat_Finding"]["Destination_Port"],
-                                                        # alert["Threat_Finding"]["Destination_Port"],  # 22
-                                                        alert["Threat_Finding"][
-                                                            "Destination_Address"])  # alert["Threat_Finding"]["Destination_Address"]) # 54.154.132.12
+                                                        alert["Threat_Finding"]["Destination_Address"])  # alert["Threat_Finding"]["Destination_Address"]) # 54.154.132.12
             except KeyError as ex:
-                logging.error("Malformed alert reiceved, skipping...")
+                logging.error("Malformed alert received, skipping...")
                 return
             bestRecipeName = self.selectBestRecipe(alert["Threat_Category"], alert["Threat_Label"])
             self.recipeToRun = self.RecipeRepository[bestRecipeName]["value"]
@@ -665,20 +715,25 @@ class Remediator:
             translatedRules = []
             for rule in rules:
                 if rule["level"] == 4:
-                    rule_existing = False
-                    for existing_rule in self.ServiceGraph.get_filtering_rules(node, 4):
-                        same_rule = True
-                        for key in rule:
-                            if rule[key] != existing_rule["policy"][key]:
-                                same_rule = False
-                            break
-                        if same_rule:
-                            rule_existing = same_rule
-                            break
-                    if rule_existing:
-                        logging.info("Identical rule already applied, skipping...")
-                        continue
-                    translatedRules.append(self.generateRule("level_4_filtering", rule))
+                    if settings.ENABLE_IDENTICAL_L4_FILTERING_RULE_SKIPPING == "1":
+                        rule_existing = False
+                        for existing_rule in self.ServiceGraph.get_filtering_rules(node, 4):
+                            same_rule = True
+                            for key in rule:
+                                if rule[key] != existing_rule["policy"][key]:
+                                    same_rule = False
+                                    break
+                            if same_rule:
+                                rule_existing = same_rule
+                                break
+                        if rule_existing:
+                            logging.info("Identical rule already applied, skipping...")
+                            continue
+                    generatedRule = self.generateRule("level_4_filtering", rule)
+                    if generatedRule == "":
+                        logging.error("Error generating concrete rule, skipping...")
+                    else:
+                        translatedRules.append(generatedRule)
                 else:
                     translatedRules.append(self.generateRule("level_7_filtering", rule))
 
@@ -1028,8 +1083,11 @@ def main():
 
     remediator = Remediator(SecurityControlRepository=securityControlRepository,
                             ThreatRepository=threatRepository)
-    for i in {0, 3}:
-        remediator.fileInput(sys.argv[1], sys.argv[2])
+    # for i in {0, 3}:
+    #     remediator.fileInput(sys.argv[1], sys.argv[2])
+
+    remediator.folderInput(sys.argv[1], sys.argv[2])
+
     # remediator.fileInput("alert_netflow.json", sys.argv[2])
     # remediator.fileInput("alert_netflow2.json", sys.argv[2])
     # remediator.cliInput()

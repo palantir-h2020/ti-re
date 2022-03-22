@@ -10,6 +10,11 @@
 				<exactMatch>TCP</exactMatch>
 			</capabilityValue>
 		</ipProtocolTypeConditionCapability>
+		<sourcePortConditionCapability operator="exactMatch">
+			<capabilityValue>
+				<exactMatch>12345</exactMatch>
+			</capabilityValue>
+		</sourcePortConditionCapability>
 		<destinationPortConditionCapability operator="exactMatch">
 			<capabilityValue>
 				<exactMatch>80</exactMatch>

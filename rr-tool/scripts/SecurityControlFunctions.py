@@ -15,20 +15,22 @@ def generic_network_traffic_monitor_command_generator(rule, *args):
     return rule
 
 
-def iptables_comand_generator(rule, *args):
+def iptables_command_generator(rule, *args):
     del args  # just to hide the alert about the arg not being used
-    for key in ["victimIP", "c2serversIP", "c2serversPort", "proto", "action"]:
+    for key in ["victimIP", "c2serversIP", "victimPort", "c2serversPort", "proto", "action"]:
         if key not in rule:
             rule[key] = ""
 
     generatedRule = getIptablesCommand(rule["victimIP"],
                                        rule["c2serversIP"],
+                                       rule["victimPort"],
                                        rule["c2serversPort"],
                                        rule["proto"],
                                        "FORWARD",
                                        rule["action"])
 
     return generatedRule
+
 
 # def iptables_fbm_comand_generator(rule, *args):
 #     del args  # just to hide the alert about the arg not being used
@@ -52,7 +54,7 @@ def testFunction(*args):
 
 
 FunctionMappings = {
-    "iptables": iptables_comand_generator,  # iptables_comand_generator #testFunction
+    "iptables": iptables_command_generator,  # iptables_comand_generator #testFunction
     "generic_level_7_filter": generic_level_7_filter_command_generator,
     "generic_network_traffic_monitor": generic_network_traffic_monitor_command_generator
 }

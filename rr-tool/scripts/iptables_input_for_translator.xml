@@ -5,6 +5,21 @@
         <appendRuleActionCapability>
 			<chain>FORWARD</chain>
 		</appendRuleActionCapability>
+		<ipProtocolTypeConditionCapability operator="exactMatch">
+			<capabilityValue>
+				<exactMatch>UDP</exactMatch>
+			</capabilityValue>
+		</ipProtocolTypeConditionCapability>
+		<sourcePortConditionCapability operator="exactMatch">
+			<capabilityValue>
+				<exactMatch>80</exactMatch>
+			</capabilityValue>
+		</sourcePortConditionCapability>
+		<destinationPortConditionCapability operator="exactMatch">
+			<capabilityValue>
+				<exactMatch>61868</exactMatch>
+			</capabilityValue>
+		</destinationPortConditionCapability>
 		<ipSourceAddressConditionCapability operator="rangeCIDR">
 			<capabilityIpValue>
 				<rangeCIDR>

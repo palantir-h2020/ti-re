@@ -1,1 +1,1 @@
-iptables -A FORWARD -s 87.236.215.56/32 -d 10.0.2.108/32 -j DROP 
+iptables -A FORWARD -p UDP --sport 80 --dport 61868 -s 87.236.215.56/32 -d 10.0.2.108/32 -j DROP 

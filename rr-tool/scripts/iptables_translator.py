@@ -52,7 +52,7 @@ def deleteElement(root: ET.Element, item: str):
 # for child in root[0]:
 #     print(child)
 
-def getIptablesCommand(srcIp, dstIp, dstPort, proto, chain, action):
+def getIptablesCommand(srcIp, dstIp, srcPort, dstPort, proto, chain, action):
     tree = ET.parse('iptables_model.xml')
     root = tree.getroot()
 
@@ -61,6 +61,12 @@ def getIptablesCommand(srcIp, dstIp, dstPort, proto, chain, action):
     else:
         modifyElement(root, "exactMatch", proto)
     modifyElement(root, "chain", chain)
+
+    if srcPort == "":
+        deleteElement(root, "sourcePortConditionCapability")
+    else:
+        srcPortElement = globalFind(root, "sourcePortConditionCapability")
+        modifyElement(srcPortElement, "exactMatch", str(srcPort))
 
     if dstPort == "":
         deleteElement(root, "destinationPortConditionCapability")
