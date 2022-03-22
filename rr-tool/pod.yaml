@@ -29,6 +29,8 @@ spec:
           value: "10.101.41.168"
         - name: ENABLE_MANO_API
           value: "1"
+        - name: ENABLE_IDENTICAL_FILTERING_RULE_SKIPPING
+          value: "1"
         - name: SC_CLUSTER_PORT
           value: "50101"
         - name: TI_SYSLOG_VICTIM_IP_FIELD_NAME
