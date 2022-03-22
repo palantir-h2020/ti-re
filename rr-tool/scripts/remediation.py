@@ -298,16 +298,16 @@ class Remediator:
             # for this specific malware then generate them from the information gathered from the CLI
             if len(self.GlobalScope["rules_level_4"]) == 0:
                 self.GlobalScope["rules_level_4"] = [
-                                                        {"level": 4, "victimIP": impacted_host_ip,
-                                                          # "c2serversPort": attacker_port,
-                                                          # "proto": "TCP",
-                                                          "c2serversIP": attacker_ip
-                                                          },
-                                                            {"level": 4, "c2serversIP": impacted_host_ip,
-                                                             # "c2serversPort": attacker_port,
-                                                             # "proto": "TCP",
-                                                             "victimIP": attacker_ip
-                                                             }
+                    {"level": 4, "victimIP": impacted_host_ip,
+                     # "c2serversPort": attacker_port,
+                     # "proto": "TCP",
+                     "c2serversIP": attacker_ip
+                     },
+                    {"level": 4, "victimIP": attacker_ip,
+                     # "c2serversPort": attacker_port,
+                     # "proto": "TCP",
+                     "c2serversIP": impacted_host_ip
+                     }
                 ]
 
             # get dns rules
@@ -367,10 +367,10 @@ class Remediator:
         self.ServiceGraph.changeNodeIP("victim", self.GlobalScope["UnauthorizedAccessAlertSourceIp"])
 
         self.GlobalScope["rules_level_4"] = [
-           {"level": 4, "victimIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
-            "c2serversPort": "", "action": "DENY"},
-           {"level": 4, "c2serversIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
-            "c2serversPort": "", "action": "DENY"},
+            {"level": 4, "victimIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
+             "c2serversPort": "", "action": "DENY"},
+            {"level": 4, "c2serversIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
+             "c2serversPort": "", "action": "DENY"},
             {"level": 4, "victimIP": self.GlobalScope["UnauthorizedAccessAlertSourceIp"],
              "c2serversPort": "", "c2serversIP": settings.BACKUP_SERVER_IP,
              "proto": "", "action": "ALLOW"},
@@ -665,19 +665,19 @@ class Remediator:
             translatedRules = []
             for rule in rules:
                 if rule["level"] == 4:
-                    # rule_existing = False
-                    # for existing_rule in self.ServiceGraph.get_filtering_rules(node, 4):
-                    #     same_rule = True
-                    #     for key in rule:
-                    #         if rule[key] != existing_rule["policy"][key]:
-                    #             same_rule = False
-                    #         break
-                    #     if same_rule:
-                    #         rule_existing = same_rule
-                    #         break
-                    # if rule_existing:
-                    #     logging.info("Identical rule already applied, skipping...")
-                    #     continue
+                    rule_existing = False
+                    for existing_rule in self.ServiceGraph.get_filtering_rules(node, 4):
+                        same_rule = True
+                        for key in rule:
+                            if rule[key] != existing_rule["policy"][key]:
+                                same_rule = False
+                            break
+                        if same_rule:
+                            rule_existing = same_rule
+                            break
+                    if rule_existing:
+                        logging.info("Identical rule already applied, skipping...")
+                        continue
                     translatedRules.append(self.generateRule("level_4_filtering", rule))
                 else:
                     translatedRules.append(self.generateRule("level_7_filtering", rule))
@@ -1013,10 +1013,6 @@ class Remediator:
                 break
 
 
-
-
-
-
 def main():
     ####################### CLI input examples ########################
     # malware unknown 10.1.0.10 22 12.12.12.12                #
@@ -1032,7 +1028,7 @@ def main():
 
     remediator = Remediator(SecurityControlRepository=securityControlRepository,
                             ThreatRepository=threatRepository)
-    for i in {0,3}:
+    for i in {0, 3}:
         remediator.fileInput(sys.argv[1], sys.argv[2])
     # remediator.fileInput("alert_netflow.json", sys.argv[2])
     # remediator.fileInput("alert_netflow2.json", sys.argv[2])
