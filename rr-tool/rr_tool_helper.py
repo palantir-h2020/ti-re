@@ -61,15 +61,11 @@ def inject_netflow_alerts():
             if var['name'] == "KAFKA_IP":
                 KAFKA_IP = var['value']
             if var['name'] == "KAFKA_PORT":
-                KAFKA_IP = var['value']
+                KAFKA_PORT = var['value']
             if var['name'] == "TOPIC_TI_NETFLOW":
                 TOPIC_TI_NETFLOW = var['value']
-            if var['name'] == "IPTABLES_SC_ID":
-                IPTABLES_SC_ID = var['value']
-            if var['name'] == "ENABLE_MANO_API":
-                ENABLE_MANO_API = var['value']
     KAFKA_PRODUCER_PROPERTIES = {
-        "bootstrap.servers": (os.environ['KAFKA_IP']) + ":" + (os.environ['KAFKA_PORT']),
+        "bootstrap.servers": KAFKA_IP + ":" + KAFKA_PORT,
         "compression.type": "none"
     }
     folderName = "scripts/netflow_alerts"
