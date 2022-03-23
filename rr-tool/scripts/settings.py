@@ -3,6 +3,7 @@ import os
 
 
 def getEnvFromYaml():
+    print("Reading yaml...")
     import yaml
     from yaml.loader import SafeLoader
     with open('../pod.yaml') as f:
