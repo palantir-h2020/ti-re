@@ -7,7 +7,7 @@ import yaml
 from yaml.loader import SafeLoader
 import requests
 
-from scripts import producer
+import producer
 
 logger = logging.getLogger("rr-tool-helper")
 logger.setLevel(logging.DEBUG)
@@ -55,19 +55,20 @@ def flush_filtering_rules():
 
 
 def inject_netflow_alerts():
-    with open('../pod.yaml') as f:
-        data = yaml.load(f, Loader=SafeLoader)
-        for var in data['spec']['containers'][0]['env']:
-            if var['name'] == "KAFKA_IP":
-                KAFKA_IP = var['value']
-            if var['name'] == "KAFKA_PORT":
-                KAFKA_PORT = var['value']
-            if var['name'] == "TOPIC_TI_NETFLOW":
-                TOPIC_TI_NETFLOW = var['value']
-    KAFKA_PRODUCER_PROPERTIES = {
-        "bootstrap.servers": KAFKA_IP + ":" + KAFKA_PORT,
-        "compression.type": "none"
-    }
+    # with open('../pod.yaml') as f:
+    #     data = yaml.load(f, Loader=SafeLoader)
+    #     for var in data['spec']['containers'][0]['env']:
+    #         if var['name'] == "KAFKA_IP":
+    #             KAFKA_IP = var['value']
+    #         if var['name'] == "KAFKA_PORT":
+    #             KAFKA_PORT = var['value']
+    #         if var['name'] == "TOPIC_TI_NETFLOW":
+    #             TOPIC_TI_NETFLOW = var['value']
+    # KAFKA_PRODUCER_PROPERTIES = {
+    #     "bootstrap.servers": KAFKA_IP + ":" + KAFKA_PORT,
+    #     "compression.type": "none"
+    # }
+    from settings import *
     folderName = "scripts/netflow_alerts"
     onlyfiles = [f for f in os.listdir(folderName) if os.path.isfile(os.path.join(folderName, f))]
     for f in onlyfiles:
