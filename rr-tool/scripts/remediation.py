@@ -323,6 +323,8 @@ class Remediator:
                 logging.info(f"Payload: {payload}")
         else:
             # logging.info("Generic command and control threat detected, apply countermeasures ...")
+            self.GlobalScope["rules_level_4"] = []
+            self.GlobalScope["rules_level_7"] = []
             logging.info("Threat not found in the repository, applying generic countermeasures ...")
             self.setupDefaultL4RemediationRules(protocol, impacted_host_ip, impacted_host_port, attacker_ip, attacker_port)
 
