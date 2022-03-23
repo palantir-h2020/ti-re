@@ -12,5 +12,6 @@ kubectl create -f /media/palantir-nfs/ti-re/rr-tool/pod.yaml
 while [[ $(kubectl get pods --all-namespaces | grep rr-tool | grep Running | wc -l) -eq 0 ]]; do
   echo -n "."
 done
+echo "."
 echo "RR-tool pod created, attaching..."
 kubectl logs rr-tool && kubectl attach rr-tool
