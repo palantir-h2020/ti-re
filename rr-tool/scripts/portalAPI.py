@@ -6,7 +6,7 @@ try:
     # noinspection PyUnresolvedReferences
     from confluent_kafka import Producer
 except ImportError:
-    from Producer import Producer
+    from producer import Producer
 
 kafka_producer = Producer(KAFKA_PRODUCER_PROPERTIES)
 
