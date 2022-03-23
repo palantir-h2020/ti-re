@@ -4,4 +4,4 @@ cd /media/palantir-nfs/ti-re && git pull && cd rr-tool && docker build -t palant
 if [[ $(kubectl get pods --all-namespaces | grep rr-tool | wc -l) -gt 0 ]]; then
   kubectl delete pod rr-tool
 fi
-kubectl create -f /media/palantir-nfs/ti-re/pod.yaml && sleep 5 && kubectl attach rr-tool
+kubectl create -f /media/palantir-nfs/ti-re/rr-tool/pod.yaml && sleep 5 && kubectl attach rr-tool
