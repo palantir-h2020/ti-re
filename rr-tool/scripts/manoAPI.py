@@ -14,12 +14,38 @@ def addFirewall(newNodeName, path, capabilities):
     logging.info(f"MANO API: new firewall node {newNodeName} deployed")
 
 
+def flush_filtering_rules():
+    logging.info("Calling MANO API")
+    logging.info("MANO API: resetting filtering rules")
+    headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
+    url = 'http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns/action?id=' + IPTABLES_SC_ID
+    payload = {"action_name": "run", "action_params": {"cmd": "iptables-save | grep -v RR-TOOL_GENERATED | "
+                                                              "iptables-restore"}}
+
+    if ENABLE_MANO_API == "1":
+        r = requests.post(url, headers=headers, json=payload)
+
+        logging.info("MANO API: response code from orchestrator " + str(r.status_code))
+        if r.ok:
+            logging.info("MANO API: rules flushed")
+        else:
+            logging.info("MANO API: failed flushing rules")
+            logging.info("MANO API: response headers from orchestrator " + str(r.headers))
+            logging.info("MANO API: response text from orchestrator " + str(r.text))
+    else:
+        logging.info("MANO API: disabled, logging request data")
+        logging.info("MANO API: request headers: " + str(headers))
+        logging.info("MANO API: request url: " + str(url))
+        logging.info("MANO API: request payload: " + str(payload))
+
+
 def add_filtering_rules(node1, iptables_rule):
     logging.info("Calling MANO API")
     logging.info("MANO API: adding filtering rule to iptables instance")
     headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
     url = 'http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns/action?id=' + IPTABLES_SC_ID
-    payload = {"action_name": "run", "action_params": {"cmd": iptables_rule["rule"].replace("iptables -A FORWARD","iptables -I FORWARD 1")+" -m comment --comment \"RR-TOOL_GENERATED\""}}
+    payload = {"action_name": "run", "action_params": {"cmd": iptables_rule["rule"].replace("iptables -A FORWARD",
+                                                                                            "iptables -I FORWARD 1") + " -m comment --comment \"RR-TOOL_GENERATED\""}}
 
     if ENABLE_MANO_API == "1":
         r = requests.post(url, headers=headers, json=payload)
@@ -38,9 +64,10 @@ def add_filtering_rules(node1, iptables_rule):
             logging.info("MANO API: response text from orchestrator " + str(r.text))
     else:
         logging.info("MANO API: disabled, logging request data")
-        logging.info("MANO API: request headers: "+str(headers))
-        logging.info("MANO API: request url: "+str(url))
+        logging.info("MANO API: request headers: " + str(headers))
+        logging.info("MANO API: request url: " + str(url))
         logging.info("MANO API: request payload: " + str(payload))
+
 
 def add_dns_policy(domain, rule):
     logging.info("Calling MANO API")
