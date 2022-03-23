@@ -76,11 +76,12 @@ def inject_netflow_alerts():
             alert = json.load(alertFile)
             producer.Producer(KAFKA_PRODUCER_PROPERTIES).produce(TOPIC_TI_NETFLOW,
                                                                  json.dumps(alert),
-                                                                 callback=delivery_report)
+                                                                 callback=delivery_report,
+                                                                 logger=logger)
 
 
 def delivery_report(err, msg):
     if err is not None:
-        logger.error('Incident response API: message delivery failed with error {}'.format(err))
+        logger.error('message delivery failed with error {}'.format(err))
     else:
-        logger.info('Incident response API: message delivered to {} [{}]'.format(msg.topic(), msg.partition()))
+        logger.info('message delivered to {} [{}]'.format(msg.topic(), msg.partition()))

@@ -13,9 +13,11 @@ class Producer:
         except ImportError:
             self.ENABLE_MOCKUP_PRODUCER = 1
 
-    def produce(self, topic, content, callback):
+    def produce(self, topic, content, callback, logger : logging.Logger = None):
         if self.ENABLE_MOCKUP_PRODUCER == 0:
             self.kafka_producer.produce(topic, content, callback=callback)
+            if logger is not None:
+                logger.info("Message sent")
         else:
             logging.info("Mockup Kafka producer: producing message to topic " + topic)
             logging.info("Mockup Kafka producer: " + content)
