@@ -72,11 +72,11 @@ def inject_netflow_alerts():
     onlyfiles = [f for f in os.listdir(folderName) if os.path.isfile(os.path.join(folderName, f))]
     for f in onlyfiles:
         logger.info("Reading alert file " + folderName + os.sep + f)
-        alertFile = folderName + os.sep + f
-        alert = json.load(alertFile)
-        producer.Producer(KAFKA_PRODUCER_PROPERTIES).produce(TOPIC_TI_NETFLOW,
-                                                             json.dumps(alert),
-                                                             callback=delivery_report)
+        with open(folderName + os.sep + f, "r", encoding='utf8') as alertFile:
+            alert = json.load(alertFile)
+            producer.Producer(KAFKA_PRODUCER_PROPERTIES).produce(TOPIC_TI_NETFLOW,
+                                                                 json.dumps(alert),
+                                                                 callback=delivery_report)
 
 
 def delivery_report(err, msg):
