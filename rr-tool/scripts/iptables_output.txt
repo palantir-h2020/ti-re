@@ -1,1 +1,0 @@
-iptables -A FORWARD -s 87.236.215.57/32 -j DROP 

@@ -13,6 +13,14 @@
 				</rangeCIDR>
 			</capabilityIpValue>
 		</ipSourceAddressConditionCapability>
+		<ipDestinationAddressConditionCapability operator="rangeCIDR">
+			<capabilityIpValue>
+				<rangeCIDR>
+					<address>10.0.2.107</address>
+					<maskCIDR>32</maskCIDR>
+				</rangeCIDR>
+			</capabilityIpValue>
+		</ipDestinationAddressConditionCapability>
 		<rejectActionCapability />
 	</rule>
 

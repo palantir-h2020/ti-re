@@ -19,7 +19,7 @@ def add_filtering_rules(node1, iptables_rule):
     logging.info("MANO API: adding filtering rule to iptables instance")
     headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
     url = 'http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns/action?id=' + IPTABLES_SC_ID
-    payload = {"action_name": "run", "action_params": {"cmd": iptables_rule["rule"].replace("iptables -A FORWARD","iptables -I FORWARD 1")}}
+    payload = {"action_name": "run", "action_params": {"cmd": iptables_rule["rule"].replace("iptables -A FORWARD","iptables -I FORWARD 1")+" -m comment --comment \"RR-TOOL_GENERATED\""}}
 
     if ENABLE_MANO_API == "1":
         r = requests.post(url, headers=headers, json=payload)
