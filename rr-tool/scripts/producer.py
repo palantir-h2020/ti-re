@@ -19,5 +19,9 @@ class Producer:
             if logger is not None:
                 logger.info("Message sent")
         else:
-            logging.info("Mockup Kafka producer: producing message to topic " + topic)
-            logging.info("Mockup Kafka producer: " + content)
+            if logger is not None:
+                logger.info("Mockup Kafka producer: producing message to topic " + topic)
+                logger.info("Mockup Kafka producer: " + content)
+            else:
+                logging.info("Mockup Kafka producer: producing message to topic " + topic)
+                logging.info("Mockup Kafka producer: " + content)
