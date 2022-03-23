@@ -1,14 +1,19 @@
 import logging
 import os
 
-if os.getenv('YAML_MANUAL_LOADING') == "1":
+
+def getEnvFromYaml():
     import yaml
     from yaml.loader import SafeLoader
     with open('../pod.yaml') as f:
         data = yaml.load(f, Loader=SafeLoader)
         for var in data['spec']['containers'][0]['env']:
             os.environ[var['name']] = var['value']
-        os.environ['ENABLE_MANO_API'] = "0"
+
+
+if os.getenv('YAML_MANUAL_LOADING') == "1":
+    getEnvFromYaml()
+    os.environ['ENABLE_MANO_API'] = "0"
 
 # KAFKA CONFIGURATION
 KAFKA_PRODUCER_PROPERTIES = {
