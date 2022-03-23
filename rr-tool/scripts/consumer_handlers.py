@@ -92,13 +92,13 @@ def handle_threat_findings_netflow(msg, logger=None):
     # json_msg = json.loads(msg)
     try:
         remediator_instance.stringInputNetflow(msg)
-    except:
-        logger.error("Kafka consumer: remediator exception, alert ignored")
+    except Exception as e:
+        logger.error("Kafka consumer: alert ignored, remediator exception: "+e)
 
 
 def handle_threat_findings_syslog(msg, logger=None):
     # json_msg = json.loads(msg)
     try:
         remediator_instance.stringInputSyslog(msg)
-    except:
-        logger.error("Kafka consumer: remediator exception, alert ignored")
+    except Exception as e:
+        logger.error("Kafka consumer: alert ignored, remediator exception: "+e)
