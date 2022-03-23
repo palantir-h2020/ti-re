@@ -54,31 +54,31 @@ def flush_filtering_rules():
         logger.info("MANO API: request payload: " + str(payload))
 
 
-def inject_netflow_alerts():
-    # with open('../pod.yaml') as f:
-    #     data = yaml.load(f, Loader=SafeLoader)
-    #     for var in data['spec']['containers'][0]['env']:
-    #         if var['name'] == "KAFKA_IP":
-    #             KAFKA_IP = var['value']
-    #         if var['name'] == "KAFKA_PORT":
-    #             KAFKA_PORT = var['value']
-    #         if var['name'] == "TOPIC_TI_NETFLOW":
-    #             TOPIC_TI_NETFLOW = var['value']
-    # KAFKA_PRODUCER_PROPERTIES = {
-    #     "bootstrap.servers": KAFKA_IP + ":" + KAFKA_PORT,
-    #     "compression.type": "none"
-    # }
-    from settings import *
-    folderName = "scripts/netflow_alerts"
-    onlyfiles = [f for f in os.listdir(folderName) if os.path.isfile(os.path.join(folderName, f))]
-    for f in onlyfiles:
-        logger.info("Reading alert file " + folderName + os.sep + f)
-        with open(folderName + os.sep + f, "r", encoding='utf8') as alertFile:
-            alert = json.load(alertFile)
-            producer.Producer(KAFKA_PRODUCER_PROPERTIES).produce(TOPIC_TI_NETFLOW,
-                                                                 json.dumps(alert),
-                                                                 callback=delivery_report,
-                                                                 logger=logger)
+# def inject_netflow_alerts():
+#     # with open('../pod.yaml') as f:
+#     #     data = yaml.load(f, Loader=SafeLoader)
+#     #     for var in data['spec']['containers'][0]['env']:
+#     #         if var['name'] == "KAFKA_IP":
+#     #             KAFKA_IP = var['value']
+#     #         if var['name'] == "KAFKA_PORT":
+#     #             KAFKA_PORT = var['value']
+#     #         if var['name'] == "TOPIC_TI_NETFLOW":
+#     #             TOPIC_TI_NETFLOW = var['value']
+#     # KAFKA_PRODUCER_PROPERTIES = {
+#     #     "bootstrap.servers": KAFKA_IP + ":" + KAFKA_PORT,
+#     #     "compression.type": "none"
+#     # }
+#     import settings
+#     folderName = "scripts/netflow_alerts"
+#     onlyfiles = [f for f in os.listdir(folderName) if os.path.isfile(os.path.join(folderName, f))]
+#     for f in onlyfiles:
+#         logger.info("Reading alert file " + folderName + os.sep + f)
+#         with open(folderName + os.sep + f, "r", encoding='utf8') as alertFile:
+#             alert = json.load(alertFile)
+#             producer.Producer(KAFKA_PRODUCER_PROPERTIES).produce(TOPIC_TI_NETFLOW,
+#                                                                  json.dumps(alert),
+#                                                                  callback=delivery_report,
+#                                                                  logger=logger)
 
 
 def delivery_report(err, msg):
