@@ -14,5 +14,15 @@ while [[ $(kubectl get pods --all-namespaces | grep rr-tool | grep Running | wc 
   echo -n "."
 done
 echo
+
+if [ $# -eq 1 ]; then
+  if [ "$1" = "netflow_test" ]; then
+    bash rr_tool_clean_start.sh
+    echo "Injecting netflow alerts..."
+    cd /media/palantir-nfs/ti-re/rr-tool && python3 -c "import rr_tool_helper; rr_tool_helper.inject_netflow_alerts()"
+    echo "Netflow alerts injected"
+  fi
+fi
+
 echo "RR-tool pod started, attaching..."
 kubectl logs rr-tool && kubectl attach rr-tool
