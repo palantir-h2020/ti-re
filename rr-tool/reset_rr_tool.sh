@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+ssh palantir@10.101.41.164 'kubectl -n iptnetflow-kdu-910cad9d-ec96-44a5-85fb-b228d7e8da77 exec iptnetflow-555884f7cb-5l48f /bin/bash /opt/clear_iptables_rules.sh'
+cd /media/palantir-nfs/ti-re && git pull && cd rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0 && kubectl delete pod rr-tool && kubectl create -f pod.yaml && sleep 5 && kubectl attach rr-tool
