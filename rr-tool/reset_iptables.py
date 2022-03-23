@@ -5,7 +5,7 @@ import requests
 
 
 def flush_filtering_rules():
-    with open('../pod.yaml') as f:
+    with open('pod.yaml') as f:
         data = yaml.load(f, Loader=SafeLoader)
         for var in data['spec']['containers'][0]['env']:
             if var['name'] == "SC_ORCHESTRATOR_IP":
