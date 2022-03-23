@@ -75,12 +75,13 @@ def start_kafka_consumer(stop_event, logger, remediator: Remediator):
         else:
             receivedMessageHashes[msg.topic()].append(msgHash)
 
+        if not duplicated:
+            switch_consumer_handlers[msg.topic()](msg.value().decode('utf-8'), logger)
+
         for topic in switch_consumer_handlers.keys():
             logger.info("Kafka consumer: messages received on topic " + topic + ": "
                         + str(receivedMessageCounters[topic]) + "("
                         + str(receivedDuplicatedMessageCounters[topic]) + ")")
-        if not duplicated:
-            switch_consumer_handlers[msg.topic()](msg.value().decode('utf-8'), logger)
 
         logger.info("Kafka consumer: waiting for new messages from Kafka Broker " + (os.environ['KAFKA_IP']) + ":" + (
             os.environ['KAFKA_PORT']) + " for topics "+str(topic_list))
