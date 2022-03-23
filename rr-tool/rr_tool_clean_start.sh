@@ -9,8 +9,8 @@ if [[ $(kubectl get pods --all-namespaces | grep rr-tool | wc -l) -gt 0 ]]; then
 fi
 echo "Creating RR-tool pod"
 kubectl create -f /media/palantir-nfs/ti-re/rr-tool/pod.yaml
-if [[ $(kubectl get pods --all-namespaces | grep rr-tool | grep Running | wc -l) -eq 0 ]]; then
+while [[ $(kubectl get pods --all-namespaces | grep rr-tool | grep Running | wc -l) -eq 0 ]]; do
   echo -n "."
-fi
+done
 echo "RR-tool pod created, attaching..."
 kubectl logs rr-tool && kubectl attach rr-tool
