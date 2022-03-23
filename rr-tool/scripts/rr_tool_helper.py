@@ -7,7 +7,6 @@ import yaml
 from yaml.loader import SafeLoader
 import requests
 
-import producer
 
 logger = logging.getLogger("rr-tool-helper")
 logger.setLevel(logging.DEBUG)
