@@ -1,0 +1,6 @@
+{
+    "capabilities": ["level_7_filtering"],
+    "args": ["payload"],
+    "optional_args": ["src_ip", "dst_ip", "src_port", "dst_port"],
+    "args_details": {}
+}

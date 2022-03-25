@@ -10,7 +10,7 @@ RUN pip3 install --no-binary :all: confluent-kafka
 ADD requirements.txt /usr/src/
 WORKDIR /usr/src
 RUN python3 -m pip install -r requirements.txt
-ADD scripts /usr/src/scripts
-WORKDIR /usr/src/scripts
+ADD . /usr/src/rr-tool
+WORKDIR /usr/src/rr-tool
 ENV PYTHONUNBUFFERED 1
-ENTRYPOINT ["python3", "/usr/src/scripts/kafka_connector.py"]
+ENTRYPOINT ["python3", "/usr/src/rr-tool/connectors/kafka.py"]
