@@ -72,6 +72,8 @@ def getIptablesCommand(src_ip, dst_ip, src_port, dst_port, proto, chain, action)
 
     tree.write(iptables_dir + os.sep + "iptables_input_for_translator.xml")
 
+    # TODO validate translator input against iptables.xsd
+
     code = subprocess.call(
         ['java', '-jar',
          iptables_dir + os.sep + 'newTranslator.jar',
