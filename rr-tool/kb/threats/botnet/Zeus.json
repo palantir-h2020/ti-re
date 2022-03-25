@@ -1,0 +1,40 @@
+{
+    "rules": [],
+    "recipes": [
+        {
+            "recipeName": "filter_ip_port",
+            "priority": 10,
+            "impact": 3
+        },
+        {
+            "recipeName": "filter_payload",
+            "priority": 9,
+            "impact": 3
+        },
+        {
+            "recipeName": "monitor_traffic",
+            "priority": 8,
+            "impact": 1
+        },
+        {
+            "recipeName": "add_honeypot",
+            "priority": 7,
+            "impact": 2
+        },
+        {
+            "recipeName": "put_into_reconfiguration",
+            "priority": 6,
+            "impact": 8
+        },
+        {
+            "recipeName": "isolate",
+            "priority": 5,
+            "impact": 9
+        },
+        {
+            "recipeName": "shutdown",
+            "priority": 4,
+            "impact": 10
+        }
+    ]
+}

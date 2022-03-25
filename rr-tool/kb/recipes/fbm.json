@@ -1,0 +1,4 @@
+{
+    "description": "Call the fbm_function",
+    "requiredCapabilities": ["level_4_filtering"]
+}

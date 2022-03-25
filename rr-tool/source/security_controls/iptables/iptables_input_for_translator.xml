@@ -1,0 +1,27 @@
+<policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" nsfName="IpTables" targetRuleSet="INPUT" xsi:noNamespaceSchemaLocation="iptables.xsd">
+	
+	<rule id="0">
+		<externalData type="priority">1</externalData>
+        <appendRuleActionCapability>
+			<chain>FORWARD</chain>
+		</appendRuleActionCapability>
+		<ipSourceAddressConditionCapability operator="rangeCIDR">
+			<capabilityIpValue>
+				<rangeCIDR>
+					<address>87.236.215.57</address>
+					<maskCIDR>32</maskCIDR>
+				</rangeCIDR>
+			</capabilityIpValue>
+		</ipSourceAddressConditionCapability>
+		<ipDestinationAddressConditionCapability operator="rangeCIDR">
+			<capabilityIpValue>
+				<rangeCIDR>
+					<address>10.0.2.107</address>
+					<maskCIDR>32</maskCIDR>
+				</rangeCIDR>
+			</capabilityIpValue>
+		</ipDestinationAddressConditionCapability>
+		<rejectActionCapability />
+	</rule>
+
+</policy>

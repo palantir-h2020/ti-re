@@ -1,0 +1,10 @@
+list_paths from 'host1' to 'attacker'
+    iterate_on path_list
+        find_node of type 'filtering_node'
+            if not found:
+                add_node of type 'filtering_node' between impacted_node and threat_source
+                add_rule attack_payload to new_node payload filtering list
+            else
+                add_rule attack_payload to filtering_node payload filtering list
+        endif
+    enditeration
