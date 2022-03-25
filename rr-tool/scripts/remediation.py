@@ -267,7 +267,8 @@ class Remediator:
         else:
             return False
 
-    def prepareDataForRemediationOfMalware(self, threatType, threatName, protocol, impacted_host_port, impacted_host_ip, attacker_port, attacker_ip):
+    def prepareDataForRemediationOfMalware(self, threatType, threatName, protocol, impacted_host_port, impacted_host_ip,
+                                           attacker_port, attacker_ip):
 
         self.GlobalScope["threat_type"] = threatType  # malware
         self.GlobalScope["threat_name"] = threatName  # unknown / Cridex / Zeus
@@ -281,13 +282,20 @@ class Remediator:
         self.ServiceGraph.changeNodeIP("victim", impacted_host_ip)
         self.ServiceGraph.changeNodeIP("attacker", attacker_ip)
 
+        self.GlobalScope["rules_level_4"] = []
+        self.GlobalScope["rules_level_7"] = []
+
+        suggestedRecipe = None
+
         if threatName in self.ThreatRepository[threatType]:
             logging.info("Threat found in the repository, applying specific countermeasures ...")
-            mitigation_rules = self.ThreatRepository[threatType][threatName]["rules"]
-            self.GlobalScope["rules_level_7"] = [rule for rule in mitigation_rules if
-                                                 rule.get("level") == 7 and rule.get(
-                                                     "proto") != "DNS"]  # DNS rules are managed below
-            self.GlobalScope["rules_level_4"] = [rule for rule in mitigation_rules if rule.get("level") == 4]
+            malware_specific_mitigation_rules = self.ThreatRepository[threatType][threatName]["rules"]
+            self.GlobalScope["rules_level_7"] =\
+                [rule for rule in malware_specific_mitigation_rules
+                 if rule.get("level") == 7 and rule.get("proto") != "DNS"]  # DNS rules are managed below
+            self.GlobalScope["rules_level_4"] =\
+                [rule for rule in malware_specific_mitigation_rules
+                 if rule.get("level") == 4]
 
             # complete ThreatRepository data with fresh information regarding port and victim host received as alert
             for rule in self.GlobalScope["rules_level_4"]:
@@ -295,46 +303,44 @@ class Remediator:
                 rule["victimPort"] = impacted_host_port
                 rule["c2serversPort"] = attacker_port
 
-            # add a blocking rule if the attacker ip present in the alert isn't already in the ThreatRepository
-            threatRepositoryAttackers = [rule["c2serversIP"] for rule in mitigation_rules if rule.get("level") == 4]
-            if attacker_ip not in threatRepositoryAttackers:
-                self.setupDefaultL4RemediationRules(protocol, impacted_host_ip, impacted_host_port, attacker_ip, attacker_port)
-
-            # if the threat repository doesn't contain specific level_4_filtering rules
-            # for this specific malware then generate them from the information gathered from the CLI
-            elif len(self.GlobalScope["rules_level_4"]) == 0:
-                self.setupDefaultL4RemediationRules(protocol, impacted_host_ip, impacted_host_port, attacker_ip, attacker_port)
+            # block the attacker from the information present in the alert with a L4 filtering rule
+            # if the attacker ip present in the alert isn't already in the ThreatRepository
+            # or if the threat repository doesn't contain specific level_4_filtering rules
+            threatRepositoryAttackers = \
+                [rule["c2serversIP"] for rule in malware_specific_mitigation_rules if rule.get("level") == 4]
+            if attacker_ip not in threatRepositoryAttackers or len(self.GlobalScope["rules_level_4"]) == 0:
+                self.setupDefaultL4RemediationRules(protocol,
+                                                    impacted_host_ip, impacted_host_port,
+                                                    attacker_ip, attacker_port)
 
             # get dns rules
-            self.GlobalScope["domains"] = [rule["domain"] for rule in mitigation_rules if rule.get("proto") == "DNS"]
+            self.GlobalScope["domains"] = [rule["domain"] for rule in malware_specific_mitigation_rules if rule.get("proto") == "DNS"]
 
             # set impacted_nodes variable, that is used in the other recipes
             self.GlobalScope["impacted_nodes"] = [impacted_host_ip]
 
-            # from here on is just logging
             suggestedRecipe = self.ThreatRepository[threatType][threatName]["suggestedRecipe"]
-            logging.info(
-                f"Recommended recipe for the threat: ( {self.RecipeRepository[suggestedRecipe]['description']} )\nWith parameters: ")
-            logging.info(
-                f"Impacted host ip: {impacted_host_ip} \nImpacted host port: {attacker_port} \nAttacker ip: {attacker_ip}")
 
-            for rule in self.GlobalScope["rules_level_7"]:
-                payload = rule["payload"]
-                logging.info(f"Payload: {payload}")
         else:
-            # logging.info("Generic command and control threat detected, apply countermeasures ...")
-            self.GlobalScope["rules_level_4"] = []
-            self.GlobalScope["rules_level_7"] = []
             logging.info("Threat not found in the repository, applying generic countermeasures ...")
-            self.setupDefaultL4RemediationRules(protocol, impacted_host_ip, impacted_host_port, attacker_ip, attacker_port)
-
+            self.setupDefaultL4RemediationRules(protocol,
+                                                impacted_host_ip, impacted_host_port,
+                                                attacker_ip, attacker_port)
             suggestedRecipe = self.ThreatRepository[threatType]["unknown"]["suggestedRecipe"]
-            logging.info(
-                f"Recommended recipe for the threat: \n{self.RecipeRepository[suggestedRecipe]['description']} with parameters: ")
-            logging.info(
-                f"Impacted host ip: {impacted_host_ip} \nAttacker port: {attacker_port} \nAttacker ip: {attacker_ip}")
 
-    def setupDefaultL4RemediationRules(self, protocol, impacted_host_ip, impacted_host_port, attacker_ip, attacker_port):
+        logging.info(f"Recommended recipe for the threat: ( {self.RecipeRepository[suggestedRecipe]['description']})")
+        logging.debug(f"Impacted host ip: {impacted_host_ip})")
+        if impacted_host_port != "": logging.debug(f"Impacted host port: {impacted_host_port}")
+        logging.debug(f"Attacker ip: {attacker_ip}")
+        if attacker_port != "": logging.debug(f"Attacker port {attacker_port}")
+        if protocol != "": logging.debug(f"L4 protocol {protocol}")
+
+        for rule in self.GlobalScope["rules_level_7"]:
+            payload = rule["payload"]
+            logging.info(f"Payload: {payload}")
+
+    def setupDefaultL4RemediationRules(self, protocol, impacted_host_ip, impacted_host_port, attacker_ip,
+                                       attacker_port):
         rules = [
             {"level": 4,
              "c2serversIP": attacker_ip
@@ -417,19 +423,10 @@ class Remediator:
     def folderInput(self, folderName, alert_type):
         onlyfiles = [f for f in os.listdir(folderName) if os.path.isfile(os.path.join(folderName, f))]
         for f in onlyfiles:
-            logging.info("Reading alert file "+folderName+os.sep+f)
-            self.fileInput(folderName+os.sep+f,alert_type)
+            logging.info("Reading alert file " + folderName + os.sep + f)
+            self.fileInput(folderName + os.sep + f, alert_type)
 
     def fileInput(self, fileName, alert_type):
-
-        # if len(sys.argv) < 2:
-        #     # In case no input filename is given exit
-        #     # logging.info("No input file given, terminating...")
-        #     # sys.exit()
-        #     fileName = "alert_netflow.json"
-        # else:
-        #     # In case no input filename is given use by default alert_netflow.json
-        #     fileName = sys.argv[1]
 
         with open(fileName, "r", encoding='utf8') as alertFile:
             alert = json.load(alertFile)
@@ -482,12 +479,12 @@ class Remediator:
             # alert of type malware
             try:
                 self.prepareDataForRemediationOfMalware(alert["Threat_Category"],  # malware
-                                                    alert["Threat_Label"],  # unknown / Cridex / Zeus
-                                                    alert["Threat_Finding"]["Protocol"],
-                                                    alert["Threat_Finding"]["Source_Port"],
-                                                    alert["Threat_Finding"]["Source_Address"],
-                                                    alert["Threat_Finding"]["Destination_Port"],
-                                                    alert["Threat_Finding"]["Destination_Address"])  # alert["Threat_Finding"]["Destination_Address"]) # 54.154.132.12
+                                                        alert["Threat_Label"],
+                                                        alert["Threat_Finding"]["Protocol"],
+                                                        alert["Threat_Finding"]["Source_Port"],
+                                                        alert["Threat_Finding"]["Source_Address"],
+                                                        alert["Threat_Finding"]["Destination_Port"],
+                                                        alert["Threat_Finding"]["Destination_Address"])
             except KeyError as ex:
                 logging.error("Malformed alert received, skipping...")
                 return
