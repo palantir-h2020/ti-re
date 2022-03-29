@@ -3,10 +3,9 @@ import json
 from settings import *
 
 from helpers.logging_helper import get_logger
-from connectors.message_producer import MessageProducer
+from connectors import message_producer
 
 logger = get_logger('IR_API')
-message_producer = MessageProducer(KAFKA_PRODUCER_PROPERTIES)
 
 
 def notify(detected_incident: str, incident_location: str, incident_description: str):
