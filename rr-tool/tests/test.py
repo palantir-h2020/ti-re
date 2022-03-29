@@ -1,6 +1,3 @@
-
-import logging
-
 from rr_tool import RRTool
 
 

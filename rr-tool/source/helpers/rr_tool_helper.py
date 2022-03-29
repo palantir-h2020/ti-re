@@ -1,5 +1,4 @@
 import json
-import logging
 import pathlib
 import sys
 from typing import Dict
@@ -8,12 +7,8 @@ import requests
 import yaml
 from yaml.loader import SafeLoader
 
-logger = logging.getLogger("rr-tool-helper")
-
-handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(logging.DEBUG)
-logger.addHandler(handler)
-
+from helpers.logging_helper import get_logger
+logger = get_logger("rr-tool-helper")
 
 def load_json_folder_as_dict(tool_dir: pathlib.Path, relative_path: str, value_file_extension: str = None) -> Dict:
     result = {}

@@ -1,4 +1,3 @@
-import logging
 import os
 import subprocess
 
@@ -65,7 +64,7 @@ def getIptablesCommand(src_ip, dst_ip, src_port, dst_port, proto, chain, action)
 
     # default action DENY
     if action != "" and action != "ALLOW" and action != "DENY":
-        logging.error("iptables translator: Unsupported action " + action)
+        logger.error("iptables translator: Unsupported action " + action)
     if action == "ALLOW":
         actionElement = globalFind(root, "rejectActionCapability")
         actionElement.tag = 'acceptActionCapability'
