@@ -40,10 +40,11 @@ class RecipeFilter:
         except KeyError:
             recipesForThreat = self.threat_repository[threat_name]["unknown"]["recipes"]
         for el in recipesForThreat:
-            if el["priority"] > maxPriority and self.checkEnforceability(el["recipeName"]):
+            isEnforceable = self.checkEnforceability(el["recipeName"])
+            if el["priority"] > maxPriority and isEnforceable:
                 maxPriority = el["priority"]
                 bestRecipeName = el["recipeName"]
-            if self.checkEnforceability(el["recipeName"]):
+            if isEnforceable:
                 applicable_recipes[el["recipeName"]]=el
             else:
                 not_applicable_recipes[el["recipeName"]] = el
