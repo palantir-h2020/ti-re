@@ -1,8 +1,21 @@
 #!/usr/bin/env bash
+while getopts o: flag
+do
+    case "${flag}" in
+        o) OSM=${OPTARG};;
+    esac
+done
 echo "Resetting iptables..."
 cd /media/palantir-nfs/ti-re/rr-tool && python3 -c "from scripts import rr_tool_helper; rr_tool_helper.flush_filtering_rules()"
+echo "Refreshing code"
+cd /media/palantir-nfs/ti-re && git pull origin master
 echo "Rebuilding RR-tool docker image..."
-cd /media/palantir-nfs/ti-re && git pull origin master && cd rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0
+cd /media/palantir-nfs/ti-re/rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0
+if $OSM -eq "1"
+then
+  echo "Disabling OSM connection"
+  sed '/ENABLE_MANO_API/{n;s/.*/          value: "0"/}' pod.yaml
+fi
 if [[ $(kubectl get pods --all-namespaces | grep rr-tool | wc -l) -gt 0 ]]; then
   echo "Existing RR-tool pod found, deleting..."
   kubectl delete pod rr-tool
