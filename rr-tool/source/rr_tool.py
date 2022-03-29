@@ -251,7 +251,15 @@ class RRTool:
 
 
 def main():
-    RRTool().folderInput(sys.argv[1], sys.argv[2])
+
+    match settings.RR_TOOL_MODE:
+        case "standalone":
+            RRTool().folderInput(sys.argv[1], sys.argv[2])
+        case "kafka":
+            from connectors import kafka_consumer
+            kafka_consumer.consume_topics(RRTool())
+        case _:
+            logger.error("Unknown RR_TOOL_MODE: "+settings.RR_TOOL_MODE)
 
 
 if __name__ == "__main__":

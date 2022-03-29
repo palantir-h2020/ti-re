@@ -9,6 +9,8 @@ spec:
       image: 10.101.10.244:5000/palantir-rr-tool:1.0
       imagePullPolicy: Always
       env:
+        - name: RR_TOOL_MODE # standalone/kafka
+          value: "kafka"
         - name: KAFKA_IP
           value: "10.101.41.255"
         - name: KAFKA_PORT
