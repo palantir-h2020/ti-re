@@ -15,6 +15,7 @@ if os.getenv('YAML_MANUAL_LOADING') == "1":
         for var in data['spec']['containers'][0]['env']:
             os.environ[var['name']] = var['value']
         os.environ['ENABLE_MANO_API'] = "0"
+        os.environ['RR_TOOL_MODE'] = "standalone"
 
 system_keys = list(locals().keys())
 system_keys.append("system_keys")
@@ -38,7 +39,9 @@ TOPIC_PORTAL_NOTIFICATIONS = (os.environ['TOPIC_PORTAL_NOTIFICATIONS'])
 TOPIC_IR_INCIDENT_DETECTED = (os.environ['TOPIC_IR_INCIDENT_DETECTED'])
 # SC CONFIGURATION
 
+RR_TOOL_MODE = (os.environ['RR_TOOL_MODE'])
 ENABLE_ONLY_SECURITY_CAPABILITIES_WITH_TRANSLATOR = (os.environ['ENABLE_ONLY_SECURITY_CAPABILITIES_WITH_TRANSLATOR'])
+RESET_SECURITY_CONTROLS_RULES_AT_STARTUP = (os.environ['RESET_SECURITY_CONTROLS_RULES_AT_STARTUP'])
 RR_TOOL_IP = (os.environ['RR_TOOL_IP'])
 BACKUP_SERVER_IP = (os.environ['BACKUP_SERVER_IP'])
 SC_ORCHESTRATOR_IP = (os.environ['SC_ORCHESTRATOR_IP'])

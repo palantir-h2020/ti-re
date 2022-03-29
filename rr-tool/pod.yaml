@@ -33,6 +33,8 @@ spec:
           value: "1"
         - name: ENABLE_ONLY_SECURITY_CAPABILITIES_WITH_TRANSLATOR
           value: "1"
+        - name: RESET_SECURITY_CONTROLS_RULES_AT_STARTUP
+          value: "1"
         - name: ENABLE_IDENTICAL_L4_FILTERING_RULE_SKIPPING
           value: "1"
         - name: ENABLE_DEFAULT_L4_FILTERING_RULE_PROTOCOL

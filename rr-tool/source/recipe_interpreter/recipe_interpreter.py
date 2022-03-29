@@ -19,7 +19,7 @@ logger = get_logger('recipe_interpreter')
 class RecipeInterpreter:
 
     def __init__(self,
-                 service_graph_instance,
+                 service_graph_instance: service_graph.ServiceGraph,
                  global_scope,
                  capability_to_security_control_mappings) -> None:
         logger.info("Initializing Recipe Instruction Interpreter")
@@ -169,6 +169,19 @@ class RecipeInterpreter:
                     translatedRules.append(self.generateRule("level_7_filtering", rule))
 
             self.service_graph_instance.add_filtering_rules(node, translatedRules)
+
+        except Exception as ex:
+            raise ex  # just rethrow it for now
+
+    def flush_filtering_rules(self, tokens, scope):
+        if len(tokens) < 3:  # for now very basic syntax checking
+            raise Exception("Malformed statement: too few arguments")
+        node = tokens[2].replace("'", "")
+        if node == tokens[2]:
+            node = self.getContextVar(node, scope)
+
+        try:
+            self.service_graph_instance.flush_filtering_rules(node)
 
         except Exception as ex:
             raise ex  # just rethrow it for now
@@ -413,6 +426,13 @@ class RecipeInterpreter:
                 # doesn't set anything on the scope
                 logger.info("Now calling add_filtering_rules function ...")
                 self.add_filtering_rules(tokens, scope)
+                scope["rowCursor"] += 1
+                return 0
+            case "flush_filtering_rules":
+                # flushes rule list of the specified firewall node
+                # doesn't set anything on the scope
+                logger.info("Now calling flush_filtering_rules function ...")
+                self.flush_filtering_rules(tokens, scope)
                 scope["rowCursor"] += 1
                 return 0
             case "add_dns_policy":

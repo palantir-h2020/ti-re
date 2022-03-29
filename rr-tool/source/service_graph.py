@@ -15,7 +15,6 @@ from helpers.logging_helper import get_logger
 logger = get_logger('service-graph')
 
 
-
 class ServiceGraph:
     node_counters = {
         "firewall": 1,
@@ -42,6 +41,13 @@ class ServiceGraph:
         self.sgraph.vs[self.sgraph.vs.find("border_firewall").index]["rules_level_7"] = []
         self.sgraph.vs[self.sgraph.vs.find("border_firewall").index]["capabilities"] = ["level_4_filtering"]
         self.sgraph.vs["status"] = "on"  # set all nodes' status to on
+
+        security_control_types = ["firewall"]
+        if settings.RESET_SECURITY_CONTROLS_RULES_AT_STARTUP == "1":
+            for node in self.sgraph.vs.select(nodeType_in=security_control_types):
+                if node["nodeType"] == "firewall":
+                    mano.flush_filtering_rules(node)
+
 
     def saveToGraphMl(self):
         self.sgraph.write_graphml("graph.xml")
@@ -180,6 +186,21 @@ class ServiceGraph:
         for rule in node['rules_level_4']:
             logger.debug(node['name'] + ' rule #' + str(i) + " " + str(rule))
             i += 1
+
+    def flush_filtering_rules(self, node1):
+
+        logger.info(msg=f"flushing rules on {node1} ...")
+
+        node1 = self.returnNodeName(node1)
+        node: ig.Vertex = self.sgraph.vs.find(node1)
+        logger.info(msg=f"Got reference to {node1}")
+
+        if "level_4_filtering" in node["capabilities"]:
+            node["rules_level_4"] = []
+        elif "level_7_filtering" in node["capabilities"]:
+            node["rules_level_7"] = []
+        mano.flush_filtering_rules(node)
+        logger.debug("Rules for firewall " + node['name'])
 
     def get_filtering_rules(self, node_name, level):
         node: ig.Vertex = self.sgraph.vs.find(node_name)
