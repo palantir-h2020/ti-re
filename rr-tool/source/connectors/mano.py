@@ -18,60 +18,22 @@ def addFirewall(new_node_name, path, capabilities):
 
 def add_filtering_rules(node1, iptables_rule):
     logger.info("adding filtering rule to iptables instance")
-    headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
-    url = 'http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns/action?id=' + IPTABLES_SC_ID
-    payload = {"action_name": "run", "action_params": {"cmd": iptables_rule["rule"]}}
-
-    if ENABLE_MANO_API == "1":
-        r = requests.post(url, headers=headers, json=payload)
-
-        logger.info("response code from orchestrator " + str(r.status_code))
-        if r.ok:
-            logger.info("new rule added")
-            portal.notify(componentType="Recommendation and Remediation",
-                          component_id="0",
-                          action_name="Added filtering rule to iptables SC",
-                          action_description="iptables SC reconfigured with command: " + iptables_rule["rule"],
-                          on_ips=[node1["ipAddress"]])
-        else:
-            logger.info("failed adding filtering rule to iptables instance")
-            logger.info("response headers from orchestrator " + str(r.headers))
-            logger.info("response text from orchestrator " + str(r.text))
-    else:
-        logger.info("disabled, logger request data")
-        logger.info("request headers: " + str(headers))
-        logger.info("request url: " + str(url))
-        logger.info("request payload: " + str(payload))
+    send_action(node=node1,
+                payload={"action_name": "run", "action_params": {"cmd": iptables_rule["rule"]}},
+                action_name="Add filtering rule to iptables SC",
+                action_description="iptables SC reconfigured with command: " + iptables_rule["rule"],
+                )
 
 
 def flush_filtering_rules(node1):
-    logger.info("flushing filtering rule to iptables instance")
-    headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
-    url = 'http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns/action?id=' + IPTABLES_SC_ID
-    payload = {"action_name": "run", "action_params": {"cmd": "iptables-save | grep -v RR-TOOL_GENERATED | "
-                                                              "iptables-restore"}}
-
-    if ENABLE_MANO_API == "1":
-        r = requests.post(url, headers=headers, json=payload)
-
-        logger.info("response code from orchestrator " + str(r.status_code))
-        if r.ok:
-            logger.info("rules flushed")
-            portal.notify(componentType="Recommendation and Remediation",
-                          component_id="0",
-                          action_name="Flushed rules on iptables SC",
-                          action_description="iptables SC reconfigured with command: iptables-save | grep -v "
-                                             "RR-TOOL_GENERATED | iptables-restore",
-                          on_ips=[node1["ipAddress"]])
-        else:
-            logger.info("failed flushing rules on iptables instance")
-            logger.info("response headers from orchestrator " + str(r.headers))
-            logger.info("response text from orchestrator " + str(r.text))
-    else:
-        logger.info("disabled, logger request data")
-        logger.info("request headers: " + str(headers))
-        logger.info("request url: " + str(url))
-        logger.info("request payload: " + str(payload))
+    logger.info("flushing filtering rules on iptables instance")
+    send_action(node=node1,
+                payload={"action_name": "run", "action_params": {"cmd": "iptables-save | grep -v RR-TOOL_GENERATED | "
+                                                                        "iptables-restore"}},
+                action_name="Flush rules on iptables SC",
+                action_description="iptables SC reconfigured with command: iptables-save | grep -v "
+                                   "RR-TOOL_GENERATED | iptables-restore",
+                )
 
 
 def add_dns_policy(domain, rule):
@@ -96,3 +58,35 @@ def add_network_monitor(new_node_name, path):
 
 def move(node1, net):
     logger.info(f"moved {node1} to {net}")
+
+
+def send_action(node,
+                payload,
+                action_name,
+                action_description,
+                headers={'accept': 'application/json', 'Content-Type': 'application/json'},
+                url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns/action?id=',
+                component_type="Recommendation and Remediation",
+                component_id="0"):
+    if ENABLE_MANO_API == "1":
+        r = requests.post(url + node["id"], headers=headers, json=payload)
+
+        logger.info("response code from orchestrator " + str(r.status_code))
+        if r.ok:
+            portal.notify(component_type=component_type,
+                          component_id=component_id,
+                          action_name=action_name,
+                          action_description=action_description,
+                          on_ips=[node["ipAddress"]])
+            logger.info("action succeeded: " + action_name)
+            logger.debug("response headers from orchestrator " + str(r.headers))
+            logger.debug("response text from orchestrator " + str(r.text))
+        else:
+            logger.error("action failed: " + action_name)
+            logger.error("response headers from orchestrator " + str(r.headers))
+            logger.error("response text from orchestrator " + str(r.text))
+    else:
+        logger.info("disabled, logging request data")
+        logger.info("request headers: " + str(headers))
+        logger.info("request url: " + str(url))
+        logger.info("request payload: " + str(payload))
