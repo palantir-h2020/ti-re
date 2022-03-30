@@ -1,6 +1,5 @@
 import json
 import pathlib
-import sys
 from typing import Dict
 
 import requests
@@ -8,7 +7,9 @@ import yaml
 from yaml.loader import SafeLoader
 
 from helpers.logging_helper import get_logger
+
 logger = get_logger("rr-tool-helper")
+
 
 def load_json_folder_as_dict(tool_dir: pathlib.Path, relative_path: str, value_file_extension: str = None) -> Dict:
     result = {}
@@ -20,10 +21,10 @@ def load_json_folder_as_dict(tool_dir: pathlib.Path, relative_path: str, value_f
             # avoid adding pycache files
             continue
         if file_name.suffix == ".json":
-            with folder.joinpath(file_name).open("r", encoding='utf8') as file:
+            with folder.joinpath(file_name).open(encoding='utf8') as file:
                 result[key] = json.load(file)
         elif file_name.suffix == value_file_extension:
-            with folder.joinpath(file_name).open("r", encoding='utf8') as file:
+            with folder.joinpath(file_name).open(encoding='utf8') as file:
                 if key in result.keys():
                     result[key]['value'] = file.read()
                 else:
@@ -88,8 +89,8 @@ def flush_filtering_rules():
 #     # }
 #     import settings
 #     folderName = "tests/netflow_alerts"
-#     onlyfiles = [f for f in os.listdir(folderName) if os.path.isfile(os.path.join(folderName, f))]
-#     for f in onlyfiles:
+#     only_files = [f for f in os.listdir(folderName) if os.path.isfile(os.path.join(folderName, f))]
+#     for f in only_files:
 #         logger.info("Reading alert file " + folderName + os.sep + f)
 #         with open(folderName + os.sep + f, "r", encoding='utf8') as alertFile:
 #             alert = json.load(alertFile)

@@ -3,13 +3,14 @@ while getopts o:f: flag
 do
     case "${flag}" in
         o) OSM=${OPTARG};;
-        f) RESETSC=${OPTARG};;
+        f) RESET_SC=${OPTARG};;
+        *) echo "Invalid flags, stopping script"; exit 1 ;;
     esac
 done
-if [ "$RESETSC" == "1" ]; then
+if [ "$RESET_SC" == "1" ]; then
   echo "Existing security controls rules will be flushed at rr-tool startup"
   sed -n '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "1"/}' pod.yaml
-elif [ "$RESETSC" == "0" ]; then
+elif [ "$RESET_SC" == "0" ]; then
   echo "Existing security controls rules will be kept"
   sed -n '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "0"/}' pod.yaml
 else
@@ -28,14 +29,14 @@ elif [ "$OSM" == "1" ]; then
 else
   echo "Unknown OSM connection option, ignoring..."
 fi
-if [[ $(kubectl get pods --all-namespaces | grep rr-tool | wc -l) -gt 0 ]]; then
+if [[ $(kubectl get pods --all-namespaces | grep -c rr-tool) -gt 0 ]]; then
   echo "Existing RR-tool pod found, deleting..."
   kubectl delete pod rr-tool
 fi
 echo "Creating RR-tool pod"
 kubectl create -f /media/palantir-nfs/ti-re/rr-tool/pod.yaml
 echo "Waiting for RR-tool pod startup"
-while [[ $(kubectl get pods --all-namespaces | grep rr-tool | grep Running | wc -l) -eq 0 ]]; do
+while [[ $(kubectl get pods --all-namespaces | grep rr-tool | grep -c Running) -eq 0 ]]; do
   echo -n "."
 done
 echo

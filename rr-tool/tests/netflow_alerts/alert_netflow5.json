@@ -10,7 +10,7 @@
     "Destination_Port": 81,
     "Protocol": "TCP",
     "Flag": "...APRS.",
-    "Soure_tos": 0,
+    "Source_tos": 0,
     "Input_packets": 5,
     "Input_bytes": 1177
   },

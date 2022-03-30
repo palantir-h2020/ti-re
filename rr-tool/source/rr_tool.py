@@ -4,6 +4,7 @@ import os
 import sys
 from typing import Dict
 
+from helpers import igraph_helper
 from input_analyzer import input_analyzer
 from recipe_interpreter import recipe_interpreter
 from recipe_filter import recipe_filter
@@ -57,6 +58,10 @@ class RRTool:
         # }
         # logger.debug("Capability-security_controls mapping loaded: " +
         #              str(self.capability_to_security_control_mappings))
+
+        if settings.IGRAPH_PICTURES_OUTPUT_FOLDER != "":
+            logger.info("Clearing graph folder")
+            igraph_helper.clear_graph_folder()
 
         logger.info("Initializing threat repository")
         if threat_repository is None:
@@ -137,8 +142,8 @@ class RRTool:
                                   self.capability_to_security_control_mappings).remediate(self.recipeToRun)
 
     def folderInput(self, folder_name, alert_type):
-        onlyfiles = [f for f in os.listdir(folder_name) if os.path.isfile(os.path.join(folder_name, f))]
-        for f in onlyfiles:
+        only_files = [f for f in os.listdir(folder_name) if os.path.isfile(os.path.join(folder_name, f))]
+        for f in only_files:
             logger.info("Reading alert file " + folder_name + os.sep + f)
             self.fileInput(folder_name + os.sep + f, alert_type)
 
@@ -177,7 +182,7 @@ class RRTool:
         # for alert in alerts:
         try:
             alert["Threat_Category"] = str(alert["Threat_Category"]).casefold()
-        except KeyError as ex:
+        except KeyError:
             logger.error("Malformed alert received (threat category missing), skipping...")
             return
 
@@ -198,7 +203,7 @@ class RRTool:
 
                 self.setCapabilitiesToSecurityControlMappings(
                     self.recipe_repository[bestRecipeName]["requiredCapabilities"])
-            except KeyError as ex:
+            except KeyError:
                 logger.error("Malformed alert received, skipping...")
                 return
         elif alert["Threat_Category"] == "botnet":
@@ -215,7 +220,7 @@ class RRTool:
                                                        impacted_host_ip=alert["Threat_Finding"]["Source_Address"],
                                                        attacker_port=alert["Threat_Finding"]["Destination_Port"],
                                                        attacker_ip=alert["Threat_Finding"]["Destination_Address"])
-            except KeyError as ex:
+            except KeyError:
                 logger.error("Malformed alert received, skipping...")
                 return
             self.setCapabilitiesToSecurityControlMappings(
@@ -254,7 +259,10 @@ def main():
 
     match settings.RR_TOOL_MODE:
         case "standalone":
-            RRTool().folderInput(sys.argv[1], sys.argv[2])
+            rr_tool_instance = RRTool()
+            rr_tool_instance.folderInput(sys.argv[1], sys.argv[2])
+            rr_tool_instance.service_graph_instance.plot()
+
         case "kafka":
             from connectors import kafka_consumer
             kafka_consumer.consume_topics(RRTool())

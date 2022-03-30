@@ -8,11 +8,16 @@ from helpers.logging_helper import get_logger
 logger = get_logger('MANO_API')
 
 
-def addNode(node_name, node_type):
+# noinspection PyUnusedLocal
+def addNode(node, node_type):
+    node_name = node["name"]
     logger.info(f"new node {node_name} deployed")
 
 
-def addFirewall(new_node_name, path, capabilities):
+# noinspection PyUnusedLocal
+def addFirewall(new_node, path, capabilities):
+    new_node_name = new_node["name"]
+    new_node["id"] = "0"  # TODO get from orchestrator the id of the newly created firewall
     logger.info(f"new firewall node {new_node_name} deployed")
 
 
@@ -36,6 +41,7 @@ def flush_filtering_rules(node1):
                 )
 
 
+# noinspection PyUnusedLocal
 def add_dns_policy(domain, rule):
     logger.info("new dns rules added")
 
@@ -52,7 +58,9 @@ def add_honeypot(vulnerability):
     logger.info(f"new honeypot with {vulnerability} deployed")
 
 
-def add_network_monitor(new_node_name, path):
+# noinspection PyUnusedLocal
+def add_network_monitor(new_node, path):
+    new_node_name = new_node["name"]
     logger.info(f"new network monitor node {new_node_name} deployed")
 
 
@@ -64,12 +72,15 @@ def send_action(node,
                 payload,
                 action_name,
                 action_description,
-                headers={'accept': 'application/json', 'Content-Type': 'application/json'},
-                url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns/action?id=',
+                headers=None,
+                base_url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns/action?id=',
                 component_type="Recommendation and Remediation",
                 component_id="0"):
+    if headers is None:
+        headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
+    url = base_url + node["id"]
     if ENABLE_MANO_API == "1":
-        r = requests.post(url + node["id"], headers=headers, json=payload)
+        r = requests.post(url, headers=headers, json=payload)
 
         logger.info("response code from orchestrator " + str(r.status_code))
         if r.ok:

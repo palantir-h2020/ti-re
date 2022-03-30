@@ -1,6 +1,8 @@
 from xml.etree.ElementTree import Element
 from helpers.logging_helper import get_logger
+
 logger = get_logger('xml-helper')
+
 
 def visit(root):
     for child in root:
@@ -9,7 +11,7 @@ def visit(root):
 
 
 def globalFind(root: Element, item: str) -> Element:
-    """ Retrieves the first element with name `item`, found left discending
+    """ Retrieves the first element with name `item`, found left descending
     recursively into the tree composed of children elements of the `root`"""
 
     result = root.find(item)

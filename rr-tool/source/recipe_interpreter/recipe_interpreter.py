@@ -1,19 +1,17 @@
-import os
-from typing import Dict
-
-import settings
-import copy
-
 import nltk
-import sys
-import json
-import service_graph
 
+import service_graph
+import settings
 from helpers.logging_helper import get_logger
-from . import custom_functions
 from security_controls import functions as security_controls_functions
+from . import custom_functions
 
 logger = get_logger('recipe_interpreter')
+
+
+def check_tokens_length(tokens, expected_length):
+    if len(tokens) < expected_length:  # for now very basic syntax checking
+        raise Exception("Malformed statement: too few arguments")
 
 
 class RecipeInterpreter:
@@ -29,16 +27,16 @@ class RecipeInterpreter:
         self.global_scope = global_scope
         self.capability_to_security_control_mappings = capability_to_security_control_mappings
 
-    def list_paths(self, tokens, scope):
-        if len(tokens) < 5:  # for now very basic syntax checking
-            raise Exception("Malformed statement: too few arguments")
+    def concretize_token(self, token, scope):
+        value = token.replace("'", "")
+        if value == token:
+            value = self.getContextVar(value, scope)
+        return value
 
-        source = tokens[2].replace("'", "")
-        if source == tokens[2]:
-            source = self.getContextVar(source, scope)
-        destination = tokens[4].replace("'", "")
-        if destination == tokens[4]:
-            destination = self.getContextVar(destination, scope)
+    def list_paths(self, tokens, scope):
+        check_tokens_length(tokens, 5)
+        source = self.concretize_token(tokens[2], scope)
+        destination = self.concretize_token(tokens[4], scope)
 
         # logger post-tokenization
         logger.info(tokens[0] + " " + tokens[1] + " " + f"{source}" + " " + tokens[3] + " " + f"{destination}")
@@ -46,20 +44,13 @@ class RecipeInterpreter:
         scope["path_list"] = self.service_graph_instance.list_paths(source, destination)
 
     def find_node(self, tokens, scope):
-        if len(tokens) < 6:  # for now very basic syntax checking
-            raise Exception("Malformed statement: too few arguments")
-        nodeType = tokens[3].replace("'", "")  # node type to search for
-        if nodeType == tokens[3]:
-            nodeType = self.getContextVar(nodeType, scope)
-        path = tokens[5].replace("'", "")  # where to search in for the node
-        if path == tokens[5]:
-            path = self.getContextVar(path, scope)
+        check_tokens_length(tokens, 6)
+        nodeType = self.concretize_token(tokens[3], scope)  # node type to search for
+        path = self.concretize_token(tokens[5], scope)  # where to search in for the node
 
         # Support for additional "capability" argument
         if len(tokens) == 8:
-            capability = tokens[7].replace("'", "")
-            if capability == tokens[7]:
-                capability = self.getContextVar(capability, scope)
+            capability = self.concretize_token(tokens[7], scope)
             capabilities = [capability]  # for now supports only one capability as input
         else:
             capabilities = []
@@ -79,17 +70,10 @@ class RecipeInterpreter:
             raise ex
 
     def add_node(self, tokens, scope):
-        if len(tokens) < 8:  # for now very basic syntax checking
-            raise Exception("Malformed statement: too few arguments")
-        nodeType = tokens[3].replace("'", "")
-        if nodeType == tokens[3]:
-            nodeType = self.getContextVar(nodeType, scope)
-        node1 = tokens[5].replace("'", "")
-        if node1 == tokens[3]:
-            node1 = self.getContextVar(node1, scope)
-        node2 = tokens[7].replace("'", "")
-        if node2 == tokens[3]:
-            node2 = self.getContextVar(node2, scope)
+        check_tokens_length(tokens, 8)
+        nodeType = self.concretize_token(tokens[3], scope)
+        node1 = self.concretize_token(tokens[5], scope)
+        node2 = self.concretize_token(tokens[7], scope)
 
         try:
             logger.info(tokens[0] + " " + tokens[1] + " " + tokens[2] + " " + f"{nodeType}" + " " + tokens[
@@ -100,20 +84,13 @@ class RecipeInterpreter:
             raise ex  # just rethrow it for now
 
     def add_firewall(self, tokens, scope):
-        if len(tokens) < 5:  # for now very basic syntax checking
-            raise Exception("Malformed statement: too few arguments")
-        node = tokens[2].replace("'", "")
-        if node == tokens[2]:
-            node = self.getContextVar(node, scope)
-        path = tokens[4].replace("'", "")
-        if path == tokens[4]:
-            path = self.getContextVar(path, scope)
+        check_tokens_length(tokens, 5)
+        node = self.concretize_token(tokens[2], scope)
+        path = self.concretize_token(tokens[4], scope)
 
         # Support for additional "capability" argument
         if len(tokens) == 7:
-            capability = tokens[6].replace("'", "")
-            if capability == tokens[6]:
-                capability = self.getContextVar(capability, scope)
+            capability = self.concretize_token(tokens[6], scope)
             capabilities = [capability]  # for now supports only one capability as input
         else:
             capabilities = ["level_4_filtering", "level_7_filtering"]
@@ -127,14 +104,9 @@ class RecipeInterpreter:
             raise ex  # just rethrow it for now
 
     def add_filtering_rules(self, tokens, scope):
-        if len(tokens) < 4:  # for now very basic syntax checking
-            raise Exception("Malformed statement: too few arguments")
-        node = tokens[3].replace("'", "")
-        if node == tokens[3]:
-            node = self.getContextVar(node, scope)
-        rules = tokens[1].replace("'", "")
-        if rules == tokens[1]:
-            rules = self.getContextVar(rules, scope)
+        check_tokens_length(tokens, 4)
+        node = self.concretize_token(tokens[3], scope)
+        rules = self.concretize_token(tokens[1], scope)
 
         try:
             logger.info(tokens[0] + " " + "rules" + " " + tokens[
@@ -174,11 +146,8 @@ class RecipeInterpreter:
             raise ex  # just rethrow it for now
 
     def flush_filtering_rules(self, tokens, scope):
-        if len(tokens) < 3:  # for now very basic syntax checking
-            raise Exception("Malformed statement: too few arguments")
-        node = tokens[2].replace("'", "")
-        if node == tokens[2]:
-            node = self.getContextVar(node, scope)
+        check_tokens_length(tokens, 3)
+        node = self.concretize_token(tokens[2], scope)
 
         try:
             self.service_graph_instance.flush_filtering_rules(node)
@@ -215,14 +184,9 @@ class RecipeInterpreter:
         return newRule
 
     def add_dns_policy(self, tokens, scope):
-        if len(tokens) < 6:  # for now very basic syntax checking
-            raise Exception("Malformed statement: too few arguments")
-        domain = tokens[2].replace("'", "")
-        if domain == tokens[2]:
-            domain = self.getContextVar(domain, scope)
-        rule_type = tokens[5].replace("'", "")
-        if rule_type == tokens[5]:
-            rule_type = self.getContextVar(rule_type, scope)
+        check_tokens_length(tokens, 6)
+        domain = self.concretize_token(tokens[2], scope)
+        rule_type = self.concretize_token(tokens[5], scope)
 
         try:
             logger.info(tokens[0] + " " + tokens[1] + " " + f"{domain}" + " " + tokens[3] + " " + tokens[
@@ -233,11 +197,8 @@ class RecipeInterpreter:
 
     def shutdown(self, tokens, scope):
         # shutdown 'host1' # can be also a list of nodes
-        if len(tokens) < 2:  # for now very basic syntax checking
-            raise Exception("Malformed statement: too few arguments")
-        node = tokens[1].replace("'", "")
-        if node == tokens[1]:
-            node = self.getContextVar(node, scope)
+        check_tokens_length(tokens, 2)
+        node = self.concretize_token(tokens[1], scope)
 
         try:
             logger.info(tokens[0] + " " + f"{node}")
@@ -247,11 +208,8 @@ class RecipeInterpreter:
 
     def isolate(self, tokens, scope):
         # isolate 'host1' # can be also a list of nodes
-        if len(tokens) < 2:  # for now very basic syntax checking
-            raise Exception("Malformed statement: too few arguments")
-        node = tokens[1].replace("'", "")
-        if node == tokens[1]:
-            node = self.getContextVar(node, scope)
+        check_tokens_length(tokens, 2)
+        node = self.concretize_token(tokens[1], scope)
 
         try:
             logger.info(tokens[0] + " " + f"{node}")
@@ -261,11 +219,8 @@ class RecipeInterpreter:
 
     def add_honeypot(self, tokens, scope):
         # add_honeypot with 'apache_vulnerability' # can be also a list of vulnerabilities
-        if len(tokens) < 3:  # for now very basic syntax checking
-            raise Exception("Malformed statement: too few arguments")
-        vulnerability = tokens[2].replace("'", "")
-        if vulnerability == tokens[2]:
-            vulnerability = self.getContextVar(vulnerability, scope)
+        check_tokens_length(tokens, 3)
+        vulnerability = self.concretize_token(tokens[2], scope)
 
         try:
             logger.info(tokens[0] + " " + tokens[1] + " " + f"{vulnerability}")
@@ -276,14 +231,9 @@ class RecipeInterpreter:
 
     def add_network_monitor(self, tokens, scope):
         # add_network_monitor behind 'host1' in path # path is a list of nodes, and in it 'host1' must be present
-        if len(tokens) < 5:  # for now very basic syntax checking
-            raise Exception("Malformed statement: too few arguments")
-        node = tokens[2].replace("'", "")
-        if node == tokens[2]:
-            node = self.getContextVar(node, scope)
-        path = tokens[4].replace("'", "")
-        if path == tokens[4]:
-            path = self.getContextVar(path, scope)
+        check_tokens_length(tokens, 5)
+        node = self.concretize_token(tokens[2], scope)
+        path = self.concretize_token(tokens[4], scope)
 
         try:
             logger.info(tokens[0] + " " + tokens[1] + " " + f"{node}" + " " + tokens[3] + " " + f"{path}")
@@ -294,14 +244,9 @@ class RecipeInterpreter:
 
     def move(self, tokens, scope):
         # move iteration_element to reconfiguration_net
-        if len(tokens) < 4:  # for now very basic syntax checking
-            raise Exception("Malformed statement: too few arguments")
-        node = tokens[1].replace("'", "")
-        if node == tokens[1]:
-            node = self.getContextVar(node, scope)
-        net = tokens[3].replace("'", "")
-        if net == tokens[3]:
-            net = self.getContextVar(net, scope)
+        check_tokens_length(tokens, 4)
+        node = self.concretize_token(tokens[1], scope)
+        net = self.concretize_token(tokens[3], scope)
 
         try:
             logger.info(tokens[0] + " " + f"{node}" + " " + tokens[2] + " " + f"{net}")
@@ -311,11 +256,8 @@ class RecipeInterpreter:
 
     def execute(self, tokens, scope):
         # executes the function in the system environment
-        if len(tokens) < 2:  # for now very basic syntax checking
-            raise Exception("Malformed statement: too few arguments")
-        functionName = tokens[1].replace("'", "")
-        if functionName == tokens[1]:
-            functionName = self.getContextVar(functionName, scope)
+        check_tokens_length(tokens, 2)
+        functionName = self.concretize_token(tokens[1], scope)
 
         try:
             logger.info(tokens[0] + " " + f"{functionName}")
@@ -399,7 +341,7 @@ class RecipeInterpreter:
                 # puts a network monitor node right behind the node on that path
                 # example giving as input node2 and the following path as a list in the same order as displayed:
                 # node1 <---> node2 <---> node3 <---> node4
-                # node1 <---> node2 <---> netowork_monitor <---> node3 <---> node4
+                # node1 <---> node2 <---> network_monitor <---> node3 <---> node4
                 logger.info("Now calling add_network_monitor function ...")
                 self.add_network_monitor(tokens, scope)
                 scope["rowCursor"] += 1
@@ -484,21 +426,22 @@ class RecipeInterpreter:
                             break
                     return 0
                 else:
-                    # condition false -> take else branch jump to after else (set rowcursor) or endif and continue
-                    # normally with interpret, then when ecnountering endif will return here and set outer rowCursor
+                    # condition false -> take else branch jump to after else (set rowCursor) or endif and continue
+                    # normally with interpret, then when encountering endif will return here and set outer rowCursor
                     # to after the endif
                     for index, item in enumerate(sentences[ifScope["rowCursor"]:], start=ifScope["rowCursor"]):
                         if item == "else":
                             ifScope["rowCursor"] = index + 1
                             self.interpret(statements=sentences, length=len(sentences), scope=ifScope)
-                            for index2, item2 in enumerate(sentences[ifScope["rowCursor"]:], start=ifScope["rowCursor"]):
+                            for index2, item2 in \
+                                    enumerate(sentences[ifScope["rowCursor"]:], start=ifScope["rowCursor"]):
                                 if item2 == "endif":
                                     scope["rowCursor"] = index2 + 1
                                     return 0
                         if item == "endif":
                             scope["rowCursor"] = index + 1
                             return 0
-            case "enditeration":  # end of iteration loop -> return to calling interpreter
+            case "end_iteration":  # end of iteration loop -> return to calling interpreter
                 logger.info("Exiting iteration construct")
                 scope["rowCursor"] += 1
                 return 1
@@ -518,12 +461,12 @@ class RecipeInterpreter:
                 logger.info("testElse executed")
                 scope["rowCursor"] += 1
                 return 0
-            case "invertCondizioneTest":
-                if self.getContextVar("condizioneTest", scope):
-                    self.setContextVar("condizioneTest", scope, False)
+            case "invertTestCondition":
+                if self.getContextVar("testCondition", scope):
+                    self.setContextVar("testCondition", scope, False)
                 else:
-                    self.setContextVar("condizioneTest", scope, True)
-                logger.info("invertCondizioneTest executed")
+                    self.setContextVar("testCondition", scope, True)
+                logger.info("invertTestCondition executed")
                 logger.info(scope["iteration_element"])
                 scope["rowCursor"] += 1
                 return 0
@@ -538,7 +481,7 @@ class RecipeInterpreter:
 
     def interpret(self, statements, length, scope):
         # This is the interpreter, that loops on the program rows and calls the evaluateRow for evaluating them
-        # It can be recursevely called from language constructs, for example an iteration statement calls it on
+        # It can be recursively called from language constructs, for example an iteration statement calls it on
         # each loop, and once the iteration block is completely executed control is returned to the outer
         # interpreter (see break call inside the {if result == 1} ).
         # interpret() is called recursively when encountering a block construct ie (while, if).

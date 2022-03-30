@@ -1,4 +1,3 @@
-import connectors
 from connectors import portal, ir
 
 from helpers.logging_helper import get_child_logger

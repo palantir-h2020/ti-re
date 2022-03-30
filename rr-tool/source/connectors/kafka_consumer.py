@@ -6,6 +6,7 @@ from confluent_kafka import Consumer
 from settings import *
 
 from helpers.logging_helper import get_logger
+
 logger = get_logger('Kafka_consumer')
 
 
@@ -44,7 +45,7 @@ def start_kafka_consumer(stop_event, remediator):
         topic_list.append(topic)
 
     logger.info("started polling on Kafka Broker " + (os.environ['KAFKA_IP']) + ":" + (
-        os.environ['KAFKA_PORT']) + " for topics "+str(topic_list))
+        os.environ['KAFKA_PORT']) + " for topics " + str(topic_list))
 
     i = 0
     while not stop_event.is_set():
@@ -93,9 +94,8 @@ def start_kafka_consumer(stop_event, remediator):
                         + str(receivedDuplicatedMessageCounters[topic]) + ")")
 
         logger.info("waiting for new messages from Kafka Broker " + (os.environ['KAFKA_IP']) + ":" + (
-            os.environ['KAFKA_PORT']) + " for topics "+str(topic_list))
+            os.environ['KAFKA_PORT']) + " for topics " + str(topic_list))
     kafka_consumer.close()
-
 
 # def handle_threat_findings_netflow(msg, logger=None):
 #     # json_msg = json.loads(msg)

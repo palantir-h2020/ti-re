@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from helpers.logging_helper import get_logger
+
 logger = get_logger('settings')
 
 TOOL_DIR = Path(__file__).resolve().parent.parent
@@ -13,7 +14,8 @@ if os.getenv('YAML_MANUAL_LOADING') == "1":
     with TOOL_DIR.joinpath('pod.yaml').open() as f:
         data = yaml.load(f, Loader=SafeLoader)
         for var in data['spec']['containers'][0]['env']:
-            os.environ[var['name']] = var['value']
+            if var['name'] not in os.environ.keys():
+                os.environ[var['name']] = var['value']
         os.environ['ENABLE_MANO_API'] = "0"
         os.environ['RR_TOOL_MODE'] = "standalone"
 
@@ -61,7 +63,7 @@ ENABLE_DEFAULT_L4_FILTERING_RULE_VICTIM_IP = (os.environ['ENABLE_DEFAULT_L4_FILT
 
 TI_SYSLOG_VICTIM_IP_FIELD_NAME = (os.environ['TI_SYSLOG_VICTIM_IP_FIELD_NAME'])
 
-IGRAPH_PICTURES_OUTPUT_FOLDER = (os.environ['IGRAPH_PICTURES_OUTPUT_FOLDER'])
+IGRAPH_PICTURES_OUTPUT_FOLDER = str(os.environ['IGRAPH_PICTURES_OUTPUT_FOLDER']).replace('"', '')
 
 logger.info("Settings loaded")
 

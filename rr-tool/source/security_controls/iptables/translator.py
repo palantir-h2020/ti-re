@@ -9,8 +9,8 @@ from helpers.logging_helper import get_child_logger
 logger = get_child_logger('security-controls', 'iptables')
 
 
+# noinspection PyUnusedLocal
 def iptables_command_generator(rule, *args):
-    del args  # just to hide the alert about the arg not being used
     for key in ["victimIP", "c2serversIP", "victimPort", "c2serversPort", "proto", "action"]:
         if key not in rule:
             rule[key] = ""

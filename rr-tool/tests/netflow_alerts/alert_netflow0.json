@@ -10,7 +10,7 @@
     "Destination_Port": 49576,
     "Protocol": "TCP",
     "Flag": ".AP.S.",
-    "Soure_tos": 0,
+    "Source_tos": 0,
     "Input_packets": 5,
     "Input_bytes": 490
   },
