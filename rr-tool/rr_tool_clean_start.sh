@@ -9,10 +9,10 @@ echo "Refreshing code"
 cd /media/palantir-nfs/ti-re && git pull origin master
 if [ "$OSM" == "0" ]; then
   echo "Disabling OSM connection"
-  sed -i '/ENABLE_MANO_API/{n;s/.*/          value: "0"/}' pod.yaml
+  cd /media/palantir-nfs/ti-re/rr-tool && sed -i '/ENABLE_MANO_API/{n;s/.*/          value: "0"/}' pod.yaml
 elif [ "$OSM" == "1" ]; then
   echo "Enabling OSM connection"
-  sed -i '/ENABLE_MANO_API/{n;s/.*/          value: "1"/}' pod.yaml
+  cd /media/palantir-nfs/ti-re/rr-tool && sed -i '/ENABLE_MANO_API/{n;s/.*/          value: "1"/}' pod.yaml
 else
   echo "Unknown OSM connection option, ignoring..."
 fi
