@@ -46,6 +46,6 @@ spec:
         - name: BACKUP_SERVER_IP
           value: "10.225.1.73"
         - name: IPTABLES_SC_ID
-          value: "910cad9d-ec96-44a5-85fb-b228d7e8da77"
+          value: "59de4c3a-b82f-4a79-975d-d9e72a061a28"
         - name: IGRAPH_PICTURES_OUTPUT_FOLDER
           value: ""

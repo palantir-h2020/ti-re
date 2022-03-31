@@ -5,12 +5,8 @@ do
         o) OSM=${OPTARG};;
     esac
 done
-echo "Resetting iptables..."
-cd /media/palantir-nfs/ti-re/rr-tool && python3 -c "from scripts import rr_tool_helper; rr_tool_helper.flush_filtering_rules()"
 echo "Refreshing code"
 cd /media/palantir-nfs/ti-re && git pull origin master
-echo "Rebuilding RR-tool docker image..."
-cd /media/palantir-nfs/ti-re/rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0
 if [ "$OSM" == "0" ]; then
   echo "Disabling OSM connection"
   sed -i '/ENABLE_MANO_API/{n;s/.*/          value: "0"/}' pod.yaml
@@ -20,6 +16,10 @@ elif [ "$OSM" == "1" ]; then
 else
   echo "Unknown OSM connection option, ignoring..."
 fi
+echo "Resetting iptables..."
+cd /media/palantir-nfs/ti-re/rr-tool && python3 -c "from scripts import rr_tool_helper; rr_tool_helper.flush_filtering_rules()"
+echo "Rebuilding RR-tool docker image..."
+cd /media/palantir-nfs/ti-re/rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0
 if [[ $(kubectl get pods --all-namespaces | grep rr-tool | wc -l) -gt 0 ]]; then
   echo "Existing RR-tool pod found, deleting..."
   kubectl delete pod rr-tool
