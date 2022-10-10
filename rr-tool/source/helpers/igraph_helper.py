@@ -38,7 +38,7 @@ def get_vertex_by_name(graph, vertex_name):
 
 def generate_graph_filename():
     return settings.IGRAPH_PICTURES_OUTPUT_FOLDER + os.path.sep + "graph_" \
-           + re.sub(r'\W', '_', str(datetime.datetime.now())) + ".png"
+          + re.sub(r'\W', '_', str(datetime.datetime.now())) + ".png"
 
 
 def clear_graph_folder():

@@ -6,6 +6,8 @@ from helpers.logging_helper import get_logger
 from security_controls import functions as security_controls_functions
 from . import custom_functions
 
+from . import textx_interpreter
+
 logger = get_logger('recipe_interpreter')
 
 
@@ -495,6 +497,18 @@ class RecipeInterpreter:
             if result == 1:  # for ending iteration and if blocks
                 break
 
+    def interpetWithTextX(self, recipeName):
+        # This is the TextX interpreter.
+
+        # Shows starting state of the landscape
+        self.service_graph_instance.plot()
+
+        interpreter = textx_interpreter.Interpreter(globalScope=self.global_scope, recipeFile=recipeName, remediator=self)
+        interpreter.launch()
+
+        logger.info("Starting interpreter ...")
+
+
     def remediate(self, recipe_to_run):
 
         # if self.recipeToRun is None:
@@ -516,3 +530,7 @@ class RecipeInterpreter:
         self.interpret(statements=sentences, length=len(sentences), scope=self.global_scope)
         # self.getSTIXReport()
         # self.getCACAORemediationPlaybook()
+
+    def remediate_new(self, nameOfRecipeToBeRun):
+
+        self.interpetWithTextX(recipeName=f"rr-tool/kb/recipes/{nameOfRecipeToBeRun}.rec")

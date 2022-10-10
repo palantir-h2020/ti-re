@@ -226,9 +226,12 @@ class RRTool:
             self.setCapabilitiesToSecurityControlMappings(
                 self.recipe_repository[bestRecipeName]["requiredCapabilities"])
 
-        recipe_interpreter.RecipeInterpreter(self.service_graph_instance,
-                                             self.global_scope,
-                                             self.capability_to_security_control_mappings).remediate(recipeToRun)
+        recipe_interpreter_instance = recipe_interpreter.RecipeInterpreter(self.service_graph_instance,
+                                                                self.global_scope,
+                                                                self.capability_to_security_control_mappings)
+        recipe_interpreter_instance.remediate(recipeToRun)
+
+        #recipe_interpreter_instance.remediate_new(bestRecipeName)
 
     def selectRecipeManually(self):
         """Manually select which recipe to apply, according to the list shown in the terminal.

@@ -1,0 +1,72 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+4424707296 -> 4424276704 [label="statements:0" arrowtail=diamond dir=both]
+4424276704 -> 4423804016 [label="sourceExpression" arrowtail=diamond dir=both]
+4423804016 -> 4427668192 [label="value" arrowtail=diamond dir=both]
+4427668192[label="{:VarReference|+value:str='impacted_host_ip'\l}"]
+4423804016[label="{:VarReferenceOrString|}"]
+4424276704 -> 4423803728 [label="destinationExpression" arrowtail=diamond dir=both]
+4423803728[label="{:VarReferenceOrString|+value:str='attacker'\l}"]
+4424276704[label="{:ListPaths|}"]
+4424707296 -> 4423803296 [label="statements:1" arrowtail=diamond dir=both]
+4423803296 -> 4427668528 [label="iterationExpression" arrowtail=diamond dir=both]
+4427668528[label="{:VarReference|+value:str='path_list'\l}"]
+4423803296 -> 4427396480 [label="statements:0" arrowtail=diamond dir=both]
+4427396480 -> 4427396576 [label="nodeTypeExpression" arrowtail=diamond dir=both]
+4427396576[label="{:VarReferenceOrString|+value:str='firewall'\l}"]
+4427396480 -> 4427397872 [label="networkPathExpression" arrowtail=diamond dir=both]
+4427397872 -> 4428501088 [label="value" arrowtail=diamond dir=both]
+4428501088[label="{:VarReference|+value:str='iteration_element'\l}"]
+4427397872[label="{:VarReferenceOrString|}"]
+4427396480 -> 4428501136 [label="nodeCapabilityExpression" arrowtail=diamond dir=both]
+4428501136[label="{:VarReferenceOrString|+value:str='level_4_filtering'\l}"]
+4427396480[label="{:FindNode|}"]
+4423803296 -> 4427397968 [label="statements:1" arrowtail=diamond dir=both]
+4427397968 -> 4428500512 [label="conditionExpression" arrowtail=diamond dir=both]
+4428500512 -> 4428500464 [label="value" arrowtail=diamond dir=both]
+4428500464[label="{:VarReference|+value:str='found'\l}"]
+4428500512[label="{:VarReferenceOrString|}"]
+4427397968 -> 4428500320 [label="ifStatements:0" arrowtail=diamond dir=both]
+4428500320 -> 4428500080 [label="impactedNodeExpression" arrowtail=diamond dir=both]
+4428500080 -> 4428499792 [label="value" arrowtail=diamond dir=both]
+4428499792[label="{:VarReference|+value:str='impacted_host_ip'\l}"]
+4428500080[label="{:VarReferenceOrString|}"]
+4428500320 -> 4428500128 [label="networkPathExpression" arrowtail=diamond dir=both]
+4428500128 -> 4428501184 [label="value" arrowtail=diamond dir=both]
+4428501184[label="{:VarReference|+value:str='iteration_element'\l}"]
+4428500128[label="{:VarReferenceOrString|}"]
+4428500320 -> 4428500416 [label="filteringCapabilitiesExpression" arrowtail=diamond dir=both]
+4428500416[label="{:VarReferenceOrString|+value:str='level_4_filtering'\l}"]
+4428500320[label="{:AddFirewall|}"]
+4427397968 -> 4428500368 [label="ifStatements:1" arrowtail=diamond dir=both]
+4428500368 -> 4428501328 [label="filteringRulesExpression" arrowtail=diamond dir=both]
+4428501328[label="{:VarReference|+value:str='rules_level_4'\l}"]
+4428500368 -> 4428501232 [label="nodeExpression" arrowtail=diamond dir=both]
+4428501232 -> 4428510976 [label="value" arrowtail=diamond dir=both]
+4428510976[label="{:VarReference|+value:str='new_node'\l}"]
+4428501232[label="{:VarReferenceOrString|}"]
+4428500368[label="{:AddFilteringRules|}"]
+4427397968 -> 4428501280 [label="elseStatements:0" arrowtail=diamond dir=both]
+4428501280 -> 4428501568 [label="filteringRulesExpression" arrowtail=diamond dir=both]
+4428501568[label="{:VarReference|+value:str='rules_level_4'\l}"]
+4428501280 -> 4428501712 [label="nodeExpression" arrowtail=diamond dir=both]
+4428501712 -> 4428503968 [label="value" arrowtail=diamond dir=both]
+4428503968[label="{:VarReference|+value:str='found_node'\l}"]
+4428501712[label="{:VarReferenceOrString|}"]
+4428501280[label="{:AddFilteringRules|}"]
+4427397968[label="{:Condition|notClause:bool=True\l}"]
+4423803296[label="{:Iteration|}"]
+4424707296[label="{:Recipe|}"]
+
+}

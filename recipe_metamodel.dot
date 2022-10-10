@@ -1,0 +1,101 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+4463204448[ label="{Recipe|}"]
+
+4463202928[ label="{VarReference|value: ID\l}"]
+
+4463198400[ label="{VarReferenceOrString|value: OBJECT\l}"]
+
+4463467664[ label="{*Statement|}"]
+
+4463470496[ label="{*FunctionCall|}"]
+
+4463207488[ label="{Condition|notClause: optional\<BOOL\>\l}"]
+
+4463205968[ label="{Iteration|}"]
+
+4463208432[ label="{ListPaths|}"]
+
+4463209952[ label="{FindNode|}"]
+
+4463210896[ label="{AddFirewall|}"]
+
+4463211840[ label="{AddFilteringRules|}"]
+
+4463213360[ label="{AddDnsPolicy|}"]
+
+4463214880[ label="{AddNetworkMonitor|}"]
+
+4463216400[ label="{MoveNode|}"]
+
+4463217920[ label="{AddHoneypot|}"]
+
+4463219440[ label="{Execute|}"]
+
+4463220960[ label="{Shutdown|}"]
+
+4463222480[ label="{Isolate|}"]
+
+
+
+4463204448 -> 4463467664[arrowtail=diamond, dir=both, headlabel="statements 0..*"]
+4463319472[ label="{*OBJECT|}"]
+
+4463467664 -> 4463470496 [dir=back]
+4463467664 -> 4463207488 [dir=back]
+4463467664 -> 4463205968 [dir=back]
+4463470496 -> 4463208432 [dir=back]
+4463470496 -> 4463209952 [dir=back]
+4463470496 -> 4463210896 [dir=back]
+4463470496 -> 4463211840 [dir=back]
+4463470496 -> 4463213360 [dir=back]
+4463470496 -> 4463214880 [dir=back]
+4463470496 -> 4463216400 [dir=back]
+4463470496 -> 4463217920 [dir=back]
+4463470496 -> 4463219440 [dir=back]
+4463470496 -> 4463220960 [dir=back]
+4463470496 -> 4463222480 [dir=back]
+4463207488 -> 4463198400[arrowtail=diamond, dir=both, headlabel="conditionExpression "]
+4463207488 -> 4463467664[arrowtail=diamond, dir=both, headlabel="ifStatements 1..*"]
+4463207488 -> 4463467664[arrowtail=diamond, dir=both, headlabel="elseStatements 0..*"]
+4463205968 -> 4463202928[arrowtail=diamond, dir=both, headlabel="iterationExpression "]
+4463205968 -> 4463467664[arrowtail=diamond, dir=both, headlabel="statements 1..*"]
+4463208432 -> 4463198400[arrowtail=diamond, dir=both, headlabel="sourceExpression "]
+4463208432 -> 4463198400[arrowtail=diamond, dir=both, headlabel="destinationExpression "]
+4463209952 -> 4463198400[arrowtail=diamond, dir=both, headlabel="nodeTypeExpression "]
+4463209952 -> 4463198400[arrowtail=diamond, dir=both, headlabel="networkPathExpression "]
+4463209952 -> 4463198400[arrowtail=diamond, dir=both, headlabel="nodeCapabilityExpression "]
+4463210896 -> 4463198400[arrowtail=diamond, dir=both, headlabel="impactedNodeExpression "]
+4463210896 -> 4463198400[arrowtail=diamond, dir=both, headlabel="networkPathExpression "]
+4463210896 -> 4463198400[arrowtail=diamond, dir=both, headlabel="filteringCapabilitiesExpression "]
+4463211840 -> 4463202928[arrowtail=diamond, dir=both, headlabel="filteringRulesExpression "]
+4463211840 -> 4463198400[arrowtail=diamond, dir=both, headlabel="nodeExpression "]
+4463213360 -> 4463198400[arrowtail=diamond, dir=both, headlabel="domainExpression "]
+4463213360 -> 4463198400[arrowtail=diamond, dir=both, headlabel="policyTypeExpression "]
+4463214880 -> 4463198400[arrowtail=diamond, dir=both, headlabel="impactedNodeExpression "]
+4463214880 -> 4463198400[arrowtail=diamond, dir=both, headlabel="networkPathExpression "]
+4463216400 -> 4463198400[arrowtail=diamond, dir=both, headlabel="nodeExpression "]
+4463216400 -> 4463198400[arrowtail=diamond, dir=both, headlabel="subnetExpression "]
+4463217920 -> 4463198400[arrowtail=diamond, dir=both, headlabel="vulnerabilityExpression "]
+4463219440 -> 4463198400[arrowtail=diamond, dir=both, headlabel="functionExpression "]
+4463220960 -> 4463198400[arrowtail=diamond, dir=both, headlabel="nodeExpression "]
+4463222480 -> 4463198400[arrowtail=diamond, dir=both, headlabel="nodeExpression "]
+match_rules [ shape=plaintext, label=< <table>
+	<tr>
+		<td><b>Comment</b></td><td>#.*$</td>
+	</tr>
+</table> >]
+
+
+}

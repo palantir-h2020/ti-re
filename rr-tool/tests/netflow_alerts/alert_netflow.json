@@ -14,7 +14,7 @@
     "Input_packets": 5,
     "Input_bytes": 1177
   },
-  "Threat_Label": "Miuref",
+  "Threat_Label": "Zeus",
   "Threat_Category": "Botnet",
   "Classification_Confidence": 0.3346123530318716,
   "Outlier_Score": 0.5940769567160774

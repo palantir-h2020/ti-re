@@ -33,7 +33,7 @@ def load_json_folder_as_dict(tool_dir: pathlib.Path, relative_path: str, value_f
             result[key] = load_json_folder_as_dict(folder, file_name.name, value_file_extension)
     for key, value in values.items():
         if key in result.keys():
-            result[key] = value
+            result[key]["value"] = value
     return result
 
 

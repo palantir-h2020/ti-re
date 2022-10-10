@@ -20,7 +20,7 @@ def find_preceding_node_in_path(node, path):
     return preceding_node
 
 
-def generate_victim_attacker_graph() -> [ig.Graph, Dict]:
+def generate_victim_attacker_graph():# -> [ig.Graph, Dict]:
     node_counters = {
         "firewall": 0,
         "switch": 0,
@@ -38,7 +38,7 @@ def generate_victim_attacker_graph() -> [ig.Graph, Dict]:
     return gnet1, node_counters
 
 
-def generate_victim_firewall_attacker_graph() -> [ig.Graph, Dict]:
+def generate_victim_firewall_attacker_graph():# -> [ig.Graph, Dict]:
     node_counters = {
         "firewall": 1,
         "switch": 0,

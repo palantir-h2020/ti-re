@@ -1,5 +1,6 @@
 nltk>=3.6.5
 igraph>=0.9.8
+textx==3.0.0
 
 simplejson>=3.17.6
 confluent_kafka>=1.8.2
