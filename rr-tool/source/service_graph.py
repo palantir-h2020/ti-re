@@ -104,13 +104,24 @@ class ServiceGraph:
 
     def list_paths(self, src_node, dst_node):  # return a list of node paths
         logger.info(msg="Searching for paths ...")
-        src_node = self.returnNodeName(src_node)
-        dst_node = self.returnNodeName(dst_node)
-        paths = self.sgraph.get_all_simple_paths(src_node, to=dst_node)
+        srcNode = self.returnNodeName(srcNode)
+        dstNode = self.returnNodeName(dstNode)
+        paths = self.sgraph.get_all_simple_paths(srcNode, to=dstNode)
         logger.info(msg=f"Found {len(paths)} paths")
-        node_paths = [self.sgraph.vs[el]["name"] for el in paths]
+        node_paths = [ self.sgraph.vs[el]["name"] for el in paths ]
         logger.info(msg="Converted paths from node ids to node names")
-        return node_paths
+        secondPositionNodes = set()
+        for path in node_paths:
+            secondPositionNodes.add(path[1])
+        pruned_paths = []
+        for nodeName in secondPositionNodes:
+            for path in node_paths:
+                if path[1] == nodeName:
+                    pruned_paths.append(path)
+                    break
+        logger.info(msg="""Pruned equivalent paths, that is consider only
+                        paths with different nodes attached to the srcNode""")
+        return pruned_paths
 
     def find_node_in_path(self, path, node_type, capabilities):  # return node name
         logger.info(msg=f"Searching for a node of {node_type} type in this path: {path} ...")
