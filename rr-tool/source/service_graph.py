@@ -104,8 +104,8 @@ class ServiceGraph:
 
     def list_paths(self, src_node, dst_node):  # return a list of node paths
         logger.info(msg="Searching for paths ...")
-        srcNode = self.returnNodeName(srcNode)
-        dstNode = self.returnNodeName(dstNode)
+        srcNode = self.returnNodeName(src_node)
+        dstNode = self.returnNodeName(dst_node)
         paths = self.sgraph.get_all_simple_paths(srcNode, to=dstNode)
         logger.info(msg=f"Found {len(paths)} paths")
         node_paths = [ self.sgraph.vs[el]["name"] for el in paths ]
