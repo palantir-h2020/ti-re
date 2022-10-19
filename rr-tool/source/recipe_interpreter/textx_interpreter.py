@@ -23,6 +23,11 @@ class Interpreter:
         recipe_mm = textx.metamodel_from_file("rr-tool/source/recipe_interpreter/grammar.tx", classes=recipe_classes)
         metamodel_export(recipe_mm, "recipe_metamodel.dot")
 
+        ### How to get an image of the metambodel schema with a layout with readable edges' labels
+        ### from the recipe_metamodel.dot file:
+        ### Modify all the "headlabel" occurrences in the recipe_metamodel.dot file with "taillabel"
+        ### Use this GraphViz command:
+        ### dot -Eminlen=5 -Elabeldistance=10 -Grankdir="LR" -Tpng -O recipe_metamodel.dot
         recipe_m: grammar_classes = recipe_mm.model_from_file(self.recipeFile)
         model_export(recipe_m, "recipe_model.dot")
 

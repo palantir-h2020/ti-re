@@ -27,9 +27,9 @@ class LogClass:
 #  needed only for strict typing of grammar rules' class attributes
 
 class Statement(LogClass):
-    def run():
+    def run(self, *args):
         pass
-    def testRun():
+    def testRun(self, *args):
         pass
 
 class FunctionCall(Statement):
@@ -273,9 +273,13 @@ class AddFirewall(FunctionCall):
 
     def testRun(self, scope):
         super().info()
-        print(f"Impacted node with ip: {self.impactedNodeExpression.getValue(scope)}, "
-                f"Firewall positioning: {self.networkPathExpression.getValue(scope)}, "
-                f"Filtering type: {self.filteringCapabilitiesExpression.getValue(scope)}")
+        if self.filteringCapabilitiesExpression is not None:
+            print(f"Impacted node with ip: {self.impactedNodeExpression.getValue(scope)}, "
+                    f"Firewall positioning: {self.networkPathExpression.getValue(scope)}, "
+                    f"Filtering type: {self.filteringCapabilitiesExpression.getValue(scope)}")
+        else:
+            print(f"Impacted node with ip: {self.impactedNodeExpression.getValue(scope)}, "
+                    f"Firewall positioning: {self.networkPathExpression.getValue(scope)}")
 
 @dataclass
 class AddFilteringRules(FunctionCall):
