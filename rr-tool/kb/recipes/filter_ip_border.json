@@ -1,0 +1,6 @@
+{
+    "description": "Filter ip on the border firewall",
+    "requiredCapabilities": [
+        "level_4_filtering"
+    ]
+}

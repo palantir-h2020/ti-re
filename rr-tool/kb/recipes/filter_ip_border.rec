@@ -1,0 +1,8 @@
+
+    find_node of type 'firewall' in iteration_element with 'level_4_filtering'
+    if not found
+        add_firewall behind impacted_host_ip in iteration_element with 'level_4_filtering'
+        add_filtering_rules rules_level_4 to 'border_firewall'
+    else
+        add_filtering_rules rules_level_4 to found_node
+    endif

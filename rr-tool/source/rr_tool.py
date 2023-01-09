@@ -172,6 +172,28 @@ class RRTool:
     #     alert["Threat_Category"] = "unauthorized_access"
     #     self.jsonInput(alert)
 
+    ## Branch 1.2 changes
+
+    def performProactiveRemediation(self, msg):
+
+        instance_identifier = "test"
+        # todo add palantir instance/customer/organization identifier
+        # can a single org deploy multiple instances of palantir, thus requiring instance ids?
+
+        if msg["rr_tool_instance_id"] == instance_identifier:
+            # The instance received a message produced by itself. Just ignore it
+            return
+
+        #todo is it ok to apply a generic recipe that simply adds the new ddos rule to the border firewall?
+
+
+        pass
+
+    def addNewAttackRemediation(self, msg):
+
+        pass
+
+
     def jsonInput(self, alert):
 
         logger.info(alert)
@@ -229,9 +251,9 @@ class RRTool:
         recipe_interpreter_instance = recipe_interpreter.RecipeInterpreter(self.service_graph_instance,
                                                                 self.global_scope,
                                                                 self.capability_to_security_control_mappings)
-        recipe_interpreter_instance.remediate(recipeToRun)
+        #recipe_interpreter_instance.remediate(recipeToRun)
 
-        #recipe_interpreter_instance.remediate_new(bestRecipeName)
+        recipe_interpreter_instance.remediate_new(bestRecipeName)
 
     def selectRecipeManually(self):
         """Manually select which recipe to apply, according to the list shown in the terminal.
