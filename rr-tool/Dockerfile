@@ -1,4 +1,4 @@
-FROM python:3.11-rc-bullseye
+FROM python:3.10-bullseye
 RUN apt-get update && apt-get -y install cmake protobuf-compiler wget gnupg software-properties-common openjdk-17-jre
 RUN python3 -m pip install --upgrade pip
 RUN wget -qO - https://packages.confluent.io/deb/7.0/archive.key | apt-key add -
