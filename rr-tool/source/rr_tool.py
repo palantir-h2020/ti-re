@@ -187,6 +187,26 @@ class RRTool:
         # The victim ip should be 0.0.0.0 so as to indicate that access is denied to all
         # traffic originating from the attackcer ip and directed to any host.
 
+        print(msg)
+
+        # mock version
+        # self.service_graph_instance.addVictim(IP: "0.0.0.0", attachedTo="border_firewall")
+
+        # logger.info(msg)
+
+        # self.service_graph_instance.plot()
+
+        # try:
+        #     msg["Threat_Category"] = str(msg["Threat_Category"]).casefold()
+        # except KeyError:
+        #     logger.error("Malformed alert received (threat category missing), skipping...")
+        #     return
+
+        # #  if automatic remediation mode is disabled allow him to accept the hint or select another recipe
+        # bestRecipeName = self.recipe_filter_instance.selectBestRecipe(msg["Threat_Category"], msg["Threat_Label"])
+        # logger.info(f"Recommended recipe for the threat: ( {self.recipe_repository[bestRecipeName]['description']})")
+
+
         pass
 
     def addNewAttackRemediation(self, msg):
@@ -197,7 +217,7 @@ class RRTool:
         threat_description = {}
         threat_description["rules"] = new_attack_remediation["threat_description"]["rules"]
         threat_description["recipes"] = new_attack_remediation["threat_description"]["recipes"]
-        
+
         folder_name = new_attack_remediation["threat_description"]["threat_category"]
         file_name = new_attack_remediation["threat_description"]["threat_label"]
 

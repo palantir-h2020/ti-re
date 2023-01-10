@@ -445,6 +445,7 @@ class Execute(FunctionCall):
 
     parent: object
     functionExpression: VarReferenceOrString
+    functionArguments: list[VarReferenceOrString]
 
     def run(self, scope, remediator):
 
@@ -452,8 +453,10 @@ class Execute(FunctionCall):
         logger.info("execute " + f"{functionName}")
 
         try:
-            function = custom_functions.FunctionMappings[functionName]
-            function("UnauthorizedAccessAlert")
+            systemFunction = custom_functions.FunctionMappings[functionName]
+            #systemFunction("UnauthorizedAccessAlert")
+            functionArguments = [el.getValue(scope) for el in self.functionArguments]
+            systemFunction(*functionArguments)
         except Exception as ex:
             raise ex  # just rethrow it for now
 

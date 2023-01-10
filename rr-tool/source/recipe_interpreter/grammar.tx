@@ -84,7 +84,7 @@ AddHoneypot:
 ;
 
 Execute:
-    'execute' functionExpression=VarReferenceOrString
+    'execute' functionExpression=VarReferenceOrString functionArguments*=VarReferenceOrString
 ;
 
 Shutdown:
