@@ -23,6 +23,10 @@ spec:
           value: "ti.threat_findings_netflow"
         - name: TOPIC_TI_SYSLOG
           value: "ti.threat_findings_syslog"
+        - name: TOPIC_RR_PROACTIVE_REMEDIATION
+          value: "rr.proactive_remediation"
+        - name: TOPIC_RR_NEW_ATTACK_REMEDIATION
+          value: "rr.new_attack_remedation"
         - name: TOPIC_PORTAL_NOTIFICATIONS
           value: "actions-notifications"
         - name: TOPIC_IR_INCIDENT_DETECTED
