@@ -533,4 +533,4 @@ class RecipeInterpreter:
 
     def remediate_new(self, nameOfRecipeToBeRun):
 
-        self.interpetWithTextX(recipeName=f"rr-tool/kb/recipes/{nameOfRecipeToBeRun}.rec")
+        self.interpetWithTextX(recipeName=f"kb/recipes/{nameOfRecipeToBeRun}.rec")
