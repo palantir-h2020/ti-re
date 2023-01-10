@@ -88,7 +88,7 @@ def start_kafka_consumer(stop_event, remediator):
             receivedMessageHashes[msg.topic()].append(msgHash)
 
         if not duplicated:
-            switch_consumer_handlers[msg.topic()](msg.value().decode('utf-8'), logger)
+            switch_consumer_handlers[msg.topic()](msg.value().decode('utf-8'))
 
         for topic in switch_consumer_handlers.keys():
             logger.info("messages received on topic " + topic + ": "
