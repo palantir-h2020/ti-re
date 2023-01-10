@@ -20,7 +20,7 @@ class Interpreter:
         # doesn't work. Throws an exception.
         # Another method must be used in this case, such as passing them with the dereferencing operator or
         # alternatively using the method shown in the textx documentation.
-        recipe_mm = textx.metamodel_from_file("rr-tool/source/recipe_interpreter/grammar.tx", classes=recipe_classes)
+        recipe_mm = textx.metamodel_from_file("source/recipe_interpreter/grammar.tx", classes=recipe_classes)
         metamodel_export(recipe_mm, "recipe_metamodel.dot")
 
         ### How to get an image of the metambodel schema with a layout with readable edges' labels
