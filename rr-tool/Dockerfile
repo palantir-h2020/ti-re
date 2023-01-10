@@ -13,4 +13,4 @@ RUN python3 -m pip install -r requirements.txt
 ADD . /usr/src/rr-tool
 WORKDIR /usr/src/rr-tool
 ENV PYTHONUNBUFFERED 1
-ENTRYPOINT ["python3", "/usr/src/rr-tool/source/rr-tool.py"]
+ENTRYPOINT ["python3", "/usr/src/rr-tool/source/rr_tool.py"]
