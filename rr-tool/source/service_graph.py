@@ -81,8 +81,10 @@ class ServiceGraph:
     def saveToGraphMl(self):
         self.sgraph.write_graphml("graph.xml")
 
-    def plot(self):
-        refreshAndSave(self.sgraph)
+    def plot(self): 
+        pass
+        #TODO check su variabile ambiente IGRAPH_PICTURES_OUTPUT_FOLDER, se vuota non eseguire refreshAndSave, i.e. solo pass 
+        #refreshAndSave(self.sgraph)
 
     def returnNodeName(self, node_identifier):
         # this function enables recipe functions to accept both node names and ip addresses as arguments
