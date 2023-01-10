@@ -159,39 +159,83 @@ class RRTool:
             else:
                 logger.error("Unknown alert type: " + alert_type)
 
-    # def stringInputNetflow(self, threat_report_netflow):
-    #     logger.info("Threat report netflow: " + threat_report_netflow)
-    #     alert = json.loads(threat_report_netflow)
-    #     logger.info("Serialized netflow threat report: " + str(alert))
-    #     self.jsonInput(alert)
-    #
-    # def stringInputSyslog(self, threat_report_syslog):
-    #     logger.info("Threat report syslog: " + threat_report_syslog)
-    #     alert = json.loads(threat_report_syslog)
-    #     logger.info("Serialized syslog threat report: " + str(alert))
-    #     alert["Threat_Category"] = "unauthorized_access"
-    #     self.jsonInput(alert)
+    def stringInputNetflow(self, threat_report_netflow):
+        logger.info("Threat report netflow: " + threat_report_netflow)
+        alert = json.loads(threat_report_netflow)
+        logger.info("Serialized netflow threat report: " + str(alert))
+        self.jsonInput(alert)
+
+    def stringInputSyslog(self, threat_report_syslog):
+        logger.info("Threat report syslog: " + threat_report_syslog)
+        alert = json.loads(threat_report_syslog)
+        logger.info("Serialized syslog threat report: " + str(alert))
+        alert["Threat_Category"] = "unauthorized_access"
+        self.jsonInput(alert)
 
     ## Branch 1.2 changes
 
     def performProactiveRemediation(self, msg):
 
-        instance_identifier = "test"
-        # todo add palantir instance/customer/organization identifier
-        # can a single org deploy multiple instances of palantir, thus requiring instance ids?
-
+        instance_identifier = settings.RR_INSTACE_ID
         if msg["rr_tool_instance_id"] == instance_identifier:
             # The instance received a message produced by itself. Just ignore it
             return
 
-        #todo is it ok to apply a generic recipe that simply adds the new ddos rule to the border firewall?
-
+        # implement ddos remediation in which a victim node is added to the graph
+        # attached to the border_firewall. The filter_ip_port recipe when run will
+        # find the victim-border_firewall-attacker and will add the filtering rule to it.
+        # The victim ip should be 0.0.0.0 so as to indicate that access is denied to all
+        # traffic originating from the attackcer ip and directed to any host.
 
         pass
 
     def addNewAttackRemediation(self, msg):
+        logger.info("New attack remediation: " + msg)
+        new_attack_remediation = json.loads(msg)
+        logger.info("Serialized new attack remediation: " + str(msg))
 
-        pass
+        threat_description = {}
+        threat_description["rules"] = new_attack_remediation["threat_description"]["rules"]
+        threat_description["recipes"] = new_attack_remediation["threat_description"]["recipes"]
+        
+        folder_name = new_attack_remediation["threat_description"]["threat_category"]
+        file_name = new_attack_remediation["threat_description"]["threat_label"]
+
+        #### Threats folder changes ####
+
+        # Construct the relative path to the destination folder
+        dst_folder = f"../../kb/threats/{folder_name}"
+
+        # Create the full path to the outfile
+        outfile_path = os.path.join(dst_folder, f"{file_name}.json")
+
+        # Create the destination folder if it does not exist
+        if not os.path.exists(dst_folder):
+            os.makedirs(dst_folder)
+
+        # Open the outfile and write the recipe_text to it
+        with open(outfile_path, 'w', encoding='utf8') as outfile:
+            json.dump(threat_description, outfile, indent=4)
+
+        #### Recipes folder changes ####
+
+        # Construct the relative path to the destination folder
+        dst_folder = '../../kb/recipes'
+
+        for recipe in new_attack_remediation["recipes"]:
+            recipe_name = recipe["recipe_name"]
+            recipe_text = recipe["recipe_text"]
+            recipe_description = {"description": recipe["description"], "requiredCapabilities": recipe["requiredCapabilities"]}
+
+            # Create the full path to the outfile
+            outfile_path = os.path.join(dst_folder, f"{recipe_name}.rec")
+            with open(outfile_path, 'w', encoding='utf8') as outfile:
+                outfile.write(recipe_text)
+
+            # Create the full path to the outfile
+            outfile_path = os.path.join(dst_folder, f"{recipe_name}.json")
+            with open(f"{recipe_name}.json", 'w', encoding='utf8') as outfile:
+                json.dump(recipe_description, outfile, indent=4)
 
 
     def jsonInput(self, alert):

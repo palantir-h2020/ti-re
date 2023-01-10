@@ -22,6 +22,10 @@ if os.getenv('YAML_MANUAL_LOADING') == "1":
 system_keys = list(locals().keys())
 system_keys.append("system_keys")
 
+# INSTANCE ID
+RR_INSTACE_ID = (os.environ['RR_INSTANCE_IDENTIFIER'])
+
+
 # KAFKA CONFIGURATION
 KAFKA_PRODUCER_PROPERTIES = {
     "bootstrap.servers": (os.environ['KAFKA_IP']) + ":" + (os.environ['KAFKA_PORT']),

@@ -32,10 +32,10 @@ def start_kafka_consumer(stop_event, remediator):
     kafka_consumer.subscribe([TOPIC_TI_NETFLOW, TOPIC_TI_SYSLOG, TOPIC_RR_PROACTIVE_REMEDIATION, TOPIC_RR_NEW_ATTACK_REMEDIATION])
 
     switch_consumer_handlers = {
-        TOPIC_TI_NETFLOW: remediator.handle_threat_findings_netflow,
-        TOPIC_TI_SYSLOG: remediator.handle_threat_findings_syslog,
-        TOPIC_RR_PROACTIVE_REMEDIATION: remediator.handle_proactive_remediation,
-        TOPIC_RR_NEW_ATTACK_REMEDIATION: remediator.handle_new_attack_remediation
+        TOPIC_TI_NETFLOW: remediator.stringInputNetflow,
+        TOPIC_TI_SYSLOG: remediator.stringInputSyslog,
+        TOPIC_RR_PROACTIVE_REMEDIATION: remediator.performProactiveRemediation,
+        TOPIC_RR_NEW_ATTACK_REMEDIATION: remediator.addNewAttackRemediation
     }
 
     topic_list = []
