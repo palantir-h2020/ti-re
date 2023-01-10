@@ -75,50 +75,55 @@ def shapeVertices(graph):
 
 def refreshPlot1(graph):
     """Refreshes graph and sets nodes label to their name"""
-    colorVertices(graph)
-    shapeVertices(graph)
-    visual_style["vertex_label"] = graph.vs["name"]
+    pass
+    # colorVertices(graph)
+    # shapeVertices(graph)
+    # visual_style["vertex_label"] = graph.vs["name"]
 
 
 def refreshAndPlot1(graph):
     """Refreshes graph and plots to screen"""
-    refreshPlot1(graph)
-    ig.plot(graph, **visual_style)
+    pass
+    # refreshPlot1(graph)
+    # ig.plot(graph, **visual_style)
 
-
+#TODO aggiungere check if settings.IGRAPH_PICTURES_OUTPUT_FOLDER != ""
 def refreshAndSave1(graph):
-    """Refreshes graph and saves it as image in png format"""
-    filename = generate_graph_filename()
-    logger.info(msg="Plotting with refreshAndSave to file " + filename)
-    if not hasattr(refreshAndSave1, "counter"):
-        refreshAndSave1.counter = 0
-    refreshPlot1(graph)
-    ig.plot(graph, target=filename, **visual_style)
-    refreshAndSave1.counter += 1
+    pass
+    # """Refreshes graph and saves it as image in png format"""
+    # filename = generate_graph_filename()
+    # logger.info(msg="Plotting with refreshAndSave to file " + filename)
+    # if not hasattr(refreshAndSave1, "counter"):
+    #     refreshAndSave1.counter = 0
+    # refreshPlot1(graph)
+    # ig.plot(graph, target=filename, **visual_style)
+    # refreshAndSave1.counter += 1
 
 
 def refreshPlot2(graph):
-    """Refreshes graph and sets nodes label to their name, plus the node ip if they have one"""
-    colorVertices(graph)
-    shapeVertices(graph)
-    labels = []
-    for vertex in graph.vs:
-        if "ipAddress" in vertex.attributes() and vertex["ipAddress"] is not None:
-            labels.append(str(vertex["name"] + "\n" + vertex["ipAddress"]))
-        else:
-            labels.append(str(vertex["name"]))
-    visual_style["vertex_label"] = labels
+    pass
+    # """Refreshes graph and sets nodes label to their name, plus the node ip if they have one"""
+    # colorVertices(graph)
+    # shapeVertices(graph)
+    # labels = []
+    # for vertex in graph.vs:
+    #     if "ipAddress" in vertex.attributes() and vertex["ipAddress"] is not None:
+    #         labels.append(str(vertex["name"] + "\n" + vertex["ipAddress"]))
+    #     else:
+    #         labels.append(str(vertex["name"]))
+    # visual_style["vertex_label"] = labels
 
 
 def refreshAndSave2(graph):
-    """Refreshes graph and saves it as image in png format, node names will show their ip address if they have one"""
-    filename = generate_graph_filename()
-    logger.info(msg="Plotting with refreshAndSave2 to file " + filename)
-    if not hasattr(refreshPlot2, "counter"):
-        refreshPlot2.counter = 0
-    refreshPlot2(graph)
-    ig.plot(graph, target=filename, **visual_style)
-    refreshPlot2.counter += 1
+    pass
+    # """Refreshes graph and saves it as image in png format, node names will show their ip address if they have one"""
+    # filename = generate_graph_filename()
+    # logger.info(msg="Plotting with refreshAndSave2 to file " + filename)
+    # if not hasattr(refreshPlot2, "counter"):
+    #     refreshPlot2.counter = 0
+    # refreshPlot2(graph)
+    # ig.plot(graph, target=filename, **visual_style)
+    # refreshPlot2.counter += 1
 
 
 def refreshAndSave(graph):
