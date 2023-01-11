@@ -23,7 +23,7 @@ system_keys = list(locals().keys())
 system_keys.append("system_keys")
 
 # INSTANCE ID
-RR_INSTACE_ID = (os.environ['RR_INSTANCE_IDENTIFIER'])
+RR_INSTANCE_ID = (os.environ['RR_INSTANCE_IDENTIFIER'])
 
 
 # KAFKA CONFIGURATION

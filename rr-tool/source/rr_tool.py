@@ -176,7 +176,7 @@ class RRTool:
 
     def performProactiveRemediation(self, msg):
 
-        instance_identifier = settings.RR_INSTACE_ID
+        instance_identifier = settings.RR_INSTANCE_ID
         if msg["rr_tool_instance_id"] == instance_identifier:
             # The instance received a message produced by itself. Just ignore it
             return
@@ -223,8 +223,10 @@ class RRTool:
 
         #### Threats folder changes ####
 
+        print("CWD: " + os.getcwd())
+
         # Construct the relative path to the destination folder
-        dst_folder = f"../../kb/threats/{folder_name}"
+        dst_folder = f"/kb/threats/{folder_name}"
 
         # Create the full path to the outfile
         outfile_path = os.path.join(dst_folder, f"{file_name}.json")
@@ -240,7 +242,7 @@ class RRTool:
         #### Recipes folder changes ####
 
         # Construct the relative path to the destination folder
-        dst_folder = '../../kb/recipes'
+        dst_folder = '/kb/recipes'
 
         for recipe in new_attack_remediation["recipes"]:
             recipe_name = recipe["recipe_name"]
