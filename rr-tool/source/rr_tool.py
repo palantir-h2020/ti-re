@@ -350,6 +350,7 @@ def main():
 
     match settings.RR_TOOL_MODE:
         case "standalone":
+            os.chdir("./rr-tool")
             rr_tool_instance = RRTool()
             rr_tool_instance.folderInput(sys.argv[1], sys.argv[2])
             rr_tool_instance.service_graph_instance.plot()
