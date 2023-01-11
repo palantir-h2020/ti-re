@@ -256,7 +256,7 @@ class RRTool:
 
             # Create the full path to the outfile
             outfile_path = os.path.join(dst_folder, f"{recipe_name}.json")
-            with open(f"{recipe_name}.json", 'w', encoding='utf8') as outfile:
+            with open(outfile_path, 'w', encoding='utf8') as outfile:
                 json.dump(recipe_description, outfile, indent=4)
 
 
