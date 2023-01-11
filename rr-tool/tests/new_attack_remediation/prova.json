@@ -23,15 +23,15 @@
     "requiredCapabilities": [
         "level_7_filtering"
     ],
-    "recipe_name": "filter_payload",
-    "recipe_text": "list_paths from impacted_host_ip to" 
+    "recipe_name": "filter_payload_asd",
+    "recipe_text": "list_paths from impacted_host_ip to"
  },
 {
     "description": "Filter ip and port on impacted node",
     "requiredCapabilities": [
         "level_4_filtering"
     ],
-    "recipe_name": "filter_payload",
+    "recipe_name": "filter_ip_asd",
     "recipe_text":"find node"
 }
 ]
