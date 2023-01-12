@@ -1,4 +1,6 @@
 {
     "description": "Isolate impacted nodes",
-    "requiredCapabilities": []
+    "requiredCapabilities": [],
+    "requiredArtifacts": [],
+    "proactive": true
 }

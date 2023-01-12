@@ -1,4 +1,6 @@
 {
     "description": "Put impacted nodes into reconfiguration net",
-    "requiredCapabilities": []
+    "requiredCapabilities": [],
+    "requiredArtifacts": [],
+    "proactive": true
 }

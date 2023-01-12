@@ -1,4 +1,6 @@
 {
     "description": "Shutdown impacted nodes",
-    "requiredCapabilities": []
+    "requiredCapabilities": [],
+    "requiredArtifacts": [],
+    "proactive": true
 }

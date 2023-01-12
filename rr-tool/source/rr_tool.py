@@ -123,8 +123,8 @@ class RRTool:
                     global_scope=self.global_scope,
                     service_graph_instance=self.service_graph_instance,
                     threat_repository=self.threat_repository,
-                    threat_type=inputDataSplit[0],
-                    threat_name=inputDataSplit[1],
+                    threat_category=inputDataSplit[0],
+                    threat_label=inputDataSplit[1],
                     impacted_host_ip=inputDataSplit[2],
                     attacker_port=inputDataSplit[3],
                     attacker_ip=inputDataSplit[4],
@@ -172,42 +172,51 @@ class RRTool:
         alert["Threat_Category"] = "unauthorized_access"
         self.jsonInput(alert)
 
-    ## Branch 1.2 changes
-
-    def performProactiveRemediation(self, msg):
+    def performProactiveRemediation(self, proactive_alert):
 
         instance_identifier = settings.RR_INSTANCE_ID
-        if msg["rr_tool_instance_id"] == instance_identifier:
+        if proactive_alert["rr_tool_instance_id"] == instance_identifier:
             # The instance received a message produced by itself. Just ignore it
+            print("Ignoring proactive alert sent by me")
             return
 
-        # implement ddos remediation in which a victim node is added to the graph
-        # attached to the border_firewall. The filter_ip_port recipe when run will
-        # find the victim-border_firewall-attacker and will add the filtering rule to it.
-        # The victim ip should be 0.0.0.0 so as to indicate that access is denied to all
-        # traffic originating from the attackcer ip and directed to any host.
+        logger.info(proactive_alert)
 
-        print(msg)
+        self.service_graph_instance.plot()
 
-        # mock version
-        # self.service_graph_instance.addVictim(IP: "0.0.0.0", attachedTo="border_firewall")
+        try:
+            proactive_alert["threat_category"] = str(proactive_alert["threat_category"]).casefold()
+        except KeyError:
+            logger.error("Malformed alert received (threat category missing), skipping...")
+            return
 
-        # logger.info(msg)
+        bestRecipeName = self.recipe_filter_instance.selectBestRecipe(proactive_alert["threat_category"],
+                                                            proactive_alert["threat_label"],
+                                                            proactive=True,
+                                                            availableArtifacts=proactive_alert["recipe_data"])
 
-        # self.service_graph_instance.plot()
+        logger.info(f"Selected recipe for proactive remediation: ( \
+                    {self.recipe_repository[bestRecipeName]['description']})")
 
-        # try:
-        #     msg["Threat_Category"] = str(msg["Threat_Category"]).casefold()
-        # except KeyError:
-        #     logger.error("Malformed alert received (threat category missing), skipping...")
-        #     return
+        try:
+            input_analyzer.\
+                prepareDataForBotnetProactiveRemediation(global_scope=self.global_scope,
+                                                threat_repository=self.threat_repository,
+                                                threat_category=proactive_alert["threat_category"],
+                                                threat_label=proactive_alert["threat_label"],
+                                                artifacts=proactive_alert["recipe_data"])
+        except KeyError:
+            logger.error("Malformed alert received, skipping...")
+            return
 
-        # #  if automatic remediation mode is disabled allow him to accept the hint or select another recipe
-        # bestRecipeName = self.recipe_filter_instance.selectBestRecipe(msg["Threat_Category"], msg["Threat_Label"])
-        # logger.info(f"Recommended recipe for the threat: ( {self.recipe_repository[bestRecipeName]['description']})")
+        self.setCapabilitiesToSecurityControlMappings(
+                                        self.recipe_repository[bestRecipeName]["requiredCapabilities"])
 
+        recipe_interpreter_instance = recipe_interpreter.RecipeInterpreter(self.service_graph_instance,
+                                                                self.global_scope,
+                                                                self.capability_to_security_control_mappings)
 
-        pass
+        recipe_interpreter_instance.remediate_new(bestRecipeName)
 
     def addNewAttackRemediation(self, msg):
         logger.info("New attack remediation: " + msg)
@@ -223,7 +232,7 @@ class RRTool:
 
         #### Threats folder changes ####
 
-        print("CWD: " + os.getcwd())
+        # print("CWD: " + os.getcwd()) # for path issues troubleshooting
 
         # Construct the relative path to the destination folder
         dst_folder = f"./kb/threats/{folder_name}"
@@ -247,7 +256,9 @@ class RRTool:
         for recipe in new_attack_remediation["recipes"]:
             recipe_name = recipe["recipe_name"]
             recipe_text = recipe["recipe_text"]
-            recipe_description = {"description": recipe["description"], "requiredCapabilities": recipe["requiredCapabilities"]}
+            recipe_description = {"description": recipe["description"],
+                                "requiredCapabilities": recipe["requiredCapabilities"],
+                                "requiredArtifacts": recipe["requiredArtifacts"]}
 
             # Create the full path to the outfile
             outfile_path = os.path.join(dst_folder, f"{recipe_name}.rec")
@@ -276,7 +287,10 @@ class RRTool:
 
         # TODO here we should give present the user with the best recipe and
         #  if automatic remediation mode is disabled allow him to accept the hint or select another recipe
-        bestRecipeName = self.recipe_filter_instance.selectBestRecipe(alert["Threat_Category"], alert["Threat_Label"])
+        bestRecipeName = self.recipe_filter_instance.selectBestRecipe(alert["Threat_Category"],
+                                                                        alert["Threat_Label"],
+                                                                        proactive=False,
+                                                                        availableArtifacts=[])
         logger.info(f"Recommended recipe for the threat: ( {self.recipe_repository[bestRecipeName]['description']})")
 
         # TODO create a generic prepareData function in input analyzer
@@ -301,8 +315,8 @@ class RRTool:
                     prepareDataForRemediationOfMalware(global_scope=self.global_scope,
                                                        service_graph_instance=self.service_graph_instance,
                                                        threat_repository=self.threat_repository,
-                                                       threat_type=alert["Threat_Category"],  # malware
-                                                       threat_name=alert["Threat_Label"],
+                                                       threat_category=alert["Threat_Category"],
+                                                       threat_label=alert["Threat_Label"],
                                                        protocol=alert["Threat_Finding"]["Protocol"],
                                                        impacted_host_port=alert["Threat_Finding"]["Source_Port"],
                                                        impacted_host_ip=alert["Threat_Finding"]["Source_Address"],
@@ -320,6 +334,8 @@ class RRTool:
         #recipe_interpreter_instance.remediate(recipeToRun)
 
         recipe_interpreter_instance.remediate_new(bestRecipeName)
+
+        #todo send proactive after having filtered private data
 
     def selectRecipeManually(self):
         """Manually select which recipe to apply, according to the list shown in the terminal.
@@ -344,7 +360,6 @@ class RRTool:
                 return recipe_list[int(choice)]
             else:
                 print("Invalid input")
-
 
 def main():
 

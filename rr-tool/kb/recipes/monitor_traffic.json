@@ -2,5 +2,7 @@
     "description": "Monitor traffic on impacted node",
     "requiredCapabilities": [
         "level_4_monitor"
-    ]
+    ],
+    "requiredArtifacts": [],
+    "proactive": true
 }

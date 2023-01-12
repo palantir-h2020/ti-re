@@ -28,6 +28,7 @@ def iptables_command_generator(rule, *args):
 
 
 def getIptablesCommand(src_ip, dst_ip, src_port, dst_port, proto, chain, action):
+
     iptables_dir = os.path.dirname(os.path.realpath(__file__))
     tree = ElementTree.parse(iptables_dir + os.sep + "iptables_model.xml")
     root = tree.getroot()
