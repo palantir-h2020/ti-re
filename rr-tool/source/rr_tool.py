@@ -200,7 +200,7 @@ class RRTool:
 
         try:
             input_analyzer.\
-                prepareDataForBotnetProactiveRemediation(global_scope=self.global_scope,
+                prepareDataForProactiveRemediation(global_scope=self.global_scope,
                                                 threat_repository=self.threat_repository,
                                                 threat_category=proactive_alert["threat_category"],
                                                 threat_label=proactive_alert["threat_label"],
@@ -291,6 +291,7 @@ class RRTool:
                                                                         alert["Threat_Label"],
                                                                         proactive=False,
                                                                         availableArtifacts=[])
+
         logger.info(f"Recommended recipe for the threat: ( {self.recipe_repository[bestRecipeName]['description']})")
 
         # TODO create a generic prepareData function in input analyzer

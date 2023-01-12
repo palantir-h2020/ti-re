@@ -148,7 +148,7 @@ def prepareDataForRemediationOfUnauthorizedAccess(global_scope, service_graph_in
          "proto": "", "action": "ALLOW"}
     ]
 
-def prepareDataForBotnetProactiveRemediation(global_scope, threat_repository, threat_category, threat_label, artifacts):
+def prepareDataForProactiveRemediation(global_scope, threat_repository, threat_category, threat_label, artifacts):
 
     global_scope["threat_category"] = threat_category  # botnet
     global_scope["threat_label"] = threat_label  # unknown / Cridex / Zeus
