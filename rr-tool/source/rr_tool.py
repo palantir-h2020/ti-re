@@ -280,6 +280,9 @@ class RRTool:
         # TODO evaluate if multiple alerts in the same json should be supported
         # for alert in alerts:
         try:
+            print("######")
+            print("Debug: " + alert)
+            print("######")
             alert["Threat_Category"] = str(alert["Threat_Category"]).casefold()
         except KeyError:
             logger.error("Malformed alert received (threat category missing), skipping...")
