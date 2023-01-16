@@ -141,23 +141,27 @@ class RRTool:
                                   self.global_scope,
                                   self.capability_to_security_control_mappings).remediate(self.recipeToRun)
 
-    def folderInput(self, folder_name, alert_type):
+    def folderInput(self, folder_name, msg_type):
         only_files = [f for f in os.listdir(folder_name) if os.path.isfile(os.path.join(folder_name, f))]
         for f in only_files:
-            logger.info("Reading alert file " + folder_name + os.sep + f)
-            self.fileInput(folder_name + os.sep + f, alert_type)
+            logger.info("Reading message file " + folder_name + os.sep + f)
+            self.fileInput(folder_name + os.sep + f, msg_type)
 
-    def fileInput(self, file_name, alert_type):
+    def fileInput(self, file_name, msg_type):
 
-        with open(file_name, "r", encoding='utf8') as alertFile:
-            alert = json.load(alertFile)
-            if alert_type == "netflow":
-                self.jsonInput(alert)
-            elif alert_type == "syslog":
-                alert["Threat_Category"] = "unauthorized_access"
-                self.jsonInput(alert)
+        with open(file_name, "r", encoding='utf8') as msgFile:
+            msg = json.load(msgFile)
+            if msg_type == "netflow":
+                self.jsonInput(msg)
+            elif msg_type == "syslog":
+                msg["Threat_Category"] = "unauthorized_access"
+                self.jsonInput(msg)
+            elif msg_type == "new_attack_remediation":
+                self.addNewAttackRemediation(msg)
+            elif msg_type == "proactive_remediation":
+                self.performProactiveRemediation(msg)
             else:
-                logger.error("Unknown alert type: " + alert_type)
+                logger.error("Unknown alert type: " + msg_type)
 
     def stringInputNetflow(self, threat_report_netflow):
         logger.info("Threat report netflow: " + threat_report_netflow)
