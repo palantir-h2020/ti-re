@@ -163,7 +163,6 @@ class RRTool:
         logger.info("Threat report netflow: " + threat_report_netflow)
         alert = json.loads(threat_report_netflow)
         logger.info("Serialized netflow threat report: " + str(alert))
-        print("SSSSS: " + alert["Threat_Category"])
         self.jsonInput(alert)
 
     def stringInputSyslog(self, threat_report_syslog):
@@ -281,10 +280,6 @@ class RRTool:
         # TODO evaluate if multiple alerts in the same json should be supported
         # for alert in alerts:
         try:
-            # print("######")
-            # print("Debug: " + alert)
-            # print("######")
-            # print(alert["Threat_Category"])
             alert["Threat_Category"] = str(alert["Threat_Category"]).casefold()
         except Exception:
             logger.error("Malformed alert received (ex: threat category missing), skipping...")
