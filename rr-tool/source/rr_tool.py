@@ -186,7 +186,7 @@ class RRTool:
 
         try:
             proactive_alert["threat_category"] = str(proactive_alert["threat_category"]).casefold()
-        except KeyError:
+        except Exception:
             logger.error("Malformed alert received (threat category missing), skipping...")
             return
 
