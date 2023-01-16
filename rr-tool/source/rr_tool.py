@@ -283,6 +283,7 @@ class RRTool:
             print("######")
             print("Debug: " + alert)
             print("######")
+            print(alert["Threat_Category"])
             alert["Threat_Category"] = str(alert["Threat_Category"]).casefold()
         except KeyError:
             logger.error("Malformed alert received (threat category missing), skipping...")
