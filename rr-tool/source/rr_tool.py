@@ -172,7 +172,12 @@ class RRTool:
         alert["Threat_Category"] = "unauthorized_access"
         self.jsonInput(alert)
 
-    def performProactiveRemediation(self, proactive_alert):
+    def performProactiveRemediation(self, msg):
+
+        # Serialize message received from Kafka broker
+        logger.info("Proactive remediation alert: " + msg)
+        proactive_alert = json.loads(msg)
+        logger.info("Serialized proactive remediation alert: " + str(msg))
 
         instance_identifier = settings.RR_INSTANCE_ID
         if proactive_alert["rr_tool_instance_id"] == instance_identifier:
@@ -219,6 +224,8 @@ class RRTool:
         recipe_interpreter_instance.remediate_new(bestRecipeName)
 
     def addNewAttackRemediation(self, msg):
+
+        # Serialize message received from Kafka broker
         logger.info("New attack remediation: " + msg)
         new_attack_remediation = json.loads(msg)
         logger.info("Serialized new attack remediation: " + str(msg))
