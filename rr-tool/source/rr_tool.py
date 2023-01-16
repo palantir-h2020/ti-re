@@ -204,9 +204,8 @@ class RRTool:
         self.service_graph_instance.plot()
 
         try:
-            proactive_remediation_alert["threat_category"] = \
-                str(proactive_remediation_alert["threat_category"]).casefold()
             print(str(proactive_remediation_alert["threat_category"]).casefold())
+            proactive_remediation_alert["threat_category"] = str(proactive_remediation_alert["threat_category"]).casefold()
         except Exception:
             logger.error("Malformed alert received (ex: threat category missing), skipping...")
             return
