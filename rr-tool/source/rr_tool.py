@@ -163,6 +163,7 @@ class RRTool:
         logger.info("Threat report netflow: " + threat_report_netflow)
         alert = json.loads(threat_report_netflow)
         logger.info("Serialized netflow threat report: " + str(alert))
+        print("SSSSS: " + alert["Threat_Category"])
         self.jsonInput(alert)
 
     def stringInputSyslog(self, threat_report_syslog):
@@ -187,7 +188,7 @@ class RRTool:
         try:
             proactive_alert["threat_category"] = str(proactive_alert["threat_category"]).casefold()
         except Exception:
-            logger.error("Malformed alert received (threat category missing), skipping...")
+            logger.error("Malformed alert received (ex: threat category missing), skipping...")
             return
 
         bestRecipeName = self.recipe_filter_instance.selectBestRecipe(proactive_alert["threat_category"],
@@ -280,13 +281,13 @@ class RRTool:
         # TODO evaluate if multiple alerts in the same json should be supported
         # for alert in alerts:
         try:
-            print("######")
-            print("Debug: " + alert)
-            print("######")
-            print(alert["Threat_Category"])
+            # print("######")
+            # print("Debug: " + alert)
+            # print("######")
+            # print(alert["Threat_Category"])
             alert["Threat_Category"] = str(alert["Threat_Category"]).casefold()
         except Exception:
-            logger.error("Malformed alert received (threat category missing), skipping...")
+            logger.error("Malformed alert received (ex: threat category missing), skipping...")
             return
 
         # TODO here we should give present the user with the best recipe and
