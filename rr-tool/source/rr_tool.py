@@ -163,46 +163,58 @@ class RRTool:
             else:
                 logger.error("Unknown alert type: " + msg_type)
 
-    def stringInputNetflow(self, threat_report_netflow):
-        logger.info("Threat report netflow: " + threat_report_netflow)
-        alert = json.loads(threat_report_netflow)
-        logger.info("Serialized netflow threat report: " + str(alert))
-        self.jsonInput(alert)
+    def stringInputNetflow(self, msg):
+        logger.info("Threat report netflow: " + msg)
+        json_msg = json.loads(msg)
+        logger.info("Serialized netflow threat report: " + str(json_msg))
+        self.jsonInput(json_msg)
 
-    def stringInputSyslog(self, threat_report_syslog):
-        logger.info("Threat report syslog: " + threat_report_syslog)
-        alert = json.loads(threat_report_syslog)
-        logger.info("Serialized syslog threat report: " + str(alert))
-        alert["Threat_Category"] = "unauthorized_access"
-        self.jsonInput(alert)
+    def stringInputSyslog(self, msg):
+        logger.info("Threat report syslog: " + msg)
+        json_msg = json.loads(msg)
+        logger.info("Serialized syslog threat report: " + str(json_msg))
+        json_msg["Threat_Category"] = "unauthorized_access"
+        self.jsonInput(json_msg)
 
-    def performProactiveRemediation(self, msg):
+    def stringInputNewAttackRemediation(self, msg):
+        logger.info("New attack remediation: " + msg)
+        json_msg = json.loads(msg)
+        logger.info("Serialized new attack remediation: " + str(json_msg))
+        self.addNewAttackRemediation(json_msg)
 
-        # Serialize message received from Kafka broker
+    def stringInputProactiveRemediation(self, msg):
         logger.info("Proactive remediation alert: " + msg)
-        proactive_alert = json.loads(msg)
-        logger.info("Serialized proactive remediation alert: " + str(msg))
+        json_msg = json.loads(msg)
+        logger.info("Serialized proactive remediation alert: " + str(json_msg))
+        self.jsonInput(json_msg)
+
+    def performProactiveRemediation(self, proactive_remediation_alert):
+
+        # First clean global_scope status
+        self.global_scope.clear()
 
         instance_identifier = settings.RR_INSTANCE_ID
-        if proactive_alert["rr_tool_instance_id"] == instance_identifier:
+        if proactive_remediation_alert["rr_tool_instance_id"] == instance_identifier:
             # The instance received a message produced by itself. Just ignore it
-            print("Ignoring proactive alert sent by me")
+            logger.info("Ignoring proactive alert sent by this instance itself")
             return
 
-        logger.info(proactive_alert)
+        logger.info(proactive_remediation_alert)
 
         self.service_graph_instance.plot()
 
         try:
-            proactive_alert["threat_category"] = str(proactive_alert["threat_category"]).casefold()
+            proactive_remediation_alert["threat_category"] = \
+                str(proactive_remediation_alert["threat_category"]).casefold()
         except Exception:
             logger.error("Malformed alert received (ex: threat category missing), skipping...")
             return
 
-        bestRecipeName = self.recipe_filter_instance.selectBestRecipe(proactive_alert["threat_category"],
-                                                            proactive_alert["threat_label"],
-                                                            proactive=True,
-                                                            availableArtifacts=proactive_alert["recipe_data"])
+        bestRecipeName = self.recipe_filter_instance.  \
+                                        selectBestRecipe(proactive_remediation_alert["threat_category"],
+                                                        proactive_remediation_alert["threat_label"],
+                                                        proactive=True,
+                                                        availableArtifacts=proactive_remediation_alert["recipe_data"])
 
         logger.info(f"Selected recipe for proactive remediation: ( \
                     {self.recipe_repository[bestRecipeName]['description']})")
@@ -211,9 +223,9 @@ class RRTool:
             input_analyzer.\
                 prepareDataForProactiveRemediation(global_scope=self.global_scope,
                                                 threat_repository=self.threat_repository,
-                                                threat_category=proactive_alert["threat_category"],
-                                                threat_label=proactive_alert["threat_label"],
-                                                artifacts=proactive_alert["recipe_data"])
+                                                threat_category=proactive_remediation_alert["threat_category"],
+                                                threat_label=proactive_remediation_alert["threat_label"],
+                                                artifacts=proactive_remediation_alert["recipe_data"])
         except KeyError:
             logger.error("Malformed alert received, skipping...")
             return
@@ -227,12 +239,10 @@ class RRTool:
 
         recipe_interpreter_instance.remediate_new(bestRecipeName)
 
-    def addNewAttackRemediation(self, msg):
+    def addNewAttackRemediation(self, new_attack_remediation):
 
-        # Serialize message received from Kafka broker
-        logger.info("New attack remediation: " + msg)
-        new_attack_remediation = json.loads(msg)
-        logger.info("Serialized new attack remediation: " + str(msg))
+        # First clean global_scope status
+        self.global_scope.clear()
 
         threat_description = {}
         threat_description["rules"] = new_attack_remediation["threat_description"]["rules"]
@@ -283,6 +293,9 @@ class RRTool:
 
 
     def jsonInput(self, alert):
+
+        # First clean global_scope status
+        self.global_scope.clear()
 
         logger.info(alert)
 

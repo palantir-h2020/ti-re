@@ -154,19 +154,20 @@ def prepareDataForProactiveRemediation(global_scope, threat_repository, threat_c
     global_scope["threat_label"] = threat_label  # unknown / Cridex / Zeus
     global_scope["attacker_ip"] = artifacts["attacker_ip"]  # 12.12.12.12
     global_scope["attacker_port"] = artifacts["attacker_port"]  # 22
-    global_scope["rules_level_4"] = []
-    global_scope["rules_level_7"] = []
+
+    rules_level_4 = []
+    rules_level_7 = []
 
     if threat_label in threat_repository[threat_category]:
 
         threat_repository_mitigation_rules = threat_repository[threat_category][threat_label]["rules"]
 
-        global_scope["rules_level_7"] = \
+        rules_level_7 = \
                 [rule for rule in threat_repository_mitigation_rules
                 if rule.get("level") == 7 and rule.get("proto") != "DNS"]
                 # DNS rules are level 7 but are managed with the "domains" artifact
 
-        global_scope["rules_level_4"] = \
+        rules_level_4 = \
                 [rule for rule in threat_repository_mitigation_rules
                 if rule.get("level") == 4]
 
@@ -175,26 +176,34 @@ def prepareDataForProactiveRemediation(global_scope, threat_repository, threat_c
                                 rule.get("proto") == "DNS"]
 
     # Add a filtering rule for both traffic directions:
-    global_scope["rules_level_4"].append({"level": 4,
-                                        "c2serversPort": artifacts["attacker_ip"],
-                                        "c2serversIP": artifacts["attacker_port"],
-                                        "proto": "TCP",
-                                        "action": "DENY"})
-    global_scope["rules_level_4"].append({"level": 4,
-                                        "victimIP": artifacts["attacker_ip"],
-                                        "victimPort": artifacts["attacker_port"],
-                                        "proto": "TCP",
-                                        "action": "DENY"})
+    rules_level_4.append({"level": 4,
+                        "c2serversPort": artifacts["attacker_ip"],
+                        "c2serversIP": artifacts["attacker_port"],
+                        "proto": "TCP",
+                        "action": "DENY"})
 
-    global_scope["rules_level_7"].append({"level": 7,
-                                        "victimIP": artifacts["attacker_ip"],
-                                        "victimPort": artifacts["attacker_port"],
-                                        "payload": artifacts["payload"],
-                                        "proto": "TCP",
-                                        "action": "DENY"})
-    global_scope["rules_level_7"].append({"level": 7,
-                                        "victimIP": artifacts["attacker_ip"],
-                                        "victimPort": artifacts["attacker_port"],
-                                        "payload": artifacts["payload"],
-                                        "proto": "TCP",
-                                        "action": "DENY"})
+    rules_level_4.append({"level": 4,
+                        "victimIP": artifacts["attacker_ip"],
+                        "victimPort": artifacts["attacker_port"],
+                        "proto": "TCP",
+                        "action": "DENY"})
+
+    if "payload" in artifacts:
+
+        # Add a filtering rule for both traffic directions:
+        rules_level_7.append({"level": 7,
+                            "victimIP": artifacts["attacker_ip"],
+                            "victimPort": artifacts["attacker_port"],
+                            "payload": artifacts["payload"],
+                            "proto": "TCP",
+                            "action": "DENY"})
+
+        rules_level_7.append({"level": 7,
+                            "victimIP": artifacts["attacker_ip"],
+                            "victimPort": artifacts["attacker_port"],
+                            "payload": artifacts["payload"],
+                            "proto": "TCP",
+                            "action": "DENY"})
+
+    global_scope["rules_level_4"] = rules_level_4
+    global_scope["rules_level_7"] = rules_level_7
