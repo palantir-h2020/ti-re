@@ -4,5 +4,5 @@
         "level_4_filtering"
     ],
     "requiredArtifacts": ["impacted_host_ip", "impacted_host_port"],
-    "proactive": true
+    "proactive": false
 }

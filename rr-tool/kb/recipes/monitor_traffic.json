@@ -4,5 +4,5 @@
         "level_4_monitor"
     ],
     "requiredArtifacts": [],
-    "proactive": true
+    "proactive": false
 }

@@ -4,5 +4,5 @@
         "dns_policy_manager"
     ],
     "requiredArtifacts": [],
-    "proactive": true
+    "proactive": false
 }

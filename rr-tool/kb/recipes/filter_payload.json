@@ -4,5 +4,5 @@
         "level_7_filtering"
     ],
     "requiredArtifacts": [],
-    "proactive": true
+    "proactive": false
 }

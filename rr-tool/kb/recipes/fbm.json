@@ -2,5 +2,5 @@
     "description": "Call the fbm_function",
     "requiredCapabilities": ["level_4_filtering"],
     "requiredArtifacts": [],
-    "proactive": true
+    "proactive": false
 }
