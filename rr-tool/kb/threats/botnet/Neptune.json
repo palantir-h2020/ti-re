@@ -35,6 +35,11 @@
             "recipeName": "shutdown",
             "priority": 4,
             "impact": 10
+        },
+        {
+            "recipeName": "border_filter_ip",
+            "priority": 3,
+            "impact": 3
         }
     ]
 }
