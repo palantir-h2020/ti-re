@@ -15,7 +15,8 @@ def iptables_command_generator(rule, *args):
         if key not in rule:
             rule[key] = ""
 
-    print("RULE: " + rule)
+    print("RULE: ")
+    print(rule)
     generatedRule = getIptablesCommand(rule["victimIP"],
                                        rule["c2serversIP"],
                                        rule["victimPort"],
