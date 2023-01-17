@@ -22,13 +22,13 @@ spec:
         - name: KAFKA_DEBUG_TOPICS
           value: "1"
         - name: TOPIC_TI_NETFLOW
-          value: "ti.threat_findings_netflow_rrtooldebug"
+          value: "ti.threat_findings_netflow"
         - name: TOPIC_TI_SYSLOG
-          value: "ti.threat_findings_syslog_rrtooldebug"
+          value: "ti.threat_findings_syslog"
         - name: TOPIC_RR_PROACTIVE_REMEDIATION
-          value: "rr.proactive_remediation_rrtooldebug"
+          value: "rr.proactive_remediation"
         - name: TOPIC_RR_NEW_ATTACK_REMEDIATION
-          value: "rr.new_attack_remedation_rrtooldebug"
+          value: "rr.new_attack_remedation"
         - name: TOPIC_PORTAL_NOTIFICATIONS
           value: "actions-notifications"
         - name: TOPIC_IR_INCIDENT_DETECTED
