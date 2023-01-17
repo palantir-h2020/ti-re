@@ -19,6 +19,8 @@ spec:
           value: "9092"
         - name: KAFKA_POLLING_TIMEOUT
           value: "1.0"
+        - name: KAFKA_DEBUG_TOPICS
+          value: "1"
         - name: TOPIC_TI_NETFLOW
           value: "ti.threat_findings_netflow_rrtooldebug"
         - name: TOPIC_TI_SYSLOG
