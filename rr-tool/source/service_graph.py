@@ -69,7 +69,8 @@ class ServiceGraph:
     def __init__(self):
 
         # TODO read landscape from file, initialize node counters accordingly
-        self.sgraph, self.node_counters = generate_victim_attacker_graph()
+        # self.sgraph, self.node_counters = generate_victim_attacker_graph()
+        self.sgraph, self.node_counters = generate_victim_firewall_attacker_graph()
         self.sgraph.vs["status"] = "on"  # set all nodes' status to on
 
         security_control_types = ["firewall"]
@@ -81,9 +82,9 @@ class ServiceGraph:
     def saveToGraphMl(self):
         self.sgraph.write_graphml("graph.xml")
 
-    def plot(self): 
+    def plot(self):
         pass
-        #TODO check su variabile ambiente IGRAPH_PICTURES_OUTPUT_FOLDER, se vuota non eseguire refreshAndSave, i.e. solo pass 
+        #TODO check su variabile ambiente IGRAPH_PICTURES_OUTPUT_FOLDER, se vuota non eseguire refreshAndSave, i.e. solo pass
         #refreshAndSave(self.sgraph)
 
     def returnNodeName(self, node_identifier):

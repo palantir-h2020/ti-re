@@ -204,10 +204,11 @@ class RRTool:
         self.service_graph_instance.plot()
 
         try:
-            print(str(proactive_remediation_alert["threat_category"]).casefold())
+            print("HERE: " + str(proactive_remediation_alert["threat_category"]).casefold())
             proactive_remediation_alert["threat_category"] = str(proactive_remediation_alert["threat_category"]).casefold()
-        except Exception:
+        except Exception as a:
             logger.error("Malformed alert received (ex: threat category missing), skipping...")
+            print(a.__repr__)
             return
 
         bestRecipeName = self.recipe_filter_instance.  \

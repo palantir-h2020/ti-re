@@ -504,9 +504,10 @@ class RecipeInterpreter:
         self.service_graph_instance.plot()
 
         interpreter = textx_interpreter.Interpreter(globalScope=self.global_scope, recipeFile=recipeName, remediator=self)
-        interpreter.launch()
 
         logger.info("Starting interpreter ...")
+        interpreter.launch()
+
 
 
     def remediate(self, recipe_to_run):
