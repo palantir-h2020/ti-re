@@ -4,7 +4,7 @@ do
     case "${flag}" in
         o) OSM=${OPTARG};;
         f) RESET_SC=${OPTARG};;
-        d) KAFKA_DEBUG==${OPTARG};;
+        d) KAFKA_DEBUG=${OPTARG};;
         *) echo "Invalid flags, stopping script"; exit 1 ;;
     esac
 done
