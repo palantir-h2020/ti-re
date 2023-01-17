@@ -20,13 +20,13 @@ spec:
         - name: KAFKA_POLLING_TIMEOUT
           value: "1.0"
         - name: TOPIC_TI_NETFLOW
-          value: "ti.threat_findings_netflow"
+          value: "ti.threat_findings_netflow_rrtooldebug"
         - name: TOPIC_TI_SYSLOG
-          value: "ti.threat_findings_syslog"
+          value: "ti.threat_findings_syslog_rrtooldebug"
         - name: TOPIC_RR_PROACTIVE_REMEDIATION
-          value: "rr.proactive_remediation"
+          value: "rr.proactive_remediation_rrtooldebug"
         - name: TOPIC_RR_NEW_ATTACK_REMEDIATION
-          value: "rr.new_attack_remedation"
+          value: "rr.new_attack_remedation_rrtooldebug"
         - name: TOPIC_PORTAL_NOTIFICATIONS
           value: "actions-notifications"
         - name: TOPIC_IR_INCIDENT_DETECTED
