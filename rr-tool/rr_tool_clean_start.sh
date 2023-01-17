@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-while getopts o:f: flag
+while getopts o:f:d: flag
 do
     case "${flag}" in
         o) OSM=${OPTARG};;
