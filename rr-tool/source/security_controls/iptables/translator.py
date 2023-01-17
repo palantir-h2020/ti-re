@@ -72,6 +72,8 @@ def getIptablesCommand(src_ip, dst_ip, src_port, dst_port, proto, chain, action)
         actionElement = globalFind(root, "rejectActionCapability")
         actionElement.tag = 'acceptActionCapability'
 
+    print(ElementTree.dump(root))
+
     tree.write(iptables_dir + os.sep + "iptables_input_for_translator.xml")
 
     # TODO validate translator input against iptables.xsd
