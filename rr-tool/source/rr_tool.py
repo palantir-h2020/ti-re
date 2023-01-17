@@ -8,6 +8,7 @@ from helpers import igraph_helper
 from input_analyzer import input_analyzer
 from recipe_interpreter import recipe_interpreter
 from recipe_filter import recipe_filter
+from connectors import misp
 import service_graph
 import settings
 from helpers.rr_tool_helper import load_json_folder_as_dict
@@ -360,6 +361,10 @@ class RRTool:
         recipe_interpreter_instance.remediate_new(bestRecipeName)
 
         #todo send proactive after having filtered private data
+
+        #todo send stix+cacao to misp instance through misp connector
+
+        # misp.send_event("event")
 
     def selectRecipeManually(self):
         """Manually select which recipe to apply, according to the list shown in the terminal.
