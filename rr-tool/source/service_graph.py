@@ -9,6 +9,7 @@ logger = get_logger('service-graph')
 
 
 def find_preceding_node_in_path(node, path):
+
     logger.info(msg=f"Searching node behind {node} in path " + str(path))
     preceding_node = None
     for index, item in enumerate(path):  # first find node to which node1 is connected
@@ -21,6 +22,7 @@ def find_preceding_node_in_path(node, path):
 
 
 def generate_victim_attacker_graph():# -> [ig.Graph, Dict]:
+
     node_counters = {
         "firewall": 0,
         "switch": 0,
@@ -39,6 +41,7 @@ def generate_victim_attacker_graph():# -> [ig.Graph, Dict]:
 
 
 def generate_victim_firewall_attacker_graph():# -> [ig.Graph, Dict]:
+
     node_counters = {
         "firewall": 1,
         "switch": 0,
@@ -64,6 +67,7 @@ def generate_victim_firewall_attacker_graph():# -> [ig.Graph, Dict]:
 
 
 class ServiceGraph:
+
     node_counters = {}
 
     def __init__(self):
@@ -230,6 +234,7 @@ class ServiceGraph:
         logger.debug("Rules for firewall " + node['name'])
 
     def get_filtering_rules(self, node_name_or_ip, level):
+
         node_name = self.returnNodeName(node_name_or_ip)
         node: ig.Vertex = self.sgraph.vs.find(node_name)
         return node["rules_level_" + str(level)]
@@ -248,6 +253,7 @@ class ServiceGraph:
         mano.add_dns_policy(domain, rule_type)
 
     def shutdown(self, node_name_or_ip):
+
         node_name = self.returnNodeName(node_name_or_ip)
         logger.info(msg=f"Shutting down {node_name} ...")
 
@@ -260,6 +266,7 @@ class ServiceGraph:
         mano.shutdown(node_name)
 
     def isolate(self, node_name_or_ip):
+
         node_name = self.returnNodeName(node_name_or_ip)
         logger.info(msg=f"Disconnecting all interfaces of {node_name} ...")
 
@@ -293,6 +300,7 @@ class ServiceGraph:
         return newNodeName
 
     def add_network_monitor(self, node1_name_or_ip, path):  # add network monitor behind "node" on the "path"
+
         node1_name = self.returnNodeName(node1_name_or_ip)
         logger.info(msg=f"Adding network monitor node behind {node1_name} in this path {path} ...")
 
@@ -310,6 +318,7 @@ class ServiceGraph:
         return newNodeName
 
     def move(self, node_name_or_ip, net):  # moves a node to another location
+        
         node_name = self.returnNodeName(node_name_or_ip)
         logger.info(msg=f"Moving {node_name} to {net} ...")
 
