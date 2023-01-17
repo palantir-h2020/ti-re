@@ -177,8 +177,8 @@ def prepareDataForProactiveRemediation(global_scope, threat_repository, threat_c
 
     # Add a filtering rule for both traffic directions:
     rules_level_4.append({"level": 4,
-                        "c2serversPort": artifacts["attacker_ip"],
-                        "c2serversIP": artifacts["attacker_port"],
+                        "c2serversPort": artifacts["attacker_port"],
+                        "c2serversIP": artifacts["attacker_ip"],
                         "proto": "TCP",
                         "action": "DENY"})
 
