@@ -42,6 +42,6 @@ def deleteElement(root: Element, item: str):
             result = globalFind(child, item)
             if result is not None:
                 child.remove(result)
-                return child
+                return result
     else:
         return result
