@@ -4,6 +4,7 @@ do
     case "${flag}" in
         o) OSM=${OPTARG};;
         f) RESET_SC=${OPTARG};;
+        d) KAFKA_DEBUG==${OPTARG};;
         *) echo "Invalid flags, stopping script"; exit 1 ;;
     esac
 done
@@ -15,6 +16,15 @@ elif [ "$RESET_SC" == "0" ]; then
   sed -n '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "0"/}' pod.yaml
 else
   echo "Unknown RESET_SECURITY_CONTROLS_RULES_AT_STARTUP option, pod.yaml related setting will be followed"
+fi
+if [ "$KAFKA_DEBUG" == "1" ]; then
+  echo "Using debug Kafka topics"
+  sed -n '/KAFKA_DEBUG/{n;s/.*/          value: "1"/}' pod.yaml
+elif [ "$KAFKA_DEBUG" == "0" ]; then
+  echo "Using production Kafka topics"
+  sed -n '/KAFKA_DEBUG/{n;s/.*/          value: "0"/}' pod.yaml
+else
+  echo "Unknown KAFKA_DEBUG option, pod.yaml related setting will be followed"
 fi
 echo "Refreshing code"
 cd /media/palantir-nfs/ti-re && git pull origin "v1.2"
