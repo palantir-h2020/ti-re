@@ -186,7 +186,7 @@ class RRTool:
         logger.info("Proactive remediation alert: " + msg)
         json_msg = json.loads(msg)
         logger.info("Serialized proactive remediation alert: " + str(json_msg))
-        self.jsonInput(json_msg)
+        self.performProactiveRemediation(json_msg)
 
     def performProactiveRemediation(self, proactive_remediation_alert):
 
@@ -204,11 +204,9 @@ class RRTool:
         self.service_graph_instance.plot()
 
         try:
-            print("HERE: " + str(proactive_remediation_alert["threat_category"]).casefold())
             proactive_remediation_alert["threat_category"] = str(proactive_remediation_alert["threat_category"]).casefold()
         except Exception as a:
             logger.error("Malformed alert received (ex: threat category missing), skipping...")
-            print(a.__repr__)
             return
 
         bestRecipeName = self.recipe_filter_instance.  \
