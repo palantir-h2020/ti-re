@@ -14,7 +14,7 @@ elif [ "$RESET_SC" == "0" ]; then
   echo "Existing security controls rules will be kept"
   sed -n '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "0"/}' pod.yaml
 else
-  echo "Unknown RESET_SECURITY_CAPABILITY option, pod.yaml related setting will be followed"
+  echo "Unknown RESET_SECURITY_CONTROLS_RULES_AT_STARTUP option, pod.yaml related setting will be followed"
 fi
 echo "Refreshing code"
 cd /media/palantir-nfs/ti-re && git pull origin "v1.2"
