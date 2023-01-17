@@ -15,8 +15,6 @@ def iptables_command_generator(rule, *args):
         if key not in rule:
             rule[key] = ""
 
-    print("RULE: ")
-    print(rule)
     generatedRule = getIptablesCommand(rule["victimIP"],
                                        rule["c2serversIP"],
                                        rule["victimPort"],
@@ -71,8 +69,6 @@ def getIptablesCommand(src_ip, dst_ip, src_port, dst_port, proto, chain, action)
     if action == "ALLOW":
         actionElement = globalFind(root, "rejectActionCapability")
         actionElement.tag = 'acceptActionCapability'
-
-    print(ElementTree.dump(root))
 
     tree.write(iptables_dir + os.sep + "iptables_input_for_translator.xml")
 
