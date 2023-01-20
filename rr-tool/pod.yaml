@@ -4,6 +4,7 @@ metadata:
   name: rr-tool
 spec:
   restartPolicy: OnFailure
+  terminationGracePeriodSeconds: 1
   containers:
     - name: palantir-rr-tool
       image: 10.101.10.244:5000/palantir-rr-tool:1.0
@@ -61,3 +62,11 @@ spec:
           value: "10.225.1.73"
         - name: IGRAPH_PICTURES_OUTPUT_FOLDER
           value: ""
+
+# terminationGracePeriodSeconds set to 1 s instead
+# of default 30 s to make the pod deletion process faster.
+# This is particularly useful for testing prurposes.
+# After 1 s the pod is forcefully terminated without
+# waiting for graceful shutdown.
+
+# https://stackoverflow.com/questions/71216061/changing-terminationgraceperiodseconds-value-doesnt-getting-effected-during-new
