@@ -401,6 +401,7 @@ def main():
 
         case "kafka":
             from connectors import kafka_consumer
+            misp.publish_on_misp()
             kafka_consumer.consume_topics(RRTool())
         case _:
             logger.error("Unknown RR_TOOL_MODE: "+settings.RR_TOOL_MODE)

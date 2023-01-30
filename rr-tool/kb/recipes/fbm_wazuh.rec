@@ -1,0 +1,8 @@
+list_paths from RansomwareSourceIp to WazuhServer
+   iterate_on path_list
+       find_node of type 'firewall' in iteration_element with 'level_4_filtering'
+       if found
+           allow_traffic between RansomwareSourceIp and WazuhServer
+       endif
+end_iteration
+execute 'fbm_call' RansomwareThreat RansomwareSourceIp
