@@ -24,7 +24,7 @@ def publish_on_misp():
 
     event = MISPEvent()
     event.info = 'Dummy event'
-    event.add_object({"test": "test_value"})
+    event.add_object({"test": "test_value", "name": "what_name"})
     event = misp.add_event(event, pythonify=True)
 
     # print("Total events: " + str(len(misp.events())))

@@ -400,7 +400,7 @@ def main():
             rr_tool_instance.service_graph_instance.plot()
 
         case "kafka":
-            from connectors import kafka_consumer
+            from connectors import kafka_consumer #todo remove from here after finishing testing misp
             misp.publish_on_misp()
             kafka_consumer.consume_topics(RRTool())
         case _:
