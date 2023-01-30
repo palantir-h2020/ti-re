@@ -54,7 +54,7 @@ def publish_on_misp():
     #     misp.update_attribute(attack_type_attribute)
     #     break
 
-    logger.debug("Event sent to central MISP instance: " + event)
+    logger.debug("Event sent to central MISP instance: " + str(event))
 
 
 if __name__ == "__main__":
