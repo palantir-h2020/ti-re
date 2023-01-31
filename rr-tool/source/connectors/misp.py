@@ -41,7 +41,7 @@ def publish_on_misp():
     misp_object.description = "foo"
     setattr(misp_object, 'meta-category', 'bar')
 
-    event.add_object(misp_object.to_json())
+    event.add_object(misp_object)
     #print(misp_object.to_json())
 
 
