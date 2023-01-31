@@ -1,7 +1,9 @@
 import json
 from typing import Tuple
 from pymisp import PyMISP
-from pymisp import MISPEvent, MISPAttribute
+from pymisp import MISPEvent, MISPAttribute, MISPObject
+from pymisp.tools import GenericObjectGenerator
+from uuid import uuid4
 from datetime import datetime, time, date, timedelta
 
 from helpers.logging_helper import get_logger
@@ -24,12 +26,25 @@ def publish_on_misp():
 
     event = MISPEvent()
     event.info = 'Dummy event'
-    #event.add_object({"test": "test_value", "name": "what_name"})
+    event.add_object({"test": "test_value", "name": "what_name"})
+    #event.add_attribute()
     event = misp.add_event(event, pythonify=True)
-    print("Attributi: ")
-    l = event.attributes
-    for a in l:
-        print(a)
+
+    attributeAsDict = [{'MyCoolAttribute': {'value': 'critical thing', 'type': 'text'}},
+                   {'MyCoolerAttribute': {'value': 'even worse',  'type': 'text'}}]
+
+    misp_object = GenericObjectGenerator('my-cool-template')
+    misp_object.generate_attributes(attributeAsDict)
+    # The parameters below are required if no template is provided.
+    misp_object.template_uuid = uuid4()
+    misp_object.templade_id = 1
+    misp_object.description = "foo"
+    setattr(misp_object, 'meta-category', 'bar')
+
+    event.add_object(misp_object)
+    #print(misp_object.to_json())
+
+
 
     # print("Total events: " + str(len(misp.events())))
     # today = date.today() - timedelta(days=days_from_today)
