@@ -26,7 +26,9 @@ def publish_on_misp():
     event.info = 'Dummy event'
     #event.add_object({"test": "test_value", "name": "what_name"})
     event = misp.add_event(event, pythonify=True)
-    print("Attributi: " + str(event.attributes()))
+    print("Attributi: ")
+    for a in event.attributes():
+        print(a)
 
     # print("Total events: " + str(len(misp.events())))
     # today = date.today() - timedelta(days=days_from_today)
