@@ -27,7 +27,7 @@ def publish_on_misp():
     #event.add_object({"test": "test_value", "name": "what_name"})
     event = misp.add_event(event, pythonify=True)
     print("Attributi: ")
-    l = event.attributes()
+    l = event.attributes
     for a in l:
         print(a)
 
