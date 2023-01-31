@@ -23,9 +23,10 @@ def publish_on_misp():
     misp = PyMISP(misp_url, misp_key, misp_verifycert)
 
     event = MISPEvent()
-    event.load({"test": "test_value", "name": "what_name"})
-    event.info = "Dummy event"
+    event.info = 'Dummy event'
+    #event.add_object({"test": "test_value", "name": "what_name"})
     event = misp.add_event(event, pythonify=True)
+    print("Attributi: " + str(event.attributes()))
 
     # print("Total events: " + str(len(misp.events())))
     # today = date.today() - timedelta(days=days_from_today)
