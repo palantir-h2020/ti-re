@@ -23,8 +23,8 @@ def publish_on_misp():
     misp = PyMISP(misp_url, misp_key, misp_verifycert)
 
     event = MISPEvent()
-    event.info = 'Dummy event'
     event.load({"test": "test_value", "name": "what_name"})
+    event.info = "Dummy event"
     event = misp.add_event(event, pythonify=True)
 
     # print("Total events: " + str(len(misp.events())))
