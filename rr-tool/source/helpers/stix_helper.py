@@ -85,7 +85,7 @@ def getSTIXReport(attacker_ip, c2serversPort, impacted_host_ip, threat_name):
         # Report
         reportSDO = stix2.v21.Report(name="Botnet remediation",
                                 published="2022-02-10T12:34:56Z",
-                                object_refs=[IoCSDO["id"], identitySDO["id"], ext["id"]]) # CoASDO["id"]
+                                object_refs=[IoCSDO["id"], identitySDO["id"] ]) # CoASDO["id"], ext["id"]
 
         # # Relationship between course of action and indicator of compromise
         # rel = stix2.v21.Relationship(relationship_type="mitigates", #remediates
