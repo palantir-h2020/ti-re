@@ -6,7 +6,7 @@ from pymisp.tools import GenericObjectGenerator
 from pymisp.tools import stix
 from uuid import uuid4
 from datetime import datetime, time, date, timedelta
-import misp_stix_converter.misp_stix_converter
+from misp_stix_converter import *
 
 from helpers.logging_helper import get_logger
 
