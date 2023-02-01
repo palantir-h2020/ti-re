@@ -8,24 +8,24 @@ def getSTIXReport(attacker_ip, c2serversPort, impacted_host_ip, threat_name):
         identitySDO = stix2.Identity(name='Politecnico di Torino',
                                         identity_class='organization')
 
-        ext = stix2.v21.ExtensionDefinition(created_by_ref=identitySDO["id"],
-                                            name="CACAO Course of Action",
-                                            schema="https://www.oasis.org/cacao.json",
-                                            version="0.1",
-                                            extension_types=["property-extension"],
-                                            extension_properties=["cacao_playbook"])
+        # ext = stix2.v21.ExtensionDefinition(created_by_ref=identitySDO["id"],
+        #                                     name="CACAO Course of Action",
+        #                                     schema="https://www.oasis.org/cacao.json",
+        #                                     version="0.1",
+        #                                     extension_types=["property-extension"],
+        #                                     extension_properties=["cacao_playbook"])
 
-        COASDO_EXTENSION_ID = ext["id"]
+        # COASDO_EXTENSION_ID = ext["id"]
 
-        # Declare extension class to gain STIX python library ability to detect when wrong extension parameters are
-        # given to a SDO. Read here: https://stix2.readthedocs.io/en/latest/guide/extensions.html
-        @stix2.v21.CustomExtension(
-            COASDO_EXTENSION_ID, [
-                ('cacao_playbook', stix2.properties.DictionaryProperty(required=True))
-            ],
-        )
-        class CACAOPropertyExtension:
-            extension_type = 'property-extension'
+        # # Declare extension class to gain STIX python library ability to detect when wrong extension parameters are
+        # # given to a SDO. Read here: https://stix2.readthedocs.io/en/latest/guide/extensions.html
+        # @stix2.v21.CustomExtension(
+        #     COASDO_EXTENSION_ID, [
+        #         ('cacao_playbook', stix2.properties.DictionaryProperty(required=True))
+        #     ],
+        # )
+        # class CACAOPropertyExtension:
+        #     extension_type = 'property-extension'
 
         # Pattern used by the indicator of compromise
         IoCPattern = ("[network-traffic:dst_ref.type = 'ipv4-addr' AND "
@@ -71,27 +71,27 @@ def getSTIXReport(attacker_ip, c2serversPort, impacted_host_ip, threat_name):
                                             "phase_name": "Command and Control"}],
                                     labels= ["malicious-activity"])
 
-        # Course of action
-        CoASDO = stix2.v21.CourseOfAction(description="This a CACAO Playbook course of action for a rule of type level 4 filtering ",
-                                        name="CACAO Playbook",
-                                        extensions={
-                                            COASDO_EXTENSION_ID : {
-                                                'extension_type': 'property-extension',
-                                                "cacao_playbook": remediationPlaybook.toDict()
-                                            },
-                                        },
-                                        created_by_ref=identitySDO["id"])
+        # # Course of action
+        # CoASDO = stix2.v21.CourseOfAction(description="This a CACAO Playbook course of action for a rule of type level 4 filtering ",
+        #                                 name="CACAO Playbook",
+        #                                 extensions={
+        #                                     COASDO_EXTENSION_ID : {
+        #                                         'extension_type': 'property-extension',
+        #                                         "cacao_playbook": remediationPlaybook.toDict()
+        #                                     },
+        #                                 },
+        #                                 created_by_ref=identitySDO["id"])
 
         # Report
         reportSDO = stix2.v21.Report(name="Botnet remediation",
                                 published="2022-02-10T12:34:56Z",
-                                object_refs=[IoCSDO["id"], CoASDO["id"], identitySDO["id"], ext["id"]])
+                                object_refs=[IoCSDO["id"], identitySDO["id"], ext["id"]]) # CoASDO["id"]
 
-        # Relationship between course of action and indicator of compromise
-        rel = stix2.v21.Relationship(relationship_type="mitigates", #remediates
-                                        source_ref=CoASDO["id"],
-                                        target_ref=IoCSDO["id"],
-                                        created_by_ref=identitySDO["id"])
+        # # Relationship between course of action and indicator of compromise
+        # rel = stix2.v21.Relationship(relationship_type="mitigates", #remediates
+        #                                 source_ref=CoASDO["id"],
+        #                                 target_ref=IoCSDO["id"],
+        #                                 created_by_ref=identitySDO["id"])
 
         # Relationship between identitySDO and the report
         rel2 = stix2.v21.Relationship(relationship_type="refers-to",
@@ -117,6 +117,9 @@ def getSTIXReport(attacker_ip, c2serversPort, impacted_host_ip, threat_name):
                                     count=1,
                                     observed_data_refs=[ObservedDataSDO["id"]])
 
-        mem.add([rel, rel2, rel3, rel4, reportSDO, IoCSDO, CoASDO, identitySDO, sig, ext, ObservedDataSDO, attackerIpSCO, impactedHostIpSCO, trafficSCO, MalwareSDO])
+        # mem.add([rel2, rel3, rel4, reportSDO, IoCSDO, identitySDO, sig, ObservedDataSDO, attackerIpSCO, impactedHostIpSCO, trafficSCO, MalwareSDO]) #CoASDO, rel, ext
+        bundle = stix2.v21.Bundle([rel2, rel3, rel4, reportSDO, IoCSDO, identitySDO, sig, ObservedDataSDO, attackerIpSCO, impactedHostIpSCO, trafficSCO, MalwareSDO])
 
-        mem.save_to_file("RemediationReport.json")
+        json_stix = bundle.serialize()
+
+        return json_stix

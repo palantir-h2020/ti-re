@@ -3,6 +3,7 @@ from typing import Tuple
 from pymisp import PyMISP
 from pymisp import MISPEvent, MISPAttribute, MISPObject
 from pymisp.tools import GenericObjectGenerator
+from pymisp.tools import stix as stixtomisp
 from uuid import uuid4
 from datetime import datetime, time, date, timedelta
 
@@ -20,29 +21,41 @@ misp_verifycert = False
 
 #https://pymisp.readthedocs.io/en/latest/tools.html#module-pymisp.tools.stix
 
-def publish_on_misp():
+def publish_on_misp(report = None):
 
     misp = PyMISP(misp_url, misp_key, misp_verifycert)
 
-    event = MISPEvent()
-    event.info = 'Dummy event2'
+    # event = MISPEvent()
+    # event.info = 'Dummy event2'
 
-    attributeAsDict = [{'MyCoolAttribute': {'value': 'critical thing', 'type': 'text'}},
-                   {'MyCoolerAttribute': {'value': 'even worse',  'type': 'text'}}]
+    # attributeAsDict = [{'MyCoolAttribute': {'value': 'critical thing', 'type': 'text'}},
+    #                {'MyCoolerAttribute': {'value': 'even worse',  'type': 'text'}}]
+    # misp_object = GenericObjectGenerator('my-cool-template')
+    # misp_object.generate_attributes(attributeAsDict)
+    # # The parameters below are required if no template is provided.
+    # misp_object.template_uuid = uuid4()
+    # misp_object.templade_id = 1
+    # misp_object.description = "foo"
+    # setattr(misp_object, 'meta-category', 'bar')
 
-    misp_object = GenericObjectGenerator('my-cool-template')
-    misp_object.generate_attributes(attributeAsDict)
-    # The parameters below are required if no template is provided.
-    misp_object.template_uuid = uuid4()
-    misp_object.templade_id = 1
-    misp_object.description = "foo"
-    setattr(misp_object, 'meta-category', 'bar')
+    event = stixtomisp.load_stix(report)
 
-    event.add_object(misp_object)
+    # dict_attr = {
+    #     "type": "ip-dst",
+    #     "value": "127.0.0.1",
+    #     "category": "Network activity",
+    #     "to_ids": False
+    # }
+    # json_attr = json.dumps(dict_attr)
+
+    # attribute = MISPAttribute()
+    # attribute.from_json(json_attr)
+    # print(attribute)
+
+    # event.add_object(misp_object)
 
     event = misp.add_event(event, pythonify=True)
     #print(misp_object.to_json())
-
 
 
     # print("Total events: " + str(len(misp.events())))

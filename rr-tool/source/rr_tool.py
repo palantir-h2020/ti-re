@@ -5,6 +5,7 @@ import sys
 from typing import Dict
 
 from helpers import igraph_helper
+from helpers import stix_helper
 from input_analyzer import input_analyzer
 from recipe_interpreter import recipe_interpreter
 from recipe_filter import recipe_filter
@@ -400,8 +401,9 @@ def main():
             rr_tool_instance.service_graph_instance.plot()
 
         case "kafka":
-            from connectors import kafka_consumer #todo remove from here after finishing testing misp
-            misp.publish_on_misp()
+            from connectors import kafka_consumer
+            jsone = stix_helper.getSTIXReport("1.1.1.1", "22", "2.2.2.2", "test")
+            misp.publish_on_misp(jsone) #todo remove from here after finishing testing misp
             kafka_consumer.consume_topics(RRTool())
         case _:
             logger.error("Unknown RR_TOOL_MODE: "+settings.RR_TOOL_MODE)
