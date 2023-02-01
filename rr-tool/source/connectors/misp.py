@@ -25,10 +25,7 @@ def publish_on_misp():
     misp = PyMISP(misp_url, misp_key, misp_verifycert)
 
     event = MISPEvent()
-    event.info = 'Dummy event'
-    event.add_object({"test": "test_value", "name": "what_name"})
-    #event.add_attribute()
-    event = misp.add_event(event, pythonify=True)
+    event.info = 'Dummy event2'
 
     attributeAsDict = [{'MyCoolAttribute': {'value': 'critical thing', 'type': 'text'}},
                    {'MyCoolerAttribute': {'value': 'even worse',  'type': 'text'}}]
@@ -42,6 +39,8 @@ def publish_on_misp():
     setattr(misp_object, 'meta-category', 'bar')
 
     event.add_object(misp_object)
+
+    event = misp.add_event(event, pythonify=True)
     #print(misp_object.to_json())
 
 
