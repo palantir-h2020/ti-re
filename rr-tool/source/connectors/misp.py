@@ -3,9 +3,10 @@ from typing import Tuple
 from pymisp import PyMISP
 from pymisp import MISPEvent, MISPAttribute, MISPObject
 from pymisp.tools import GenericObjectGenerator
-from pymisp.tools import stix as stixtomisp
+from pymisp.tools import stix
 from uuid import uuid4
 from datetime import datetime, time, date, timedelta
+import misp_stix_converter.misp_stix_converter
 
 from helpers.logging_helper import get_logger
 
@@ -38,7 +39,7 @@ def publish_on_misp(report = None):
     # misp_object.description = "foo"
     # setattr(misp_object, 'meta-category', 'bar')
 
-    event = stixtomisp.load_stix(report)
+    event = stix.load_stix(report)
 
     # dict_attr = {
     #     "type": "ip-dst",

@@ -15,7 +15,6 @@ import settings
 from helpers.rr_tool_helper import load_json_folder_as_dict
 from settings import TOOL_DIR
 from helpers.logging_helper import get_logger
-import misp_stix_converter
 
 logger = get_logger('rr-tool')
 
