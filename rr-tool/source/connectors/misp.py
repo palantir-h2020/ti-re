@@ -52,12 +52,12 @@ def publish_on_misp():
 
     # event.add_object(misp_object)
 
-    with open("imddos.json") as misp_event_file:
-        misp_event_json = json.load(misp_event_file)
+    # with open("imddos.json") as misp_event_file:
+    #     misp_event_json = json.load(misp_event_file)
 
-    json_string = json.dumps(misp_event_json)
+    # json_string = json.dumps(misp_event_json)
 
-    event = MISPEvent().from_json(json_string)
+    event = MISPEvent.load_file("imddos.json")
 
     event = misp.add_event(event, pythonify=True)
 
