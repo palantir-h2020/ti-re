@@ -405,6 +405,7 @@ def main():
             jsone = stix_helper.getSTIXReport("1.1.1.1", "22", "2.2.2.2", "test")
             with open("rem_report.json", "w") as outfile:
                 json.dump(jsone, outfile)
+            logger.log("got stix report")
             misp.publish_on_misp("rem_report.json") #todo remove from here after finishing testing misp
             kafka_consumer.consume_topics(RRTool())
         case _:

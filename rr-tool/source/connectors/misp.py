@@ -53,7 +53,9 @@ def publish_on_misp(report_filename = None):
 
     # event.add_object(misp_object)
 
-    stix_2_to_misp(report_filename)
+    conversion = stix_2_to_misp(report_filename)
+
+    logger.log("successfull conversion:" + conversion)
 
     with open(f"{report_filename}") as misp_event_file:
         misp_event_json = json.load(misp_event_file)
