@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-while getopts o:f:d: flag
+BRANCH="v1.2"
+while getopts o:f:d:b: flag
 do
     case "${flag}" in
         o) OSM=${OPTARG};;
         f) RESET_SC=${OPTARG};;
         d) KAFKA_DEBUG=${OPTARG};;
+        b) BRANCH=${OPTARG};;
         *) echo "Invalid flags, stopping script"; exit 1 ;;
     esac
 done
@@ -27,7 +29,7 @@ else
   echo "Unknown KAFKA_DEBUG option, pod.yaml related setting will be followed"
 fi
 echo "Refreshing code"
-cd /media/palantir-nfs/ti-re && git pull origin "v1.2"
+cd /media/palantir-nfs/ti-re && git fetch && git checkout "$BRANCH" && git pull origin "$BRANCH"
 echo "Rebuilding RR-tool docker image..."
 cd /media/palantir-nfs/ti-re/rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0
 if [ "$OSM" == "0" ]; then
