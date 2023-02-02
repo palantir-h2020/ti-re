@@ -6,7 +6,6 @@ from pymisp.tools import GenericObjectGenerator
 from pymisp.tools import stix
 from uuid import uuid4
 from datetime import datetime, time, date, timedelta
-from misp_stix_converter import *
 
 from helpers.logging_helper import get_logger
 
@@ -39,8 +38,6 @@ def publish_on_misp(report = None):
     # misp_object.description = "foo"
     # setattr(misp_object, 'meta-category', 'bar')
 
-    event = stix.load_stix(report)
-
     # dict_attr = {
     #     "type": "ip-dst",
     #     "value": "127.0.0.1",
@@ -55,7 +52,7 @@ def publish_on_misp(report = None):
 
     # event.add_object(misp_object)
 
-    event = misp.add_event(event, pythonify=True)
+    #event = misp.add_event(event, pythonify=True)
     #print(misp_object.to_json())
 
 
@@ -86,7 +83,7 @@ def publish_on_misp(report = None):
     #     misp.update_attribute(attack_type_attribute)
     #     break
 
-    logger.debug("Event sent to central MISP instance: " + str(event))
+    #logger.debug("Event sent to central MISP instance: " + str(event))
 
 
 if __name__ == "__main__":
