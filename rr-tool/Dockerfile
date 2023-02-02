@@ -1,7 +1,7 @@
 FROM python:3.11-bullseye
 RUN apt-get update -y && apt-get -y install openjdk-17-jre
-RUN python3 -m pip install --upgrade pip
 ## Not needed, directly install confluent-kafka from python requirements
+#RUN python3 -m pip install --upgrade pip
 #RUN apt-get update -y && apt-get -y install cmake protobuf-compiler wget gnupg software-properties-common openjdk-17-jre
 #RUN wget -qO - https://packages.confluent.io/deb/7.0/archive.key | apt-key add -
 #RUN add-apt-repository "deb [arch=amd64] https://packages.confluent.io/deb/7.0 stable main"
