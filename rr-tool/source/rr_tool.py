@@ -402,8 +402,10 @@ def main():
 
         case "kafka":
             from connectors import kafka_consumer
-            # jsone = stix_helper.getSTIXReport("1.1.1.1", "22", "2.2.2.2", "test")
-            # misp.publish_on_misp(jsone) #todo remove from here after finishing testing misp
+            jsone = stix_helper.getSTIXReport("1.1.1.1", "22", "2.2.2.2", "test")
+            with open("rem_report.json", "w") as outfile:
+                json.dump(jsone, outfile)
+            misp.publish_on_misp("rem_report.json") #todo remove from here after finishing testing misp
             kafka_consumer.consume_topics(RRTool())
         case _:
             logger.error("Unknown RR_TOOL_MODE: "+settings.RR_TOOL_MODE)

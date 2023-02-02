@@ -6,6 +6,7 @@ from pymisp.tools import GenericObjectGenerator
 from pymisp.tools import stix
 from uuid import uuid4
 from datetime import datetime, time, date, timedelta
+from misp_stix_converter import stix_2_to_misp
 
 from helpers.logging_helper import get_logger
 
@@ -21,7 +22,7 @@ misp_verifycert = False
 
 #https://pymisp.readthedocs.io/en/latest/tools.html#module-pymisp.tools.stix
 
-def publish_on_misp(report = None):
+def publish_on_misp(report_filename = None):
 
     misp = PyMISP(misp_url, misp_key, misp_verifycert)
 
@@ -52,7 +53,15 @@ def publish_on_misp(report = None):
 
     # event.add_object(misp_object)
 
-    #event = misp.add_event(event, pythonify=True)
+    stix_2_to_misp(report_filename)
+
+    with open(f"{report_filename}") as misp_event_file:
+        misp_event_json = json.load(misp_event_file)
+
+    event = MISPEvent().from_json(misp_event_json)
+
+    event = misp.add_event(event, pythonify=True)
+
     #print(misp_object.to_json())
 
 
