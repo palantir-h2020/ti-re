@@ -10,7 +10,7 @@ RUN pip3 install --no-binary :all: confluent-kafka
 ADD requirements.txt /usr/src/
 WORKDIR /usr/src
 RUN python3 -m pip install -r requirements.txt
-RUN git clone https://github.com/MISP/misp-stix.git /usr/src/rr-tool && cd misp-stix && git submodule update --init && poetry install
+RUN git clone https://github.com/MISP/misp-stix.git /usr/src/rr-tool && cd /usr/src/rr-tool/misp-stix && git submodule update --init && poetry install
 ADD . /usr/src/rr-tool
 WORKDIR /usr/src/rr-tool
 ENV PYTHONUNBUFFERED 1
