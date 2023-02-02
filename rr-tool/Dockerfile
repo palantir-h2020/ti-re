@@ -12,6 +12,7 @@ WORKDIR /usr/src
 RUN python3 -m pip install -r requirements.txt
 WORKDIR /usr/src/rr-tool
 ADD . /usr/src/rr-tool
-RUN git clone https://github.com/MISP/misp-stix.git && git submodule update --init && poetry install
+RUN git clone https://github.com/MISP/misp-stix.git
+RUN git submodule update --init && poetry install
 ENV PYTHONUNBUFFERED 1
 ENTRYPOINT ["python3", "/usr/src/rr-tool/source/rr_tool.py"]
