@@ -1,0 +1,158 @@
+{
+    "uuid": "c6c7ebc4-3f65-4375-b22d-313e894ab3d5",
+    "Attribute": [
+        {
+            "uuid": "691d06b5-aa1d-46ec-97d6-e59ef9411b8a",
+            "Galaxy": [
+                {
+                    "GalaxyCluster": [
+                        {
+                            "meta": {
+                                "kill_chain": [
+                                    "lockheed-martin-cyber-kill-chain:exploit"
+                                ],
+                                "labels": [
+                                    "bot",
+                                    "ddos"
+                                ]
+                            },
+                            "default": false,
+                            "distribution": "0",
+                            "type": "malware",
+                            "value": "IMDDOS",
+                            "description": "Once infected with this malware, a host becomes part of the IMDDOS Botnet"
+                        }
+                    ],
+                    "type": "malware",
+                    "name": "Malware",
+                    "description": "Malware is a type of TTP that represents malicious code. It generally refers to a program that is inserted into a system, usually covertly. The intent is to compromise the confidentiality, integrity, or availability of the victim's data, applications, or operating system (OS) or otherwise annoy or disrupt the victim."
+                }
+            ],
+            "type": "domain",
+            "value": "imddos.my03.com",
+            "category": "Network activity",
+            "to_ids": true,
+            "timestamp": "1500415230",
+            "first_seen": "2010-04-01T00:00:00+00:00",
+            "disable_correlation": false,
+            "comment": "References to this domain are indicative of the presence of the IMDDOS malware in the environment",
+            "object_relation": "domain"
+        }
+    ],
+    "Object": [
+        {
+            "name": "stix2-pattern",
+            "meta-category": "misc",
+            "template_uuid": "0c5bd072-7c3e-4d45-86f7-a8104d9143b9",
+            "description": "An object describing a STIX pattern. The object can be linked via a relationship to other attributes or objects to describe how it can be represented as a STIX pattern.",
+            "template_version": "4",
+            "uuid": "ca26195e-e3c0-4139-8e21-0af90c89bd27",
+            "Attribute": [
+                {
+                    "uuid": "6d86a50c-9892-47c0-a2ce-4b5841b70952",
+                    "Galaxy": [
+                        {
+                            "GalaxyCluster": [
+                                {
+                                    "meta": {
+                                        "kill_chain": [
+                                            "lockheed-martin-cyber-kill-chain:exploit"
+                                        ],
+                                        "labels": [
+                                            "bot",
+                                            "ddos"
+                                        ]
+                                    },
+                                    "default": false,
+                                    "distribution": "0",
+                                    "type": "malware",
+                                    "value": "IMDDOS",
+                                    "description": "Once infected with this malware, a host becomes part of the IMDDOS Botnet"
+                                }
+                            ],
+                            "type": "malware",
+                            "name": "Malware",
+                            "description": "Malware is a type of TTP that represents malicious code. It generally refers to a program that is inserted into a system, usually covertly. The intent is to compromise the confidentiality, integrity, or availability of the victim's data, applications, or operating system (OS) or otherwise annoy or disrupt the victim."
+                        }
+                    ],
+                    "object_relation": "version",
+                    "value": "stix 2.0",
+                    "type": "text",
+                    "disable_correlation": true,
+                    "to_ids": false,
+                    "category": "Other"
+                },
+                {
+                    "uuid": "e2d9fab5-5b79-4fdb-b503-15617dda05b3",
+                    "Galaxy": [
+                        {
+                            "GalaxyCluster": [
+                                {
+                                    "meta": {
+                                        "kill_chain": [
+                                            "lockheed-martin-cyber-kill-chain:exploit"
+                                        ],
+                                        "labels": [
+                                            "bot",
+                                            "ddos"
+                                        ]
+                                    },
+                                    "default": false,
+                                    "distribution": "0",
+                                    "type": "malware",
+                                    "value": "IMDDOS",
+                                    "description": "Once infected with this malware, a host becomes part of the IMDDOS Botnet"
+                                }
+                            ],
+                            "type": "malware",
+                            "name": "Malware",
+                            "description": "Malware is a type of TTP that represents malicious code. It generally refers to a program that is inserted into a system, usually covertly. The intent is to compromise the confidentiality, integrity, or availability of the victim's data, applications, or operating system (OS) or otherwise annoy or disrupt the victim."
+                        }
+                    ],
+                    "object_relation": "stix2-pattern",
+                    "value": "[windows-registry-key:key LIKE 'HKEY_LOCAL_MACHINE\\\\System\\\\CurrentControlSet\\\\Services\\\\SafePrec%' ]",
+                    "type": "stix2-pattern",
+                    "disable_correlation": false,
+                    "to_ids": true,
+                    "category": "Payload installation"
+                }
+            ],
+            "distribution": "5",
+            "sharing_group_id": "0",
+            "timestamp": "1500415230",
+            "first_seen": "2010-04-01T00:00:00+00:00",
+            "comment": "Presence of this registry key on a host indicates it is infected with the IMDDOS malware"
+        }
+    ],
+    "Tag": [
+        {
+            "tag_name": "statement:Copyright 2010, Damballa, Inc  All Rights Reserved",
+            "used": false
+        }
+    ],
+    "Galaxy": [
+        {
+            "GalaxyCluster": [
+                {
+                    "meta": {
+                        "labels": [
+                            "criminal"
+                        ]
+                    },
+                    "default": false,
+                    "distribution": "0",
+                    "type": "threat-actor",
+                    "value": "(Unnamed) IMDDOS Threat Actor",
+                    "description": "(unnamed) imddos threat actor"
+                }
+            ],
+            "type": "threat-actor",
+            "name": "Threat Actor",
+            "description": "Threat Actors are actual individuals, groups, or organizations believed to be operating with malicious intent. A Threat Actor is not an Intrusion Set but may support or be affiliated with various Intrusion Sets, groups, or organizations over time."
+        }
+    ],
+    "info": "IMDDOS Botnet",
+    "timestamp": "1500415230",
+    "published": true,
+    "publish_timestamp": 1284336000
+}
