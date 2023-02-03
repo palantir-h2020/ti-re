@@ -44,7 +44,7 @@ def publish_on_misp():
     mitre_attack_pattern_tag =  'misp-galaxy:mitre-attack-pattern="AppCert DLLs - T1182'
     mitre_attack_pattern_tag =  'misp-galaxy:mitre-attack-pattern="Phishing - T1566'
 
-    event.add_tag(mitre_attack_pattern_tag)
+    attribute2.add_tag(mitre_attack_pattern_tag)
 
     event = misp.add_event(event)
 
