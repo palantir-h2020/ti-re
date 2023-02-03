@@ -5,6 +5,7 @@ import sys
 from typing import Dict
 
 from helpers import igraph_helper
+from helpers import stix_helper
 from input_analyzer import input_analyzer
 from recipe_interpreter import recipe_interpreter
 from recipe_filter import recipe_filter
@@ -360,11 +361,16 @@ class RRTool:
 
         recipe_interpreter_instance.remediate_new(bestRecipeName)
 
+        stix_report_json, stix_report_base64 = stix_helper.getSTIXReport(self.global_scope,
+                                                                        threat_type=alert["Threat_Category"])
+
+        misp.publish_on_misp(self.global_scope,
+                            stix_report_json,
+                            stix_report_base64,
+                            threat_type=alert["Threat_Category"])
+
         #todo send proactive after having filtered private data
 
-        #todo send stix+cacao to misp instance through misp connector
-
-        # misp.send_event("event")
 
     def selectRecipeManually(self):
         """Manually select which recipe to apply, according to the list shown in the terminal.
@@ -402,7 +408,7 @@ def main():
         case "kafka":
             from connectors import kafka_consumer
 
-            misp.publish_on_misp() #todo remove from here after finishing testing misp
+            misp.publish_on_misp_test() #todo remove from here after finishing testing misp
 
             kafka_consumer.consume_topics(RRTool())
         case _:

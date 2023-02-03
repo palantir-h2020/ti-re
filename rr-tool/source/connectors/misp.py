@@ -22,9 +22,9 @@ misp_verifycert = False
 
 #https://pymisp.readthedocs.io/en/latest/tools.html#module-pymisp.tools.stix
 
-def publish_on_misp():
+def publish_on_misp_test():
 
-    stix_report_json, stix_report_base64 = stix_helper.getSTIXReport("1.1.1.1", "22", "2.2.2.2", "test")
+    stix_report_json, stix_report_base64 = stix_helper.getSTIXReport_test("1.1.1.1", "22", "2.2.2.2", "test")
 
     misp = PyMISP(misp_url, misp_key, misp_verifycert)
 
@@ -38,9 +38,8 @@ def publish_on_misp():
     attribute2 = event.add_attribute(type="text",
                                     value=stix_report_base64)
 
-    attribute2 = event.add_attribute(type="ip-dst",
+    attribute3 = event.add_attribute(type="ip-dst",
                                     value="1.1.1.1")
-
 
     # mitre tags: https://github.com/MISP/PyMISP/issues/479
 
@@ -50,6 +49,26 @@ def publish_on_misp():
     # A MITRE attack pattern tag can be appended both to the event and the event's attributes
     event.add_tag(mitre_attack_pattern_tag)
     attribute2.add_tag(mitre_attack_pattern_tag2)
+
+    event = misp.add_event(event)
+
+def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_type):
+
+    misp = PyMISP(misp_url, misp_key, misp_verifycert)
+
+    event = MISPEvent()
+
+    attribute1 = event.add_attribute(type="text",
+                                    value=stix_report_json)
+
+    attribute2 = event.add_attribute(type="text",
+                                    value=stix_report_base64)
+
+    if threat_type == "unauthorized_access":
+        pass
+    elif threat_type == "botnet":
+        pass
+
 
     event = misp.add_event(event)
 
