@@ -65,8 +65,10 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
                                     value=stix_report_base64)
 
     if threat_type == "unauthorized_access":
+        event.info = "Unauthorized access report"
         pass
     elif threat_type == "botnet":
+        event.info = "Botnet report"
         pass
 
 
