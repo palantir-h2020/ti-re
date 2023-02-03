@@ -41,10 +41,15 @@ def publish_on_misp():
     attribute2 = event.add_attribute(type="ip-dst",
                                     value="1.1.1.1")
 
-    mitre_attack_pattern_tag =  'misp-galaxy:mitre-attack-pattern="AppCert DLLs - T1182'
-    mitre_attack_pattern_tag =  'misp-galaxy:mitre-attack-pattern="Phishing - T1566'
 
-    attribute2.add_tag(mitre_attack_pattern_tag)
+    # mitre tags: https://github.com/MISP/PyMISP/issues/479
+
+    mitre_attack_pattern_tag =  'misp-galaxy:mitre-attack-pattern="AppCert DLLs - T1182'
+    mitre_attack_pattern_tag2 =  'misp-galaxy:mitre-attack-pattern="Phishing - T1566'
+
+    # A MITRE attack pattern tag can be appended both to the event and the event's attributes
+    event.add_tag(mitre_attack_pattern_tag)
+    attribute2.add_tag(mitre_attack_pattern_tag2)
 
     event = misp.add_event(event)
 
