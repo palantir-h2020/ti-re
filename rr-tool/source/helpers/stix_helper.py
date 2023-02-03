@@ -1,3 +1,4 @@
+import base64
 import stix2
 
 
@@ -120,6 +121,26 @@ def getSTIXReport(attacker_ip, c2serversPort, impacted_host_ip, threat_name):
         # mem.add([rel2, rel3, rel4, reportSDO, IoCSDO, identitySDO, sig, ObservedDataSDO, attackerIpSCO, impactedHostIpSCO, trafficSCO, MalwareSDO]) #CoASDO, rel, ext
         bundle = stix2.v21.Bundle([rel2, rel3, rel4, reportSDO, IoCSDO, identitySDO, sig, ObservedDataSDO, attackerIpSCO, impactedHostIpSCO, trafficSCO, MalwareSDO])
 
-        json_stix = bundle.serialize()
+        json_stix = bundle.serialize(pretty=True)
 
-        return json_stix
+        # Encode the string as base64
+        base64_bytes = base64.b64encode(json_stix.encode('utf-8'))
+
+        # Decode the base64 bytes to a string
+        base64_string = base64_bytes.decode('utf-8')
+
+        return json_stix, base64_string
+
+if __name__ == "__main__":
+
+    stix_report_json = getSTIXReport("1.1.1.1", "22", "2.2.2.2", "test")
+
+    print(stix_report_json)
+
+    # Encode the string as base64
+    base64_bytes = base64.b64encode(stix_report_json.encode('utf-8'))
+
+    # Decode the base64 bytes to a string
+    base64_string = base64_bytes.decode('utf-8')
+
+    print(base64_string)

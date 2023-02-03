@@ -6,6 +6,7 @@ from pymisp.tools import GenericObjectGenerator
 from pymisp.tools import stix
 from uuid import uuid4
 from datetime import datetime, time, date, timedelta
+from helpers import stix_helper
 
 from helpers.logging_helper import get_logger
 
@@ -23,10 +24,21 @@ misp_verifycert = False
 
 def publish_on_misp():
 
+    stix_report_json, stix_report_base64 = stix_helper.getSTIXReport("1.1.1.1", "22", "2.2.2.2", "test")
+
     misp = PyMISP(misp_url, misp_key, misp_verifycert)
 
-    # event = MISPEvent()
-    # event.info = 'Dummy event2'
+    event = MISPEvent()
+
+    event.info = "This is my new MISP event"
+
+    attribute1 = event.add_attribute(type="text",
+                                    value=stix_report_json)
+
+    attribute2 = event.add_attribute(type="text",
+                                    value=stix_report_base64)
+
+    event = misp.add_event(event)
 
     # attributeAsDict = [{'MyCoolAttribute': {'value': 'critical thing', 'type': 'text'}},
     #                {'MyCoolerAttribute': {'value': 'even worse',  'type': 'text'}}]
@@ -57,13 +69,7 @@ def publish_on_misp():
 
     # json_string = json.dumps(misp_event_json)
 
-    #event = MISPEvent.load_file(event_path="./imddos.json")
 
-    with open("imddos.json", "r") as file:
-        event = json.loads(file.read())
-
-
-    event = misp.add_event(event)
 
     #print(misp_object.to_json())
 
