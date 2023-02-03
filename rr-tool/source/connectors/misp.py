@@ -35,11 +35,15 @@ def publish_on_misp():
     attribute1 = event.add_attribute(type="text",
                                     value=stix_report_json)
 
-    attribute1 = event.add_attribute(type="text",
-                                    value=stix_report_json)
+    attribute2 = event.add_attribute(type="text",
+                                    value=stix_report_base64)
 
     attribute2 = event.add_attribute(type="ip-dst",
                                     value="1.1.1.1")
+
+    mitre_attack_pattern_tag =  'misp-galaxy:mitre-attack-pattern="AppCert DLLs - T1182'
+
+    event.add_tag(mitre_attack_pattern_tag)
 
     event = misp.add_event(event)
 
