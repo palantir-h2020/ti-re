@@ -32,7 +32,7 @@ def publish_on_misp():
 
     event.info = "This is my new MISP event"
 
-    attribute1 = event.add_attribute(type="stix_report_json",
+    attribute1 = event.add_attribute(type="text",
                                     value=stix_report_json)
 
     attribute1 = event.add_attribute(type="text",
