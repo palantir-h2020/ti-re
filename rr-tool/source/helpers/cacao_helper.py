@@ -1,6 +1,9 @@
 import json
 import base64
 
+from helpers.logging_helper import get_logger
+
+logger = get_logger('cacao_helper')
 
 def getCACAOPlaybook(global_scope, threat_type):
 
@@ -12,5 +15,7 @@ def getCACAOPlaybook(global_scope, threat_type):
 
     # Decode the base64 bytes to a string
     playbook_base64_string = playbook_base64_bytes.decode('utf-8')
+
+    logger.info(f"Produced CACAO Security Playbook Report")
 
     return playbook_json, playbook_base64_string

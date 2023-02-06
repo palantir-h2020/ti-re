@@ -6,6 +6,10 @@ from stix2.v21 import (
     TLP_AMBER, TLP_GREEN, TLP_RED, TLP_WHITE,
 )
 
+from helpers.logging_helper import get_logger
+
+logger = get_logger('stix-helper')
+
 
 def getSTIXReport(global_scope, threat_type):
 
@@ -157,6 +161,8 @@ def getSTIXReport_botnet(global_scope):
 
         # Decode the base64 bytes to a string
         base64_string_stix = base64_bytes.decode('utf-8')
+
+        logger.info(f"Produced STIX Report")
 
         return json_string_stix, base64_string_stix
 

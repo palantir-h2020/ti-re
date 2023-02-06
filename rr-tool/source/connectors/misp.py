@@ -10,7 +10,7 @@ from helpers import stix_helper
 
 from helpers.logging_helper import get_logger
 
-logger = get_logger('misp')
+logger = get_logger("misp")
 
 # import requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
 
@@ -188,6 +188,8 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
     #     break
 
     #logger.debug("Event sent to central MISP instance: " + str(event))
+
+    logger.info(f"Sent MISP event to MISP instance")
 
 
 if __name__ == "__main__":
