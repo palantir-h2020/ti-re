@@ -97,7 +97,7 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
     elif threat_type == "botnet":
         event.info = "Botnet report"
         attacker_ip = global_scope.get("attacker_ip")
-        c2serversPort = global_scope("c2serversPort")
+        c2serversPort = global_scope.get("c2serversPort")
         impacted_host_ip = global_scope.get("impacted_host_ip")
         stix_ioc_pattern = global_scope.get("stix_ioc_pattern")
 
