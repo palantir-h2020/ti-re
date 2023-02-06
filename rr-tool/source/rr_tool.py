@@ -6,6 +6,7 @@ from typing import Dict
 
 from helpers import igraph_helper
 from helpers import stix_helper
+from helpers import cacao_helper
 from input_analyzer import input_analyzer
 from recipe_interpreter import recipe_interpreter
 from recipe_filter import recipe_filter
@@ -195,6 +196,8 @@ class RRTool:
         # First clean global_scope status
         self.global_scope.clear()
 
+        self.global_scope["organization_id"] = settings.RR_INSTANCE_ID
+
         instance_identifier = settings.RR_INSTANCE_ID
         if proactive_remediation_alert["rr_tool_instance_id"] == instance_identifier:
             # The instance received a message produced by itself. Just ignore it
@@ -298,6 +301,8 @@ class RRTool:
         # First clean global_scope status
         self.global_scope.clear()
 
+        self.global_scope["organization_id"] = settings.RR_INSTANCE_ID
+
         logger.info(alert)
 
         self.service_graph_instance.plot()
@@ -360,6 +365,13 @@ class RRTool:
         #recipe_interpreter_instance.remediate(recipeToRun)
 
         recipe_interpreter_instance.remediate_new(bestRecipeName)
+
+
+        cacao_playbook_json, cacao_playbook_base64 = cacao_helper.getCACAOPlaybook(self.global_scope,
+                                                                        threat_type=alert["Threat_Category"])
+
+        self.global_scope["cacao_playbook_json"] = cacao_playbook_json
+        self.global_scope["cacao_playbook_base64"] = cacao_playbook_base64
 
         stix_report_json, stix_report_base64 = stix_helper.getSTIXReport(self.global_scope,
                                                                         threat_type=alert["Threat_Category"])

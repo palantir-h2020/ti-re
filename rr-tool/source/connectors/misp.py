@@ -22,9 +22,13 @@ misp_verifycert = False
 
 #https://pymisp.readthedocs.io/en/latest/tools.html#module-pymisp.tools.stix
 
+
+# PyMISP tutorial
+# https://github.com/MISP/PyMISP/blob/main/docs/tutorial/FullOverview.ipynb
+
 def publish_on_misp_test():
 
-    stix_report_json, stix_report_base64 = stix_helper.getSTIXReport_test("1.1.1.1", "22", "2.2.2.2", "test")
+    stix_report_json, stix_report_base64 = stix_helper.getSTIXReport_test()
 
     misp = PyMISP(misp_url, misp_key, misp_verifycert)
 
@@ -58,17 +62,60 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
 
     event = MISPEvent()
 
+    organization_id = global_scope["organization_ide"]
+
     attribute1 = event.add_attribute(type="text",
                                     value=stix_report_json)
 
     attribute2 = event.add_attribute(type="text",
                                     value=stix_report_base64)
 
+    # MISP security playbook object schema
+    # https://github.com/MISP/misp-objects/blob/main/objects/security-playbook/definition.json
+    playbook_object = MISPObject("security-playbook", standalone=False)
+    playbook_object.comment = "Remediation playbook"
+    playbook_object.add_attribute("playbook-file",
+                                value=global_scope["cacao_playbook_json"])
+    playbook_object.add_attribute("playbook-base64",
+                                value=global_scope["cacao_playbook_base64"])
+    playbook_object.add_attribute("playbook-standard",
+                                value="CACAO")
+    playbook_object.add_attribute("playbook-abstraction",
+                                value="executable") # template
+    playbook_object.add_attribute("description",
+                                value="Just a CACAO playbook")
+    playbook_object.add_attribute("playbook-type",
+                                value=["remediation", "mitigation", "containment"])
+
+    event.add_object(playbook_object)
+
     if threat_type == "unauthorized_access":
         event.info = "Unauthorized access report"
         pass
     elif threat_type == "botnet":
         event.info = "Botnet report"
+        attacker_ip = global_scope.get("attacker_ip")
+        c2serversPort = global_scope("c2serversPort")
+        impacted_host_ip = global_scope.get("impacted_host_ip")
+        stix_ioc_pattern = global_scope.get("stix_ioc_pattern")
+
+        attribute3 = event.add_attribute(type="ip-dst",
+                                    value=attacker_ip)
+
+        attribute3 = event.add_attribute(type="ip-src",
+                                    value=impacted_host_ip)
+        attribute3.add_tag("tlp:red")
+
+        # pattern object https://github.com/MISP/misp-objects/blob/main/objects/stix2-pattern/definition.json
+        pattern_object = MISPObject("stix2-pattern", standalone=False)
+        pattern_object.comment = "STIX 2.1 IoC pattern"
+        pattern_object.add_attribute("version",
+                                value = "stix 2.1")
+        pattern_object.add_attribute("stix2-pattern",
+                                value = stix_ioc_pattern)
+        event.add_object(pattern_object)
+
+
         pass
 
 
