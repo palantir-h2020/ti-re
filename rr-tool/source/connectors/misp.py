@@ -70,8 +70,10 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
     attribute2 = event.add_attribute(type="text",
                                     value=stix_report_base64)
 
-    # MISP security playbook object schema
+    # MISP security playbook object schema and stix_coa -> misp object
     # https://github.com/MISP/misp-objects/blob/main/objects/security-playbook/definition.json
+    # https://github.com/cyentific-rni/security-playbook-stix-misp-exchange
+
     playbook_object = MISPObject("security-playbook", standalone=False)
     playbook_object.comment = "Remediation playbook"
     playbook_object.add_attribute("playbook-file",

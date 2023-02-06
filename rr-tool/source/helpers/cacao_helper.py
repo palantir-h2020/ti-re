@@ -2,7 +2,6 @@ import json
 import base64
 
 
-
 def getCACAOPlaybook(global_scope, threat_type):
 
     playbook = {"test_playbook": "test"}

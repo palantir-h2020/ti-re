@@ -26,12 +26,12 @@ def getSTIXReport_ransomware(global_scope):
 
 def getSTIXReport_botnet(global_scope):
 
-        threat_name = global_scope["threat_label"]
-        attacker_ip = global_scope["attacker_ip"]
-        c2serversPort = global_scope["c2serversPort"]
-        organization_id = global_scope["organization_ide"]
+        threat_name = global_scope.get("threat_label")
+        attacker_ip = global_scope.get("attacker_ip")
+        c2serversPort = global_scope.get("c2serversPort")
+        organization_id = global_scope.get("organization_id")
 
-        impacted_host_ip = global_scope["impacted_host_ip"]
+        impacted_host_ip = global_scope.get("impacted_host_ip")
 
         identitySDO = stix2.Identity(name=f"{organization_id}",
                                     identity_class='organization')
