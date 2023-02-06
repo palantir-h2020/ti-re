@@ -62,7 +62,7 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
 
     event = MISPEvent()
 
-    organization_id = global_scope["organization_ide"]
+    organization_id = global_scope.get("organization_id")
 
     attribute1 = event.add_attribute(type="text",
                                     value=stix_report_json)
@@ -77,9 +77,9 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
     playbook_object = MISPObject("security-playbook", standalone=False)
     playbook_object.comment = "Remediation playbook"
     playbook_object.add_attribute("playbook-file",
-                                value=global_scope["cacao_playbook_json"])
+                                value=global_scope.get("cacao_playbook_json"))
     playbook_object.add_attribute("playbook-base64",
-                                value=global_scope["cacao_playbook_base64"])
+                                value=global_scope.get("cacao_playbook_base64"))
     playbook_object.add_attribute("playbook-standard",
                                 value="CACAO")
     playbook_object.add_attribute("playbook-abstraction",
