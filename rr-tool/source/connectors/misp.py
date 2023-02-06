@@ -66,9 +66,11 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
 
     attribute1 = event.add_attribute(type="text",
                                     value=stix_report_json)
+    attribute1.add_tag("JSON STIX 2.1 Report")
 
     attribute2 = event.add_attribute(type="text",
                                     value=stix_report_base64)
+    attribute2.add_tag("Base64 STIX 2.1 Report")
 
     # MISP security playbook object schema and stix_coa -> misp object
     # https://github.com/MISP/misp-objects/blob/main/objects/security-playbook/definition.json
@@ -76,8 +78,8 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
 
     playbook_object = MISPObject("security-playbook", standalone=False)
     playbook_object.comment = "Remediation playbook"
-    playbook_object.add_attribute("playbook-file",
-                                value=global_scope.get("cacao_playbook_json"))
+    # playbook_object.add_attribute("playbook-file",
+    #                             value=global_scope.get("cacao_playbook_json"))
     playbook_object.add_attribute("playbook-base64",
                                 value=global_scope.get("cacao_playbook_base64"))
     playbook_object.add_attribute("playbook-standard",
@@ -116,6 +118,7 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
         pattern_object.add_attribute("stix2-pattern",
                                 value = stix_ioc_pattern)
         event.add_object(pattern_object)
+
 
 
         pass
