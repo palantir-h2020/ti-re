@@ -11,6 +11,13 @@ from helpers.logging_helper import get_logger
 
 logger = get_logger('stix-helper')
 
+# Best practices on whether or not to include extension definitions
+# alongside the STIX bundle.
+# https://github.com/oasis-open/cti-python-stix2/issues/535
+
+
+# Declaring custom objects as class
+# https://github.com/oasis-open/cti-python-stix2/issues/429
 
 def getSTIXReport(global_scope, threat_type):
 
@@ -187,6 +194,14 @@ def getSTIXReport_botnet(global_scope):
                                     sighting_of_ref=IoCSDO["id"],
                                     count=1,
                                     observed_data_refs=[ObservedDataSDO["id"]])
+
+        # Quirks for using custom "dialects" with cti-python-stix2
+        # https://github.com/oasis-open/cti-python-stix2/issues/501
+        # https://github.com/oasis-open/cti-python-stix2/issues/429
+        # https://github.com/oasis-open/cti-python-stix2/issues/558
+        # https://github.com/oasis-open/cti-python-stix2/issues/543
+        # https://github.com/oasis-open/cti-python-stix2/pull/503
+        #
 
         bundle = stix2.v21.Bundle([rel2,
                                    rel3,
