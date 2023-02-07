@@ -16,8 +16,8 @@ Statement:
 
 FunctionCall:
     (ListPaths | FindNode | AddFirewall | AddFilteringRules |
-    AddDnsPolicy | AddNetworkMonitor | MoveNode | AddHoneypot |
-    Execute | Shutdown | Isolate)
+    AllowTraffic | AddDnsPolicy | AddNetworkMonitor | MoveNode |
+    AddHoneypot | Execute | Shutdown | Isolate)
 ;
 
 // the elseStatements block can be void thus containing 0 statements, hence the usage of the *= operator instead of the +=
@@ -59,6 +59,12 @@ AddFirewall:
 AddFilteringRules:
     'add_filtering_rules' filteringRulesExpression=VarReference
     'to' nodeExpression=VarReferenceOrString
+;
+
+AllowTraffic:
+    'allow_traffic'
+    ('between' firstNodeExpression=VarReferenceOrString)
+    ('and' secondNodeExpression=VarReferenceOrString)
 ;
 
 AddDnsPolicy:

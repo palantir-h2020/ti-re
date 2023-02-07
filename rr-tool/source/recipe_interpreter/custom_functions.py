@@ -14,7 +14,10 @@ def fbm_call(alert, alert_source_ip):
                   on_ips=[alert_source_ip])
     ir.notify("brute-force-attack", alert_source_ip, "Data breach attempt detected: " + str(alert))
 
+def fbm_call_ransomware(alert_ransomware_threat, alert_source_ip):
+    pass
 
 FunctionMappings = {
-    "fbm_call": fbm_call
+    "fbm_call": fbm_call,
+    "fbm_call_ransomware": fbm_call_ransomware
 }

@@ -33,44 +33,40 @@ def getSTIXReport_botnet(global_scope):
         threat_name = global_scope.get("threat_label")
         attacker_ip = global_scope.get("attacker_ip")
         c2serversPort = global_scope.get("c2serversPort")
+        impacted_host_ip = global_scope.get("impacted_host_ip")
         organization_id = global_scope.get("organization_id")
 
-        impacted_host_ip = global_scope.get("impacted_host_ip")
+        mitre_enterpries_attack_file = stix2.MemoryStore()
+        mitre_enterpries_attack_file.load_from_file("enterprise-attack.json")
 
-        identitySDO = stix2.Identity(name=f"{organization_id}",
-                                    identity_class='organization')
+        timestamp_now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-        # ext = stix2.v21.ExtensionDefinition(created_by_ref=identitySDO["id"],
-        #                                     name="CACAO Course of Action",
-        #                                     schema="https://www.oasis.org/cacao.json",
-        #                                     version="0.1",
-        #                                     extension_types=["property-extension"],
-        #                                     extension_properties=["cacao_playbook"])
+        coa_extension_definition_file = stix2.MemoryStore()
+        coa_extension_definition_file.load_from_file("stix_coa_extension_definition.json")
+        coa_extension_definition = coa_extension_definition_file.get("extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c")
 
-        # COASDO_EXTENSION_ID = ext["id"]
+        attack_pattern = mitre_enterpries_attack_file.query([
+            stix2.Filter("external_references.external_id", "=", "T1134"),
+            stix2.Filter("type", "=", "attack-pattern")
+        ])[0]
 
-        # # Declare extension class to gain STIX python library ability to detect when wrong extension parameters are
-        # # given to a SDO. Read here: https://stix2.readthedocs.io/en/latest/guide/extensions.html
-        # @stix2.v21.CustomExtension(
-        #     COASDO_EXTENSION_ID, [
-        #         ('cacao_playbook', stix2.properties.DictionaryProperty(required=True))
-        #     ],
-        # )
-        # class CACAOPropertyExtension:
-        #     extension_type = 'property-extension'
+        kill_chain_phases = attack_pattern.kill_chain_phases
+
+        identitySDO = stix2.Identity(name=f"Organization ID.{organization_id}",
+                                    identity_class="organization")
 
         # Pattern used by the indicator of compromise
         IoCPattern = ("[network-traffic:dst_ref.type = 'ipv4-addr' AND "
                         f"network-traffic:dst_ref.value = '{attacker_ip}' AND "
                         f"network-traffic:dst_port.value = '{c2serversPort}']")
 
-        global_scope["stix_ioc_pattern"] = IoCPattern
-
         # CACAO playbook of the course of action in response to a sigthning of an indicator
         remediationPlaybook = {} # todo
 
         attackerIpSCO = stix2.v21.IPv4Address(value=attacker_ip)
-        impactedHostIpSCO = stix2.v21.IPv4Address(value=impacted_host_ip)
+
+        impactedHostIpSCO = stix2.v21.IPv4Address(value=impacted_host_ip,
+                                                  object_marking_refs=[TLP_RED["id"]])
 
         trafficSCO = stix2.v21.NetworkTraffic(src_ref=impactedHostIpSCO["id"],
                                                 dst_ref= attackerIpSCO["id"],
@@ -78,47 +74,55 @@ def getSTIXReport_botnet(global_scope):
                                                 dst_port=22)
 
         #Observed data
-        ObservedDataSDO = stix2.v21.ObservedData(object_refs=[attackerIpSCO["id"],
+        ObservedDataSDO = stix2.v21.ObservedData(object_refs=
+                                        [attackerIpSCO["id"],
                                         impactedHostIpSCO["id"],
                                         trafficSCO["id"]],
-                                        first_observed="2020-02-01T12:34:55Z",
-                                        last_observed="2020-02-01T12:34:57Z",
-                                        number_observed=1)
+                                        first_observed = timestamp_now,
+                                        last_observed = timestamp_now,
+                                        number_observed = 1)
 
         # Malware
         MalwareSDO = stix2.v21.Malware(name=threat_name,
                                         is_family=False,
-                                        kill_chain_phases=[{
-                                            "kill_chain_name": "lockheed-martin-cyber-kill-chain",
-                                            "phase_name": "Exploit"}])
+                                        kill_chain_phases=kill_chain_phases)
 
         # Indicator of compromise
-        IoCSDO = stix2.v21.Indicator(indicator_types=['malicious-activity'],
+        IoCSDO = stix2.v21.Indicator(indicator_types=["malicious-activity"],
                                     pattern_type="stix",
                                     pattern=IoCPattern,
-                                    valid_from="2020-02-01T12:34:56Z",
+                                    valid_from=timestamp_now,
                                     name="Command and control traffic",
                                     description="This traffic indicates the source host is "
                                     "trying to reach to his command and control server",
-                                    kill_chain_phases=[{
-                                            "kill_chain_name": "lockheed-martin-cyber-kill-chain",
-                                            "phase_name": "Command and Control"}],
+                                    kill_chain_phases=kill_chain_phases,
                                     labels= ["malicious-activity"])
 
-        # # Course of action
-        # CoASDO = stix2.v21.CourseOfAction(description="This a CACAO Playbook course of action for a rule of type level 4 filtering ",
-        #                                 name="CACAO Playbook",
-        #                                 extensions={
-        #                                     COASDO_EXTENSION_ID : {
-        #                                         'extension_type': 'property-extension',
-        #                                         "cacao_playbook": remediationPlaybook.toDict()
-        #                                     },
-        #                                 },
-        #                                 created_by_ref=identitySDO["id"])
+        infraVictim = stix2.v21.Infrastructure(name = "Victim host",
+                                            description = "The host being part of the botnet",
+                                            infrastructure_types = ["workstation"])
+
+        infraAttacker = stix2.v21.Infrastructure(name = "Attacker host",
+                                            description = "The command and control server of the botnet",
+                                            infrastructure_types = ["command-and-control", "botnet"])
+
+        # Course of action
+        CoASDO = stix2.v21.CourseOfAction(description="CACAO Playbook course of action",
+                                        name="CACAO playbook",
+                                        extensions={
+                                            coa_extension_definition["id"] : {
+                                                "extension_type": "property-extension",
+                                                # "created": timestamp_now,
+                                                # "modified": timestamp_now,
+                                                "playbook_standard": "playbook_standard",
+                                                "playbook_bin": "aadfvadfv",
+                                            },
+                                        },
+                                        created_by_ref=identitySDO["id"])
 
         # Report
         reportSDO = stix2.v21.Report(name="Botnet remediation",
-                                published="2022-02-10T12:34:56Z",
+                                published=timestamp_now,
                                 object_refs=[IoCSDO["id"], identitySDO["id"] ]) # CoASDO["id"], ext["id"]
 
         # # Relationship between course of action and indicator of compromise
@@ -145,14 +149,69 @@ def getSTIXReport_botnet(global_scope):
                                         target_ref=MalwareSDO.id,
                                         created_by_ref=identitySDO["id"])
 
+        rel5 = stix2.v21.Relationship(relationship_type="consists-of",
+                                        source_ref=infraVictim["id"],
+                                        target_ref=impactedHostIpSCO["id"])
+
+        rel6 = stix2.v21.Relationship(relationship_type="consists-of",
+                                        source_ref=infraAttacker["id"],
+                                        target_ref=attackerIpSCO["id"])
+
+        rel7 = stix2.v21.Relationship(relationship_type="communicates-with",
+                                        source_ref=infraVictim["id"],
+                                        target_ref=infraAttacker["id"])
+
+        rel8 = stix2.v21.Relationship(relationship_type="targets",
+                                        source_ref=attack_pattern["id"],
+                                        target_ref=identitySDO["id"])
+
+        rel9 = stix2.v21.Relationship(relationship_type="indicates",
+                                        source_ref=IoCSDO["id"],
+                                        target_ref=attack_pattern["id"])
+
+        rel10 = stix2.v21.Relationship(relationship_type="indicates",
+                                        source_ref=IoCSDO["id"],
+                                        target_ref=MalwareSDO["id"])
+
+        rel11 = stix2.v21.Relationship(relationship_type="uses",
+                                        source_ref=MalwareSDO["id"],
+                                        target_ref=attack_pattern["id"])
+
+        rel12 = stix2.v21.Relationship(relationship_type="remediates",
+                                        source_ref=CoASDO["id"],
+                                        target_ref=attack_pattern["id"])
+
         # Sightning relationship between identitySDO and the indicator of compromise
         sig = stix2.v21.Sighting(created_by_ref=identitySDO["id"],
                                     sighting_of_ref=IoCSDO["id"],
                                     count=1,
                                     observed_data_refs=[ObservedDataSDO["id"]])
 
-        # mem.add([rel2, rel3, rel4, reportSDO, IoCSDO, identitySDO, sig, ObservedDataSDO, attackerIpSCO, impactedHostIpSCO, trafficSCO, MalwareSDO]) #CoASDO, rel, ext
-        bundle = stix2.v21.Bundle([rel2, rel3, rel4, reportSDO, IoCSDO, identitySDO, sig, ObservedDataSDO, attackerIpSCO, impactedHostIpSCO, trafficSCO, MalwareSDO])
+        bundle = stix2.v21.Bundle([rel2,
+                                   rel3,
+                                   rel4,
+                                   rel5,
+                                   rel6,
+                                   rel7,
+                                   rel8,
+                                   rel9,
+                                   rel10,
+                                   rel11,
+                                   TLP_RED,
+                                   reportSDO,
+                                   infraAttacker,
+                                   infraVictim,
+                                   attack_pattern,
+                                   coa_extension_definition,
+                                   CoASDO,
+                                   IoCSDO,
+                                   identitySDO,
+                                   sig,
+                                   ObservedDataSDO,
+                                   attackerIpSCO,
+                                   impactedHostIpSCO,
+                                   trafficSCO,
+                                   MalwareSDO])
 
         json_string_stix = bundle.serialize(pretty=True)
 
@@ -384,48 +443,15 @@ def getSTIXReport_test_standalone():
                                     labels= ["malicious-activity"])
         mem.add(IoCSDO)
 
-        rel9 = stix2.v21.Relationship(relationship_type="indicates",
-                                        source_ref=IoCSDO["id"],
-                                        target_ref=attack_pattern["id"])
-        mem.add(rel9)
-
-        rel10 = stix2.v21.Relationship(relationship_type="indicates",
-                                        source_ref=IoCSDO["id"],
-                                        target_ref=MalwareSDO["id"])
-        mem.add(rel10)
-
         infraVictim = stix2.v21.Infrastructure(name = "Victim host",
                                             description = "The host being part of the botnet",
                                             infrastructure_types = ["workstation"])
         mem.add(infraVictim)
 
-        rel5 = stix2.v21.Relationship(relationship_type="consists-of",
-                                        source_ref=infraVictim["id"],
-                                        target_ref=impactedHostIpSCO["id"])
-        mem.add(rel5)
-
         infraAttacker = stix2.v21.Infrastructure(name = "Attacker host",
                                             description = "The command and control server of the botnet",
                                             infrastructure_types = ["command-and-control", "botnet"])
         mem.add(infraAttacker)
-
-        rel6 = stix2.v21.Relationship(relationship_type="consists-of",
-                                        source_ref=infraAttacker["id"],
-                                        target_ref=attackerIpSCO["id"])
-        mem.add(rel6)
-
-        rel7 = stix2.v21.Relationship(relationship_type="communicates-with",
-                                        source_ref=infraVictim["id"],
-                                        target_ref=infraAttacker["id"])
-        mem.add(rel7)
-
-
-
-        rel8 = stix2.v21.Relationship(relationship_type="targets",
-                                        source_ref=attack_pattern["id"],
-                                        target_ref=identitySDO["id"])
-        mem.add(rel8)
-
 
         # Course of action
         CoASDO = stix2.v21.CourseOfAction(description="CACAO Playbook course of action",
@@ -474,6 +500,46 @@ def getSTIXReport_test_standalone():
                                         target_ref=MalwareSDO.id,
                                         created_by_ref=identitySDO["id"])
         mem.add(rel4)
+
+        rel5 = stix2.v21.Relationship(relationship_type="consists-of",
+                                        source_ref=infraVictim["id"],
+                                        target_ref=impactedHostIpSCO["id"])
+        mem.add(rel5)
+
+        rel6 = stix2.v21.Relationship(relationship_type="consists-of",
+                                        source_ref=infraAttacker["id"],
+                                        target_ref=attackerIpSCO["id"])
+        mem.add(rel6)
+
+        rel7 = stix2.v21.Relationship(relationship_type="communicates-with",
+                                        source_ref=infraVictim["id"],
+                                        target_ref=infraAttacker["id"])
+        mem.add(rel7)
+
+        rel8 = stix2.v21.Relationship(relationship_type="targets",
+                                        source_ref=attack_pattern["id"],
+                                        target_ref=identitySDO["id"])
+        mem.add(rel8)
+
+        rel9 = stix2.v21.Relationship(relationship_type="indicates",
+                                        source_ref=IoCSDO["id"],
+                                        target_ref=attack_pattern["id"])
+        mem.add(rel9)
+
+        rel10 = stix2.v21.Relationship(relationship_type="indicates",
+                                        source_ref=IoCSDO["id"],
+                                        target_ref=MalwareSDO["id"])
+        mem.add(rel10)
+
+        rel11 = stix2.v21.Relationship(relationship_type="uses",
+                                        source_ref=MalwareSDO["id"],
+                                        target_ref=attack_pattern["id"])
+        mem.add(rel11)
+
+        rel12 = stix2.v21.Relationship(relationship_type="remediates",
+                                        source_ref=CoASDO["id"],
+                                        target_ref=attack_pattern["id"])
+        mem.add(rel12)
 
         # Sightning relationship between identitySDO and the indicator of compromise
         sig = stix2.v21.Sighting(created_by_ref=identitySDO["id"],

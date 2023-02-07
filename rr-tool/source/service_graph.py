@@ -276,6 +276,18 @@ class ServiceGraph:
         refreshAndSave(self.sgraph)
         mano.isolate(node_name)
 
+    def add_link(self, node1_name_or_ip, node2_name_or_ip):
+
+        node1_name = self.returnNodeName(node1_name_or_ip)
+        node2_name = self.returnNodeName(node2_name_or_ip)
+        logger.info(msg=f"Adding edge between {node1_name} and {node2_name}...")
+
+        refreshAndSave(self.sgraph)
+        self.sgraph.add_edge(node1_name, node2_name)
+        logger.info(msg=f"Added edge between {node1_name} and {node2_name}...")
+        refreshAndSave(self.sgraph)
+        mano.add_link(node1_name, node2_name)
+
     def add_honeypot(self, vulnerability):
 
         logger.info(msg="Adding a new honeypot node to the honey net ...")
@@ -318,7 +330,7 @@ class ServiceGraph:
         return newNodeName
 
     def move(self, node_name_or_ip, net):  # moves a node to another location
-        
+
         node_name = self.returnNodeName(node_name_or_ip)
         logger.info(msg=f"Moving {node_name} to {net} ...")
 

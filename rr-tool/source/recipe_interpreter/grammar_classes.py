@@ -39,7 +39,10 @@ class FunctionCall(Statement):
 
 @dataclass
 class VarReferenceOrString:
-    """Grammar rule defining a wrapper for variables and string raw values in the Recipe language"""
+    """Grammar rule defining an abstract container which
+       can contain both variables of type VarReference and string
+       raw values
+    """
 
     parent: object
     value: object
@@ -82,8 +85,8 @@ class Recipe(LogClass):
 
 @dataclass
 class Iteration(Statement):
-    """ Grammar rule for the "execute" Recipe language command
-        Sample expression: execute 'simpleFunction'
+    """ Grammar rule for the iteration Recipe language construct
+        Sample expression: [check recipe examples]
     """
 
     parent: object
@@ -120,8 +123,8 @@ class Iteration(Statement):
 
 @dataclass
 class Condition(Statement):
-    """ Grammar rule for the "execute" Recipe language command
-        Sample expression: execute 'simpleFunction'
+    """ Grammar rule for the condition Recipe language construct
+        Sample expression: [check recipe examples]
     """
 
     parent: object
@@ -169,7 +172,7 @@ class Condition(Statement):
 
 @dataclass
 class ListPaths(FunctionCall):
-    """ Grammar rule for the "list_paths" Recipe language command
+    """ Grammar rule for the "list_paths" Recipe language instruction
         Sample expression: list_paths from impacted_host to 'attacker'
     """
 
@@ -195,7 +198,7 @@ class ListPaths(FunctionCall):
 
 @dataclass
 class FindNode(FunctionCall):
-    """ Grammar rule for the "find_node" Recipe language command
+    """ Grammar rule for the "find_node" Recipe language instruction
         Sample expression: find_node of type 'firewall' in network_path with 'level_4_filtering'
     """
 
@@ -240,7 +243,7 @@ class FindNode(FunctionCall):
 
 @dataclass
 class AddFirewall(FunctionCall):
-    """ Grammar rule for the "add_firewall" Recipe language command
+    """ Grammar rule for the "add_firewall" Recipe language instruction
         Sample expression: add_firewall behind impacted_host in network_path with 'level_4_filtering'
     """
 
@@ -283,7 +286,7 @@ class AddFirewall(FunctionCall):
 
 @dataclass
 class AddFilteringRules(FunctionCall):
-    """ Grammar rule for the "add_filtering_rules" Recipe language command
+    """ Grammar rule for the "add_filtering_rules" Recipe language instruction
         Sample expression: add_filtering_rules rules_level_4 to new_node
     """
 
@@ -333,8 +336,35 @@ class AddFilteringRules(FunctionCall):
                 f"Node: {self.nodeExpression.getValue(scope)}")
 
 @dataclass
+class AllowTraffic(FunctionCall):
+    """ Grammar rule for the "allow_traffic" Recipe language instruction
+        Sample expression: allow_traffic between impacted_host and 'switch3'
+    """
+
+    parent: object
+    firstNodeExpression: VarReferenceOrString
+    secondNodeExpression: VarReferenceOrString
+
+    def run(self, scope, remediator):
+
+        firstNode = self.firstNodeExpression.getValue(scope)
+        secondNode = self.secondNodeExpression.getValue(scope)
+
+        logger.info("allow_traffic between " + f"{firstNode}" + " and " + f"{secondNode}")
+
+        try:
+            remediator.service_graph_instance.add_link(firstNode, secondNode)
+        except Exception as ex:
+            raise ex  # just rethrow it for now
+
+    def testRun(self, scope):
+        super().info()
+        print(f"First node: {self.firstNodeExpression.getValue(scope)}, "
+                f"Second node: {self.secondNodeExpression.getValue(scope)}")
+
+@dataclass
 class AddDnsPolicy(FunctionCall):
-    """ Grammar rule for the "add_dns_policy" Recipe language command
+    """ Grammar rule for the "add_dns_policy" Recipe language instruction
         Sample expression: add_dns_policy for malicious_domain of type 'block_all_queries'
     """
 
@@ -361,7 +391,7 @@ class AddDnsPolicy(FunctionCall):
 
 @dataclass
 class AddNetworkMonitor(FunctionCall):
-    """ Grammar rule for the "add_network_monitor" Recipe language command
+    """ Grammar rule for the "add_network_monitor" Recipe language instruction
         Sample expression: add_network_monitor behind impacted_host_ip in network_path
     """
 
@@ -388,7 +418,7 @@ class AddNetworkMonitor(FunctionCall):
 
 @dataclass
 class MoveNode(FunctionCall):
-    """ Grammar rule for the "move" Recipe language command
+    """ Grammar rule for the "move" Recipe language instruction
         Sample expression:  move 'impacted_node' to 'reconfiguration_net'
     """
 
@@ -415,7 +445,7 @@ class MoveNode(FunctionCall):
 
 @dataclass
 class AddHoneypot(FunctionCall):
-    """ Grammar rule for the "add_honeypot" Recipe language command
+    """ Grammar rule for the "add_honeypot" Recipe language instruction
         Sample expression: add_honeypot with 'apache_vulnerability'
     """
 
@@ -439,7 +469,7 @@ class AddHoneypot(FunctionCall):
 
 @dataclass
 class Execute(FunctionCall):
-    """ Grammar rule for the "execute" Recipe language command
+    """ Grammar rule for the "execute" Recipe language instruction
         Sample expression: execute 'simpleFunction'
     """
 
@@ -466,7 +496,7 @@ class Execute(FunctionCall):
 
 @dataclass
 class Shutdown(FunctionCall):
-    """ Grammar rule for the "shutdown" Recipe language command
+    """ Grammar rule for the "shutdown" Recipe language instruction
         Sample expression: shutdown 'compromised_host'
     """
 
@@ -490,7 +520,7 @@ class Shutdown(FunctionCall):
 
 @dataclass
 class Isolate(FunctionCall):
-    """ Grammar rule for the "isolate" Recipe language command
+    """ Grammar rule for the "isolate" Recipe language instruction
         Sample expression: isolate 'compromised_host'
     """
 
@@ -514,5 +544,5 @@ class Isolate(FunctionCall):
 
 
 recipe_classes = [Recipe, Iteration, Condition, ListPaths, FindNode, AddFirewall, AddFilteringRules,
-                    AddDnsPolicy, AddNetworkMonitor, MoveNode, AddHoneypot,
+                    AllowTraffic, AddDnsPolicy, AddNetworkMonitor, MoveNode, AddHoneypot,
                     Execute, Shutdown, Isolate, VarReferenceOrString, VarReference]

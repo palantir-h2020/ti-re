@@ -122,7 +122,7 @@ class RRTool:
 
             if inputDataSplit[0] == "malware":
                 logger.info("Remediating malware ...")
-                input_analyzer.prepareDataForRemediationOfMalware(
+                input_analyzer.prepareDataForRemediationOfBotnet(
                     global_scope=self.global_scope,
                     service_graph_instance=self.service_graph_instance,
                     threat_repository=self.threat_repository,
@@ -324,40 +324,38 @@ class RRTool:
 
         logger.info(f"Recommended recipe for the threat: ( {self.recipe_repository[bestRecipeName]['description']})")
 
+        self.setCapabilitiesToSecurityControlMappings(
+                self.recipe_repository[bestRecipeName]["requiredCapabilities"])
+
+        recipeToRun = self.recipe_repository[bestRecipeName]["value"] # not used anymore with transition to textx interpreter
+
         # TODO create a generic prepareData function in input analyzer
-        recipeToRun = self.recipe_repository[bestRecipeName]["value"]
-        if alert["Threat_Category"] == "unauthorized_access":
-            # alert of type unauthorized_access
-            try:
+        try:
+            if alert["Threat_Category"] == "unauthorized_access":
                 input_analyzer. \
                     prepareDataForRemediationOfUnauthorizedAccess(global_scope=self.global_scope,
-                                                                  service_graph_instance=self.service_graph_instance,
-                                                                  alert=alert)
-
-                self.setCapabilitiesToSecurityControlMappings(
-                    self.recipe_repository[bestRecipeName]["requiredCapabilities"])
-            except KeyError:
-                logger.error("Malformed alert received, skipping...")
-                return
-        elif alert["Threat_Category"] == "botnet":
-            # alert of type malware
-            try:
+                                                                service_graph_instance=self.service_graph_instance,
+                                                                alert=alert)
+            elif alert["Threat_Category"] == "botnet":
                 input_analyzer. \
-                    prepareDataForRemediationOfMalware(global_scope=self.global_scope,
-                                                       service_graph_instance=self.service_graph_instance,
-                                                       threat_repository=self.threat_repository,
-                                                       threat_category=alert["Threat_Category"],
-                                                       threat_label=alert["Threat_Label"],
-                                                       protocol=alert["Threat_Finding"]["Protocol"],
-                                                       impacted_host_port=alert["Threat_Finding"]["Source_Port"],
-                                                       impacted_host_ip=alert["Threat_Finding"]["Source_Address"],
-                                                       attacker_port=alert["Threat_Finding"]["Destination_Port"],
-                                                       attacker_ip=alert["Threat_Finding"]["Destination_Address"])
-            except KeyError:
-                logger.error("Malformed alert received, skipping...")
-                return
-            self.setCapabilitiesToSecurityControlMappings(
-                self.recipe_repository[bestRecipeName]["requiredCapabilities"])
+                    prepareDataForRemediationOfBotnet(global_scope=self.global_scope,
+                                                    service_graph_instance=self.service_graph_instance,
+                                                    threat_repository=self.threat_repository,
+                                                    threat_category=alert["Threat_Category"],
+                                                    threat_label=alert["Threat_Label"],
+                                                    protocol=alert["Threat_Finding"]["Protocol"],
+                                                    impacted_host_port=alert["Threat_Finding"]["Source_Port"],
+                                                    impacted_host_ip=alert["Threat_Finding"]["Source_Address"],
+                                                    attacker_port=alert["Threat_Finding"]["Destination_Port"],
+                                                    attacker_ip=alert["Threat_Finding"]["Destination_Address"])
+            elif alert["Threat_Category"] == "ransomware":
+                input_analyzer. \
+                    prepareDataForRemediationOfRansomware(global_scope=self.global_scope,
+                                                        service_graph_instance=self.service_graph_instance,
+                                                        alert=alert)
+        except KeyError:
+            logger.error("Malformed alert received, skipping...")
+            return
 
         recipe_interpreter_instance = recipe_interpreter.RecipeInterpreter(self.service_graph_instance,
                                                                 self.global_scope,

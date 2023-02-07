@@ -78,6 +78,7 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
 
     playbook_object = MISPObject("security-playbook", standalone=False)
     playbook_object.comment = "Remediation playbook"
+    # https://github.com/MISP/PyMISP/issues/437
     # playbook_object.add_attribute("playbook-file",
     #                             value=global_scope.get("cacao_playbook_json"))
     playbook_object.add_attribute("playbook-base64",
@@ -95,6 +96,9 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
 
     if threat_type == "unauthorized_access":
         event.info = "Unauthorized access report"
+        pass
+    elif threat_type == "ransomware":
+        event.info = "Ransomware report"
         pass
     elif threat_type == "botnet":
         event.info = "Botnet report"
@@ -121,7 +125,6 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
 
 
 
-        pass
 
 
     event = misp.add_event(event)

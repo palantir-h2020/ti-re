@@ -6,7 +6,7 @@ from helpers.logging_helper import get_logger
 logger = get_logger('input-analyzer')
 
 
-def prepareDataForRemediationOfMalware(global_scope, service_graph_instance, threat_repository,
+def prepareDataForRemediationOfBotnet(global_scope, service_graph_instance, threat_repository,
                                        threat_category, threat_label, protocol, impacted_host_port,
                                        impacted_host_ip, attacker_port, attacker_ip):
 
@@ -95,7 +95,7 @@ def prepareDataForRemediationOfMalware(global_scope, service_graph_instance, thr
         logger.info(f"Payload: {payload}")
 
 def setupDefaultL4RemediationRules(global_scope, protocol, impacted_host_ip, impacted_host_port, attacker_ip,
-                                   attacker_port) -> Dict:
+                                   attacker_port):
 
     # Add a filtering rule for both traffic directions:
     rules = [{"level": 4, "c2serversIP": attacker_ip}, {"level": 4, "victimIP": attacker_ip}]
@@ -122,7 +122,33 @@ def setupDefaultL4RemediationRules(global_scope, protocol, impacted_host_ip, imp
         for rule in rules:
             global_scope["rules_level_4"].append(rule)
 
-def prepareDataForRemediationOfUnauthorizedAccess(global_scope, service_graph_instance, alert) -> Dict:
+def prepareDataForRemediationOfUnauthorizedAccess(global_scope, service_graph_instance, alert):
+    # GlobalScope["AnomalyDetectionSyslog"] = alert.get("AnomalyDetectionSyslog")
+    # GlobalScope["Threat_Label"] = alert.get("Threat_Label")
+    # GlobalScope["Classification_Confidence"] = alert("Classification_Confidence")
+    # GlobalScope["Outlier_Score"] = alert("Outlier_Score")
+    global_scope["UnauthorizedAccessAlert"] = alert
+    global_scope["UnauthorizedAccessAlertSourceIp"] = alert[settings.TI_SYSLOG_VICTIM_IP_FIELD_NAME]
+    global_scope["BackupServerIp"] = settings.BACKUP_SERVER_IP
+
+    # TODO remove this temporary fix after having landscape information/ip changes in alerts
+    service_graph_instance.changeNodeIP("victim", global_scope["UnauthorizedAccessAlertSourceIp"])
+
+    # Add a filtering rule for both traffic directions:
+    global_scope["rules_level_4"] = [
+        {"level": 4, "victimIP": global_scope["UnauthorizedAccessAlertSourceIp"],
+         "c2serversPort": "", "action": "DENY"},
+        {"level": 4, "c2serversIP": global_scope["UnauthorizedAccessAlertSourceIp"],
+         "c2serversPort": "", "action": "DENY"},
+        {"level": 4, "victimIP": global_scope["UnauthorizedAccessAlertSourceIp"],
+         "c2serversPort": "", "c2serversIP": settings.BACKUP_SERVER_IP,
+         "proto": "", "action": "ALLOW"},
+        {"level": 4, "victimIP": settings.BACKUP_SERVER_IP,
+         "c2serversPort": "", "c2serversIP": global_scope["UnauthorizedAccessAlertSourceIp"],
+         "proto": "", "action": "ALLOW"}
+    ]
+
+def prepareDataForRemediationOfRansomware(global_scope, service_graph_instance, alert):
     # GlobalScope["AnomalyDetectionSyslog"] = alert.get("AnomalyDetectionSyslog")
     # GlobalScope["Threat_Label"] = alert.get("Threat_Label")
     # GlobalScope["Classification_Confidence"] = alert("Classification_Confidence")

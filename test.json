@@ -1,6 +1,6 @@
 {
     "type": "bundle",
-    "id": "bundle--b306aae0-d3c7-4dd2-a318-9e5453e67bfb",
+    "id": "bundle--41b1519c-f451-487c-a89d-215a73071629",
     "objects": [
         {
             "type": "extension-definition",
@@ -131,9 +131,9 @@
         {
             "type": "identity",
             "spec_version": "2.1",
-            "id": "identity--c89ded36-f499-4260-9c7a-b3861dc27248",
-            "created": "2023-02-06T09:31:27.715538Z",
-            "modified": "2023-02-06T09:31:27.715538Z",
+            "id": "identity--cdb126ce-6c50-4669-8e49-fc9cb4a2c17e",
+            "created": "2023-02-06T15:58:39.475307Z",
+            "modified": "2023-02-06T15:58:39.475307Z",
             "name": "organization 1234",
             "identity_class": "organization"
         },
@@ -166,11 +166,11 @@
         {
             "type": "observed-data",
             "spec_version": "2.1",
-            "id": "observed-data--5c1724fc-ad14-474c-8e31-d21c819d4cd6",
-            "created": "2023-02-06T09:31:27.716748Z",
-            "modified": "2023-02-06T09:31:27.716748Z",
-            "first_observed": "2023-02-06T09:31:27Z",
-            "last_observed": "2023-02-06T09:31:27Z",
+            "id": "observed-data--5e326b7d-5457-4f8f-b5f6-d4bc19e71780",
+            "created": "2023-02-06T15:58:39.476869Z",
+            "modified": "2023-02-06T15:58:39.476869Z",
+            "first_observed": "2023-02-06T15:58:39Z",
+            "last_observed": "2023-02-06T15:58:39Z",
             "number_observed": 1,
             "object_refs": [
                 "ipv4-addr--cbd67181-b9f8-595b-8bc3-3971e34fa1cc",
@@ -181,9 +181,9 @@
         {
             "type": "malware",
             "spec_version": "2.1",
-            "id": "malware--c42c926b-0c7d-478d-abe1-7c78988f3fbe",
-            "created": "2023-02-06T09:31:27.717133Z",
-            "modified": "2023-02-06T09:31:27.717133Z",
+            "id": "malware--a957f254-8925-49ed-bac1-8934d3b3e0b8",
+            "created": "2023-02-06T15:58:39.47726Z",
+            "modified": "2023-02-06T15:58:39.47726Z",
             "name": "test",
             "is_family": false,
             "kill_chain_phases": [
@@ -200,9 +200,9 @@
         {
             "type": "indicator",
             "spec_version": "2.1",
-            "id": "indicator--576236aa-301f-4e3d-abc9-c39b6966438d",
-            "created": "2023-02-06T09:31:27.717218Z",
-            "modified": "2023-02-06T09:31:27.717218Z",
+            "id": "indicator--f5e64214-a42c-494c-826f-88f05373328b",
+            "created": "2023-02-06T15:58:39.477359Z",
+            "modified": "2023-02-06T15:58:39.477359Z",
             "name": "Command and control traffic",
             "description": "This traffic indicates the source host is trying to reach to his command and control server",
             "indicator_types": [
@@ -221,37 +221,17 @@
             ],
             "pattern_type": "stix",
             "pattern_version": "2.1",
-            "valid_from": "2023-02-06T09:31:27Z",
+            "valid_from": "2023-02-06T15:58:39Z",
             "labels": [
                 "malicious-activity"
             ]
         },
         {
-            "type": "relationship",
-            "spec_version": "2.1",
-            "id": "relationship--e24b5554-a322-4344-9cab-a6b5874bb8c3",
-            "created": "2023-02-06T09:31:27.722952Z",
-            "modified": "2023-02-06T09:31:27.722952Z",
-            "relationship_type": "indicates",
-            "source_ref": "indicator--576236aa-301f-4e3d-abc9-c39b6966438d",
-            "target_ref": "attack-pattern--dcaa092b-7de9-4a21-977f-7fcb77e89c48"
-        },
-        {
-            "type": "relationship",
-            "spec_version": "2.1",
-            "id": "relationship--32615a6b-cf06-4261-8d45-bc550c4c8a18",
-            "created": "2023-02-06T09:31:27.723062Z",
-            "modified": "2023-02-06T09:31:27.723062Z",
-            "relationship_type": "indicates",
-            "source_ref": "indicator--576236aa-301f-4e3d-abc9-c39b6966438d",
-            "target_ref": "malware--c42c926b-0c7d-478d-abe1-7c78988f3fbe"
-        },
-        {
             "type": "infrastructure",
             "spec_version": "2.1",
-            "id": "infrastructure--f06f7861-f948-4f37-8232-719b2c0f1305",
-            "created": "2023-02-06T09:31:27.723133Z",
-            "modified": "2023-02-06T09:31:27.723133Z",
+            "id": "infrastructure--5d6ce57e-53e0-45e7-9b7e-93f12114c15c",
+            "created": "2023-02-06T15:58:39.483378Z",
+            "modified": "2023-02-06T15:58:39.483378Z",
             "name": "Victim host",
             "description": "The host being part of the botnet",
             "infrastructure_types": [
@@ -259,21 +239,11 @@
             ]
         },
         {
-            "type": "relationship",
-            "spec_version": "2.1",
-            "id": "relationship--d6dc50b4-1882-40ce-af65-d564f6595d9d",
-            "created": "2023-02-06T09:31:27.723203Z",
-            "modified": "2023-02-06T09:31:27.723203Z",
-            "relationship_type": "consists-of",
-            "source_ref": "infrastructure--f06f7861-f948-4f37-8232-719b2c0f1305",
-            "target_ref": "ipv4-addr--46361b12-bfec-5659-b2f6-ff3a113573c7"
-        },
-        {
             "type": "infrastructure",
             "spec_version": "2.1",
-            "id": "infrastructure--5a9d0704-d988-48b8-9ade-e3013e668e3f",
-            "created": "2023-02-06T09:31:27.723268Z",
-            "modified": "2023-02-06T09:31:27.723268Z",
+            "id": "infrastructure--65ffdfad-e28b-4334-8862-7107fa529cdd",
+            "created": "2023-02-06T15:58:39.483494Z",
+            "modified": "2023-02-06T15:58:39.483494Z",
             "name": "Attacker host",
             "description": "The command and control server of the botnet",
             "infrastructure_types": [
@@ -282,42 +252,12 @@
             ]
         },
         {
-            "type": "relationship",
-            "spec_version": "2.1",
-            "id": "relationship--631d0bbf-9cec-43ff-88a5-bd554e128596",
-            "created": "2023-02-06T09:31:27.723331Z",
-            "modified": "2023-02-06T09:31:27.723331Z",
-            "relationship_type": "consists-of",
-            "source_ref": "infrastructure--5a9d0704-d988-48b8-9ade-e3013e668e3f",
-            "target_ref": "ipv4-addr--cbd67181-b9f8-595b-8bc3-3971e34fa1cc"
-        },
-        {
-            "type": "relationship",
-            "spec_version": "2.1",
-            "id": "relationship--84996854-ddc7-4970-8189-c50b825f2652",
-            "created": "2023-02-06T09:31:27.723394Z",
-            "modified": "2023-02-06T09:31:27.723394Z",
-            "relationship_type": "communicates-with",
-            "source_ref": "infrastructure--f06f7861-f948-4f37-8232-719b2c0f1305",
-            "target_ref": "infrastructure--5a9d0704-d988-48b8-9ade-e3013e668e3f"
-        },
-        {
-            "type": "relationship",
-            "spec_version": "2.1",
-            "id": "relationship--7ba24138-9863-4299-8f79-6682880470f0",
-            "created": "2023-02-06T09:31:27.723456Z",
-            "modified": "2023-02-06T09:31:27.723456Z",
-            "relationship_type": "targets",
-            "source_ref": "attack-pattern--dcaa092b-7de9-4a21-977f-7fcb77e89c48",
-            "target_ref": "identity--c89ded36-f499-4260-9c7a-b3861dc27248"
-        },
-        {
             "type": "course-of-action",
             "spec_version": "2.1",
-            "id": "course-of-action--ddecc7f7-1d8c-497a-874f-10f9e3ed20b6",
-            "created_by_ref": "identity--c89ded36-f499-4260-9c7a-b3861dc27248",
-            "created": "2023-02-06T09:31:27.723518Z",
-            "modified": "2023-02-06T09:31:27.723518Z",
+            "id": "course-of-action--9b859acf-237b-47ee-bd0a-da62b250cd88",
+            "created_by_ref": "identity--cdb126ce-6c50-4669-8e49-fc9cb4a2c17e",
+            "created": "2023-02-06T15:58:39.483572Z",
+            "modified": "2023-02-06T15:58:39.483572Z",
             "name": "CACAO playbook",
             "description": "CACAO Playbook course of action",
             "extensions": {
@@ -331,60 +271,140 @@
         {
             "type": "report",
             "spec_version": "2.1",
-            "id": "report--47c4ef15-db81-4b31-bbf6-89f0451e1bc8",
-            "created": "2023-02-06T09:31:27.723587Z",
-            "modified": "2023-02-06T09:31:27.723587Z",
+            "id": "report--75e9a79d-829f-4996-b14b-e099f2b94393",
+            "created": "2023-02-06T15:58:39.483653Z",
+            "modified": "2023-02-06T15:58:39.483653Z",
             "name": "Botnet remediation",
-            "published": "2023-02-06T09:31:27Z",
+            "published": "2023-02-06T15:58:39Z",
             "object_refs": [
-                "indicator--576236aa-301f-4e3d-abc9-c39b6966438d",
-                "identity--c89ded36-f499-4260-9c7a-b3861dc27248"
+                "indicator--f5e64214-a42c-494c-826f-88f05373328b",
+                "identity--cdb126ce-6c50-4669-8e49-fc9cb4a2c17e"
             ]
         },
         {
             "type": "relationship",
             "spec_version": "2.1",
-            "id": "relationship--26cf1894-bd98-4919-a63b-45a0ef297473",
-            "created_by_ref": "identity--c89ded36-f499-4260-9c7a-b3861dc27248",
-            "created": "2023-02-06T09:31:27.723675Z",
-            "modified": "2023-02-06T09:31:27.723675Z",
+            "id": "relationship--0a787114-2fa0-44e6-aed3-07902df75fc9",
+            "created_by_ref": "identity--cdb126ce-6c50-4669-8e49-fc9cb4a2c17e",
+            "created": "2023-02-06T15:58:39.483753Z",
+            "modified": "2023-02-06T15:58:39.483753Z",
             "relationship_type": "refers-to",
-            "source_ref": "identity--c89ded36-f499-4260-9c7a-b3861dc27248",
-            "target_ref": "report--47c4ef15-db81-4b31-bbf6-89f0451e1bc8"
+            "source_ref": "identity--cdb126ce-6c50-4669-8e49-fc9cb4a2c17e",
+            "target_ref": "report--75e9a79d-829f-4996-b14b-e099f2b94393"
         },
         {
             "type": "relationship",
             "spec_version": "2.1",
-            "id": "relationship--b97a83d9-7443-4b79-94a8-66d66eeef56c",
-            "created_by_ref": "identity--c89ded36-f499-4260-9c7a-b3861dc27248",
-            "created": "2023-02-06T09:31:27.723745Z",
-            "modified": "2023-02-06T09:31:27.723745Z",
+            "id": "relationship--9bc72db5-c29d-465d-9cb1-3da7dcc85e2f",
+            "created_by_ref": "identity--cdb126ce-6c50-4669-8e49-fc9cb4a2c17e",
+            "created": "2023-02-06T15:58:39.483832Z",
+            "modified": "2023-02-06T15:58:39.483832Z",
             "relationship_type": "indicates",
-            "source_ref": "indicator--576236aa-301f-4e3d-abc9-c39b6966438d",
-            "target_ref": "malware--c42c926b-0c7d-478d-abe1-7c78988f3fbe"
+            "source_ref": "indicator--f5e64214-a42c-494c-826f-88f05373328b",
+            "target_ref": "malware--a957f254-8925-49ed-bac1-8934d3b3e0b8"
         },
         {
             "type": "relationship",
             "spec_version": "2.1",
-            "id": "relationship--9f517773-64ca-45c3-9837-6f8dbea8c7ad",
-            "created_by_ref": "identity--c89ded36-f499-4260-9c7a-b3861dc27248",
-            "created": "2023-02-06T09:31:27.72381Z",
-            "modified": "2023-02-06T09:31:27.72381Z",
+            "id": "relationship--278b4b28-b8a1-480f-842f-6eeabda29681",
+            "created_by_ref": "identity--cdb126ce-6c50-4669-8e49-fc9cb4a2c17e",
+            "created": "2023-02-06T15:58:39.483904Z",
+            "modified": "2023-02-06T15:58:39.483904Z",
             "relationship_type": "refers-to",
-            "source_ref": "report--47c4ef15-db81-4b31-bbf6-89f0451e1bc8",
-            "target_ref": "malware--c42c926b-0c7d-478d-abe1-7c78988f3fbe"
+            "source_ref": "report--75e9a79d-829f-4996-b14b-e099f2b94393",
+            "target_ref": "malware--a957f254-8925-49ed-bac1-8934d3b3e0b8"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--8e13d754-899a-490f-be9e-95514f441212",
+            "created": "2023-02-06T15:58:39.48398Z",
+            "modified": "2023-02-06T15:58:39.48398Z",
+            "relationship_type": "consists-of",
+            "source_ref": "infrastructure--5d6ce57e-53e0-45e7-9b7e-93f12114c15c",
+            "target_ref": "ipv4-addr--46361b12-bfec-5659-b2f6-ff3a113573c7"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--1ec15899-cdfc-4bc9-9031-23c9e2656f88",
+            "created": "2023-02-06T15:58:39.484051Z",
+            "modified": "2023-02-06T15:58:39.484051Z",
+            "relationship_type": "consists-of",
+            "source_ref": "infrastructure--65ffdfad-e28b-4334-8862-7107fa529cdd",
+            "target_ref": "ipv4-addr--cbd67181-b9f8-595b-8bc3-3971e34fa1cc"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--7cb0fd5e-b8df-42f1-ab9d-f08bc76e099d",
+            "created": "2023-02-06T15:58:39.484116Z",
+            "modified": "2023-02-06T15:58:39.484116Z",
+            "relationship_type": "communicates-with",
+            "source_ref": "infrastructure--5d6ce57e-53e0-45e7-9b7e-93f12114c15c",
+            "target_ref": "infrastructure--65ffdfad-e28b-4334-8862-7107fa529cdd"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--63082aba-0081-4b46-aaa2-cf15faac8da9",
+            "created": "2023-02-06T15:58:39.484181Z",
+            "modified": "2023-02-06T15:58:39.484181Z",
+            "relationship_type": "targets",
+            "source_ref": "attack-pattern--dcaa092b-7de9-4a21-977f-7fcb77e89c48",
+            "target_ref": "identity--cdb126ce-6c50-4669-8e49-fc9cb4a2c17e"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--5f2f445b-fbab-4cfd-b4be-1a153364c5e6",
+            "created": "2023-02-06T15:58:39.484246Z",
+            "modified": "2023-02-06T15:58:39.484246Z",
+            "relationship_type": "indicates",
+            "source_ref": "indicator--f5e64214-a42c-494c-826f-88f05373328b",
+            "target_ref": "attack-pattern--dcaa092b-7de9-4a21-977f-7fcb77e89c48"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--e2a21b60-6e47-46b0-a8a9-934b393ccf2b",
+            "created": "2023-02-06T15:58:39.484309Z",
+            "modified": "2023-02-06T15:58:39.484309Z",
+            "relationship_type": "indicates",
+            "source_ref": "indicator--f5e64214-a42c-494c-826f-88f05373328b",
+            "target_ref": "malware--a957f254-8925-49ed-bac1-8934d3b3e0b8"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--c9b713ba-aa3e-4b05-9f5c-838f44572c71",
+            "created": "2023-02-06T15:58:39.484373Z",
+            "modified": "2023-02-06T15:58:39.484373Z",
+            "relationship_type": "uses",
+            "source_ref": "malware--a957f254-8925-49ed-bac1-8934d3b3e0b8",
+            "target_ref": "attack-pattern--dcaa092b-7de9-4a21-977f-7fcb77e89c48"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--893aefed-c91d-4cf5-93c2-ca4f7cdb4881",
+            "created": "2023-02-06T15:58:39.484434Z",
+            "modified": "2023-02-06T15:58:39.484434Z",
+            "relationship_type": "remediates",
+            "source_ref": "course-of-action--9b859acf-237b-47ee-bd0a-da62b250cd88",
+            "target_ref": "attack-pattern--dcaa092b-7de9-4a21-977f-7fcb77e89c48"
         },
         {
             "type": "sighting",
             "spec_version": "2.1",
-            "id": "sighting--ce41a37b-b6c1-4ecd-b5e1-10a0d46d6169",
-            "created_by_ref": "identity--c89ded36-f499-4260-9c7a-b3861dc27248",
-            "created": "2023-02-06T09:31:27.723876Z",
-            "modified": "2023-02-06T09:31:27.723876Z",
+            "id": "sighting--cf37dd98-cc17-4e5f-9d0f-7dfc0c8ba7de",
+            "created_by_ref": "identity--cdb126ce-6c50-4669-8e49-fc9cb4a2c17e",
+            "created": "2023-02-06T15:58:39.484499Z",
+            "modified": "2023-02-06T15:58:39.484499Z",
             "count": 1,
-            "sighting_of_ref": "indicator--576236aa-301f-4e3d-abc9-c39b6966438d",
+            "sighting_of_ref": "indicator--f5e64214-a42c-494c-826f-88f05373328b",
             "observed_data_refs": [
-                "observed-data--5c1724fc-ad14-474c-8e31-d21c819d4cd6"
+                "observed-data--5e326b7d-5457-4f8f-b5f6-d4bc19e71780"
             ]
         },
         {

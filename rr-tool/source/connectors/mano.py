@@ -49,6 +49,8 @@ def add_dns_policy(domain, rule):
 def shutdown(node1):
     logger.info(f"{node1} has been shutdown")
 
+def add_link(node1, node2):
+    logger.info(f"Added link between {node1} and {node2}")
 
 def isolate(node1):
     logger.info(f"{node1} has been isolated")

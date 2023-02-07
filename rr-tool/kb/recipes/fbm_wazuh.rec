@@ -5,4 +5,4 @@ list_paths from RansomwareSourceIp to WazuhServer
            allow_traffic between RansomwareSourceIp and WazuhServer
        endif
 end_iteration
-execute 'fbm_call' RansomwareThreat RansomwareSourceIp
+execute 'fbm_call_ransomware' RansomwareThreat RansomwareSourceIp
