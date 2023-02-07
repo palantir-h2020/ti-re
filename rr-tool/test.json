@@ -1,0 +1,422 @@
+{
+    "type": "bundle",
+    "id": "bundle--223bfb81-f9fa-4584-8844-f11e018c0cfc",
+    "objects": [
+        {
+            "type": "extension-definition",
+            "spec_version": "2.1",
+            "id": "extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c",
+            "created_by_ref": "identity--ae82a5e5-ec07-4863-ad88-6504b29f24e9",
+            "created": "2022-01-18T23:22:03.933931Z",
+            "modified": "2022-08-25T19:15:25.577633Z",
+            "name": "Course of Action extension for Security Playbooks",
+            "description": "This extension definition extends the Course of Action SDO with additional properties for representing, managing, and sharing machine-readable security playbooks.",
+            "schema": "https://raw.githubusercontent.com/fovea-research/stix2.1-coa-playbook-extension/main/schema/course-of-action_playbook.json",
+            "version": "3.0.0",
+            "extension_types": [
+                "property-extension"
+            ],
+            "external_references": [
+                {
+                    "source_name": "GitHub",
+                    "description": "Documentation of the Extension Definition.",
+                    "url": "https://github.com/fovea-research/stix2.1-coa-playbook-extension"
+                }
+            ]
+        },
+        {
+            "type": "attack-pattern",
+            "spec_version": "2.1",
+            "id": "attack-pattern--dcaa092b-7de9-4a21-977f-7fcb77e89c48",
+            "created_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "created": "2017-12-14T16:46:06.044Z",
+            "modified": "2022-05-24T14:00:00.188Z",
+            "name": "Access Token Manipulation",
+            "description": "Adversaries may modify access tokens to operate under a different user or system security context to perform actions and bypass access controls. Windows uses access tokens to determine the ownership of a running process. A user can manipulate access tokens to make a running process appear as though it is the child of a different process or belongs to someone other than the user that started the process. When this occurs, the process also takes on the security context associated with the new token.\n\nAn adversary can use built-in Windows API functions to copy access tokens from existing processes; this is known as token stealing. These token can then be applied to an existing process (i.e. [Token Impersonation/Theft](https://attack.mitre.org/techniques/T1134/001)) or used to spawn a new process (i.e. [Create Process with Token](https://attack.mitre.org/techniques/T1134/002)). An adversary must already be in a privileged user context (i.e. administrator) to steal a token. However, adversaries commonly use token stealing to elevate their security context from the administrator level to the SYSTEM level. An adversary can then use a token to authenticate to a remote system as the account for that token if the account has appropriate permissions on the remote system.(Citation: Pentestlab Token Manipulation)\n\nAny standard user can use the <code>runas</code> command, and the Windows API functions, to create impersonation tokens; it does not require access to an administrator account. There are also other mechanisms, such as Active Directory fields, that can be used to modify access tokens.",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "defense-evasion"
+                },
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "privilege-escalation"
+                }
+            ],
+            "external_references": [
+                {
+                    "source_name": "mitre-attack",
+                    "url": "https://attack.mitre.org/techniques/T1134",
+                    "external_id": "T1134"
+                },
+                {
+                    "source_name": "BlackHat Atkinson Winchester Token Manipulation",
+                    "description": "Atkinson, J., Winchester, R. (2017, December 7). A Process is No One: Hunting for Token Manipulation. Retrieved December 21, 2017.",
+                    "url": "https://www.blackhat.com/docs/eu-17/materials/eu-17-Atkinson-A-Process-Is-No-One-Hunting-For-Token-Manipulation.pdf"
+                },
+                {
+                    "source_name": "Microsoft Command-line Logging",
+                    "description": "Mathers, B. (2017, March 7). Command line process auditing. Retrieved April 21, 2017.",
+                    "url": "https://technet.microsoft.com/en-us/windows-server-docs/identity/ad-ds/manage/component-updates/command-line-process-auditing"
+                },
+                {
+                    "source_name": "Microsoft LogonUser",
+                    "description": "Microsoft TechNet. (n.d.). Retrieved April 25, 2017.",
+                    "url": "https://msdn.microsoft.com/en-us/library/windows/desktop/aa378184(v=vs.85).aspx"
+                },
+                {
+                    "source_name": "Microsoft DuplicateTokenEx",
+                    "description": "Microsoft TechNet. (n.d.). Retrieved April 25, 2017.",
+                    "url": "https://msdn.microsoft.com/en-us/library/windows/desktop/aa446617(v=vs.85).aspx"
+                },
+                {
+                    "source_name": "Microsoft ImpersonateLoggedOnUser",
+                    "description": "Microsoft TechNet. (n.d.). Retrieved April 25, 2017.",
+                    "url": "https://msdn.microsoft.com/en-us/library/windows/desktop/aa378612(v=vs.85).aspx"
+                },
+                {
+                    "source_name": "Pentestlab Token Manipulation",
+                    "description": "netbiosX. (2017, April 3). Token Manipulation. Retrieved April 21, 2017.",
+                    "url": "https://pentestlab.blog/2017/04/03/token-manipulation/"
+                },
+                {
+                    "source_name": "capec",
+                    "url": "https://capec.mitre.org/data/definitions/633.html",
+                    "external_id": "CAPEC-633"
+                }
+            ],
+            "object_marking_refs": [
+                "marking-definition--fa42a846-8d90-4e51-bc29-71d5b4802168"
+            ],
+            "x_mitre_attack_spec_version": "2.1.0",
+            "x_mitre_contributors": [
+                "Tom Ueltschi @c_APT_ure",
+                "Travis Smith, Tripwire",
+                "Robby Winchester, @robwinchester3",
+                "Jared Atkinson, @jaredcatkinson"
+            ],
+            "x_mitre_data_sources": [
+                "Process: Process Metadata",
+                "Process: OS API Execution",
+                "User Account: User Account Metadata",
+                "Process: Process Creation",
+                "Command: Command Execution",
+                "Active Directory: Active Directory Object Modification"
+            ],
+            "x_mitre_defense_bypassed": [
+                "Windows User Account Control",
+                "Heuristic Detection",
+                "System Access Controls",
+                "Host Forensic Analysis"
+            ],
+            "x_mitre_deprecated": false,
+            "x_mitre_detection": "If an adversary is using a standard command-line shell, analysts can detect token manipulation by auditing command-line activity. Specifically, analysts should look for use of the <code>runas</code> command. Detailed command-line logging is not enabled by default in Windows.(Citation: Microsoft Command-line Logging)\n\nIf an adversary is using a payload that calls the Windows token APIs directly, analysts can detect token manipulation only through careful analysis of user network activity, examination of running processes, and correlation with other endpoint and network behavior. \n\nThere are many Windows API calls a payload can take advantage of to manipulate access tokens (e.g., <code>LogonUser</code> (Citation: Microsoft LogonUser), <code>DuplicateTokenEx</code>(Citation: Microsoft DuplicateTokenEx), and <code>ImpersonateLoggedOnUser</code>(Citation: Microsoft ImpersonateLoggedOnUser)). Please see the referenced Windows API pages for more information.\n\nQuery systems for process and thread token information and look for inconsistencies such as user owns processes impersonating the local SYSTEM account.(Citation: BlackHat Atkinson Winchester Token Manipulation)\n\nLook for inconsistencies between the various fields that store PPID information, such as the EventHeader ProcessId from data collected via Event Tracing for Windows (ETW), Creator Process ID/Name from Windows event logs, and the ProcessID and ParentProcessID (which are also produced from ETW and other utilities such as Task Manager and Process Explorer). The ETW provided EventHeader ProcessId identifies the actual parent process.",
+            "x_mitre_domains": [
+                "enterprise-attack"
+            ],
+            "x_mitre_effective_permissions": [
+                "SYSTEM"
+            ],
+            "x_mitre_is_subtechnique": false,
+            "x_mitre_modified_by_ref": "identity--c78cb6e5-0c4b-4611-8297-d1b8b55e40b5",
+            "x_mitre_permissions_required": [
+                "User",
+                "Administrator"
+            ],
+            "x_mitre_platforms": [
+                "Windows"
+            ],
+            "x_mitre_version": "2.0"
+        },
+        {
+            "type": "identity",
+            "spec_version": "2.1",
+            "id": "identity--e7c51849-ae28-4adb-8525-34969d59803f",
+            "created": "2023-02-07T11:39:13.858548Z",
+            "modified": "2023-02-07T11:39:13.858548Z",
+            "name": "organization 1234",
+            "identity_class": "organization"
+        },
+        {
+            "type": "ipv4-addr",
+            "spec_version": "2.1",
+            "id": "ipv4-addr--cbd67181-b9f8-595b-8bc3-3971e34fa1cc",
+            "value": "1.1.1.1"
+        },
+        {
+            "type": "ipv4-addr",
+            "spec_version": "2.1",
+            "id": "ipv4-addr--46361b12-bfec-5659-b2f6-ff3a113573c7",
+            "value": "10.10.10.20",
+            "object_marking_refs": [
+                "marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed"
+            ]
+        },
+        {
+            "type": "network-traffic",
+            "spec_version": "2.1",
+            "id": "network-traffic--f9baa81a-03ef-5ab5-aa47-255ebf927bc2",
+            "src_ref": "ipv4-addr--46361b12-bfec-5659-b2f6-ff3a113573c7",
+            "dst_ref": "ipv4-addr--cbd67181-b9f8-595b-8bc3-3971e34fa1cc",
+            "dst_port": 22,
+            "protocols": [
+                "tcp"
+            ]
+        },
+        {
+            "type": "observed-data",
+            "spec_version": "2.1",
+            "id": "observed-data--c69784b1-70c7-48da-a011-a59520ded417",
+            "created": "2023-02-07T11:39:13.86068Z",
+            "modified": "2023-02-07T11:39:13.86068Z",
+            "first_observed": "2023-02-07T11:39:13Z",
+            "last_observed": "2023-02-07T11:39:13Z",
+            "number_observed": 1,
+            "object_refs": [
+                "ipv4-addr--cbd67181-b9f8-595b-8bc3-3971e34fa1cc",
+                "ipv4-addr--46361b12-bfec-5659-b2f6-ff3a113573c7",
+                "network-traffic--f9baa81a-03ef-5ab5-aa47-255ebf927bc2"
+            ]
+        },
+        {
+            "type": "malware",
+            "spec_version": "2.1",
+            "id": "malware--9d2277cc-7fcb-4f77-8158-4f80e8e89935",
+            "created": "2023-02-07T11:39:13.861066Z",
+            "modified": "2023-02-07T11:39:13.861066Z",
+            "name": "test",
+            "is_family": false,
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "defense-evasion"
+                },
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "privilege-escalation"
+                }
+            ]
+        },
+        {
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--54bacfa3-cf39-4b07-8fb1-4e02a3becea2",
+            "created": "2023-02-07T11:39:13.861148Z",
+            "modified": "2023-02-07T11:39:13.861148Z",
+            "name": "Command and control traffic",
+            "description": "This traffic indicates the source host is trying to reach to his command and control server",
+            "indicator_types": [
+                "malicious-activity"
+            ],
+            "pattern": "[network-traffic:dst_ref.type = 'ipv4-addr' AND network-traffic:dst_ref.value = '1.1.1.1' AND network-traffic:dst_port.value = '22']",
+            "kill_chain_phases": [
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "defense-evasion"
+                },
+                {
+                    "kill_chain_name": "mitre-attack",
+                    "phase_name": "privilege-escalation"
+                }
+            ],
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "valid_from": "2023-02-07T11:39:13Z",
+            "labels": [
+                "malicious-activity"
+            ]
+        },
+        {
+            "type": "infrastructure",
+            "spec_version": "2.1",
+            "id": "infrastructure--6e7f03e6-cad1-41b9-9d85-23eb0d6243d1",
+            "created": "2023-02-07T11:39:13.866878Z",
+            "modified": "2023-02-07T11:39:13.866878Z",
+            "name": "Victim host",
+            "description": "The host being part of the botnet",
+            "infrastructure_types": [
+                "workstation"
+            ]
+        },
+        {
+            "type": "infrastructure",
+            "spec_version": "2.1",
+            "id": "infrastructure--582d0d36-6ac8-4292-a695-794d9eb5cd8d",
+            "created": "2023-02-07T11:39:13.866981Z",
+            "modified": "2023-02-07T11:39:13.866981Z",
+            "name": "Attacker host",
+            "description": "The command and control server of the botnet",
+            "infrastructure_types": [
+                "command-and-control",
+                "botnet"
+            ]
+        },
+        {
+            "type": "course-of-action",
+            "spec_version": "2.1",
+            "id": "course-of-action--694cb5eb-4c8c-4fa6-a6fd-c2c9ab1b3593",
+            "created_by_ref": "identity--e7c51849-ae28-4adb-8525-34969d59803f",
+            "created": "2023-02-07T11:39:13.867055Z",
+            "modified": "2023-02-07T11:39:13.867055Z",
+            "name": "CACAO playbook",
+            "description": "CACAO Playbook course of action",
+            "extensions": {
+                "extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c": {
+                    "extension_type": "property-extension",
+                    "playbook_bin": "aadfvadfv",
+                    "playbook_standard": "playbook_standard"
+                }
+            }
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--62bddcb8-399f-406a-a762-e884957aaf4d",
+            "created": "2023-02-07T11:39:13.86713Z",
+            "modified": "2023-02-07T11:39:13.86713Z",
+            "name": "Botnet remediation",
+            "published": "2023-02-07T11:39:13Z",
+            "object_refs": [
+                "indicator--54bacfa3-cf39-4b07-8fb1-4e02a3becea2",
+                "identity--e7c51849-ae28-4adb-8525-34969d59803f"
+            ]
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--27aface3-2f84-4774-9e0f-09c1b19b6f69",
+            "created_by_ref": "identity--e7c51849-ae28-4adb-8525-34969d59803f",
+            "created": "2023-02-07T11:39:13.867219Z",
+            "modified": "2023-02-07T11:39:13.867219Z",
+            "relationship_type": "refers-to",
+            "source_ref": "identity--e7c51849-ae28-4adb-8525-34969d59803f",
+            "target_ref": "report--62bddcb8-399f-406a-a762-e884957aaf4d"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--cf69df8e-9839-43af-9daf-4cef833ccf1a",
+            "created_by_ref": "identity--e7c51849-ae28-4adb-8525-34969d59803f",
+            "created": "2023-02-07T11:39:13.867295Z",
+            "modified": "2023-02-07T11:39:13.867295Z",
+            "relationship_type": "indicates",
+            "source_ref": "indicator--54bacfa3-cf39-4b07-8fb1-4e02a3becea2",
+            "target_ref": "malware--9d2277cc-7fcb-4f77-8158-4f80e8e89935"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--b11e2fb3-8568-4463-a29d-118dd6f3d442",
+            "created_by_ref": "identity--e7c51849-ae28-4adb-8525-34969d59803f",
+            "created": "2023-02-07T11:39:13.867364Z",
+            "modified": "2023-02-07T11:39:13.867364Z",
+            "relationship_type": "refers-to",
+            "source_ref": "report--62bddcb8-399f-406a-a762-e884957aaf4d",
+            "target_ref": "malware--9d2277cc-7fcb-4f77-8158-4f80e8e89935"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--268efd1e-c5eb-4cf7-a623-e22e2072dc12",
+            "created": "2023-02-07T11:39:13.867429Z",
+            "modified": "2023-02-07T11:39:13.867429Z",
+            "relationship_type": "consists-of",
+            "source_ref": "infrastructure--6e7f03e6-cad1-41b9-9d85-23eb0d6243d1",
+            "target_ref": "ipv4-addr--46361b12-bfec-5659-b2f6-ff3a113573c7"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--1debaa58-f37a-4a40-810c-9f0483fca081",
+            "created": "2023-02-07T11:39:13.86749Z",
+            "modified": "2023-02-07T11:39:13.86749Z",
+            "relationship_type": "consists-of",
+            "source_ref": "infrastructure--582d0d36-6ac8-4292-a695-794d9eb5cd8d",
+            "target_ref": "ipv4-addr--cbd67181-b9f8-595b-8bc3-3971e34fa1cc"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--7f86bdb5-e2ad-4ed0-9599-bcf5cb90621a",
+            "created": "2023-02-07T11:39:13.86755Z",
+            "modified": "2023-02-07T11:39:13.86755Z",
+            "relationship_type": "communicates-with",
+            "source_ref": "infrastructure--6e7f03e6-cad1-41b9-9d85-23eb0d6243d1",
+            "target_ref": "infrastructure--582d0d36-6ac8-4292-a695-794d9eb5cd8d"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--5c49f7fb-d5c8-4ac5-8269-9bee0e7a5372",
+            "created": "2023-02-07T11:39:13.867612Z",
+            "modified": "2023-02-07T11:39:13.867612Z",
+            "relationship_type": "targets",
+            "source_ref": "attack-pattern--dcaa092b-7de9-4a21-977f-7fcb77e89c48",
+            "target_ref": "identity--e7c51849-ae28-4adb-8525-34969d59803f"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--6ee43659-d833-46fa-8d0c-829824691413",
+            "created": "2023-02-07T11:39:13.867672Z",
+            "modified": "2023-02-07T11:39:13.867672Z",
+            "relationship_type": "indicates",
+            "source_ref": "indicator--54bacfa3-cf39-4b07-8fb1-4e02a3becea2",
+            "target_ref": "attack-pattern--dcaa092b-7de9-4a21-977f-7fcb77e89c48"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--5ef092eb-2e33-4a5f-8c50-ed8ed047c0ef",
+            "created": "2023-02-07T11:39:13.867732Z",
+            "modified": "2023-02-07T11:39:13.867732Z",
+            "relationship_type": "indicates",
+            "source_ref": "indicator--54bacfa3-cf39-4b07-8fb1-4e02a3becea2",
+            "target_ref": "malware--9d2277cc-7fcb-4f77-8158-4f80e8e89935"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--4f34c044-b772-4eb3-8642-285f13ae2e49",
+            "created": "2023-02-07T11:39:13.867792Z",
+            "modified": "2023-02-07T11:39:13.867792Z",
+            "relationship_type": "uses",
+            "source_ref": "malware--9d2277cc-7fcb-4f77-8158-4f80e8e89935",
+            "target_ref": "attack-pattern--dcaa092b-7de9-4a21-977f-7fcb77e89c48"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--931a9759-c630-420b-8d01-c86e422cbf79",
+            "created": "2023-02-07T11:39:13.867851Z",
+            "modified": "2023-02-07T11:39:13.867851Z",
+            "relationship_type": "remediates",
+            "source_ref": "course-of-action--694cb5eb-4c8c-4fa6-a6fd-c2c9ab1b3593",
+            "target_ref": "attack-pattern--dcaa092b-7de9-4a21-977f-7fcb77e89c48"
+        },
+        {
+            "type": "sighting",
+            "spec_version": "2.1",
+            "id": "sighting--157f24f8-2569-4e18-a764-3a2e70515c4d",
+            "created_by_ref": "identity--e7c51849-ae28-4adb-8525-34969d59803f",
+            "created": "2023-02-07T11:39:13.867912Z",
+            "modified": "2023-02-07T11:39:13.867912Z",
+            "count": 1,
+            "sighting_of_ref": "indicator--54bacfa3-cf39-4b07-8fb1-4e02a3becea2",
+            "observed_data_refs": [
+                "observed-data--c69784b1-70c7-48da-a011-a59520ded417"
+            ]
+        },
+        {
+            "type": "marking-definition",
+            "spec_version": "2.1",
+            "id": "marking-definition--5e57c739-391a-4eb3-b6be-7d15ca92d5ed",
+            "created": "2017-01-20T00:00:00.000Z",
+            "definition_type": "tlp",
+            "name": "TLP:RED",
+            "definition": {
+                "tlp": "red"
+            }
+        }
+    ]
+}

@@ -1,5 +1,6 @@
 from datetime import datetime
 import json
+import os
 import base64
 import stix2
 from stix2.v21 import (
@@ -553,5 +554,5 @@ def getSTIXReport_test_standalone():
         mem.save_to_file("test.json")
 
 if __name__ == "__main__":
-
+    os.chdir("./rr-tool")
     getSTIXReport_test_standalone()
