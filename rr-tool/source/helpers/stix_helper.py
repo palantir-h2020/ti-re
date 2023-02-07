@@ -212,7 +212,8 @@ def getSTIXReport_botnet(global_scope):
                                    attackerIpSCO,
                                    impactedHostIpSCO,
                                    trafficSCO,
-                                   MalwareSDO])
+                                   MalwareSDO],
+                                   allow_custom=True)
 
         json_string_stix = bundle.serialize(pretty=True)
 
