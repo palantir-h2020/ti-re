@@ -61,7 +61,9 @@ def publish_on_misp_test():
     event.add_tag(mitre_attack_pattern_tag)
     attribute2.add_tag(mitre_attack_pattern_tag2)
 
-    tlp_red_tag = MISPTag(name="tlp:red", colour="#FF2B2B")
+    tlp_red_tag = MISPTag()
+    tlp_red_tag.name = "tlp:red"
+    tlp_red_tag.colour = "#FF2B2B"
     #event.add_tag("tlp:red", colour="#FF2B2B")
     event.add_tag(tlp_red_tag)
 
