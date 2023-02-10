@@ -127,6 +127,9 @@ def prepareDataForRemediationOfUnauthorizedAccess(global_scope, service_graph_in
     # GlobalScope["Threat_Label"] = alert.get("Threat_Label")
     # GlobalScope["Classification_Confidence"] = alert("Classification_Confidence")
     # GlobalScope["Outlier_Score"] = alert("Outlier_Score")
+
+    global_scope["threat_category"] = "unauthorized_access"
+    global_scope["threat_label"] = alert["Threat_Label"]
     global_scope["UnauthorizedAccessAlert"] = alert
     global_scope["UnauthorizedAccessAlertSourceIp"] = alert[settings.TI_SYSLOG_VICTIM_IP_FIELD_NAME]
     global_scope["BackupServerIp"] = settings.BACKUP_SERVER_IP
@@ -153,6 +156,9 @@ def prepareDataForRemediationOfRansomware(global_scope, service_graph_instance, 
     # GlobalScope["Threat_Label"] = alert.get("Threat_Label")
     # GlobalScope["Classification_Confidence"] = alert("Classification_Confidence")
     # GlobalScope["Outlier_Score"] = alert("Outlier_Score")
+
+    global_scope["threat_category"] = "ransomware"
+    global_scope["threat_label"] = alert["Threat_Label"]
     global_scope["UnauthorizedAccessAlert"] = alert
     global_scope["UnauthorizedAccessAlertSourceIp"] = alert[settings.TI_SYSLOG_VICTIM_IP_FIELD_NAME]
     global_scope["BackupServerIp"] = settings.BACKUP_SERVER_IP

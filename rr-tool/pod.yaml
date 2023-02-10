@@ -10,6 +10,8 @@ spec:
       image: 10.101.10.244:5000/palantir-rr-tool:1.0
       imagePullPolicy: Always
       env:
+        - name: ENABLE_PRIVATE_ARTIFACTS_SHARING
+          value: "1"
         - name: RR_INSTANCE_IDENTIFIER
           value: "0001"
         - name: RR_TOOL_MODE # standalone/kafka

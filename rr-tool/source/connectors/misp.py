@@ -1,4 +1,5 @@
 import json
+import urllib3
 from typing import Tuple
 from pymisp import PyMISP
 from pymisp import MISPEvent, MISPAttribute, MISPObject
@@ -7,12 +8,14 @@ from pymisp.tools import stix
 from uuid import uuid4
 from datetime import datetime, time, date, timedelta
 from helpers import stix_helper
+from settings import ENABLE_PRIVATE_ARTIFACTS_SHARING
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from helpers.logging_helper import get_logger
 
 logger = get_logger("misp")
 
-# import requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
 
 misp_url = "https://10.101.41.42:8081"
 misp_key = "zfajFlj9sOQOZpL7jDFHunSEKU26r8LrxSeaFheY"
@@ -94,13 +97,24 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
 
     event.add_object(playbook_object)
 
-    if threat_type == "unauthorized_access":
+    if threat_type == "unauthorized_access": # unauthorized_access attributes
         event.info = "Unauthorized access report"
-        pass
-    elif threat_type == "ransomware":
+        attacker_ip = global_scope.get("UnauthorizedAccessAlertSourceIp")
+        impacted_host_ip = global_scope.get("UnauthorizedAccessAlertSourceIp")
+
+        attribute3 = event.add_attribute(type="ip-dst",
+                                    value=attacker_ip)
+
+        if ENABLE_PRIVATE_ARTIFACTS_SHARING == "1":
+            attribute3 = event.add_attribute(type="ip-src",
+                                        value=impacted_host_ip)
+            attribute3.add_tag("tlp:red")
+
+    elif threat_type == "ransomware": # ransomware specific attributes
         event.info = "Ransomware report"
         pass
-    elif threat_type == "botnet":
+
+    elif threat_type == "botnet": # botnet specific attributes
         event.info = "Botnet report"
         attacker_ip = global_scope.get("attacker_ip")
         c2serversPort = global_scope.get("c2serversPort")
@@ -110,9 +124,10 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
         attribute3 = event.add_attribute(type="ip-dst",
                                     value=attacker_ip)
 
-        attribute3 = event.add_attribute(type="ip-src",
-                                    value=impacted_host_ip)
-        attribute3.add_tag("tlp:red")
+        if ENABLE_PRIVATE_ARTIFACTS_SHARING == "1":
+            attribute3 = event.add_attribute(type="ip-src",
+                                        value=impacted_host_ip)
+            attribute3.add_tag("tlp:red")
 
         # pattern object https://github.com/MISP/misp-objects/blob/main/objects/stix2-pattern/definition.json
         pattern_object = MISPObject("stix2-pattern", standalone=False)

@@ -344,18 +344,56 @@ class AllowTraffic(FunctionCall):
     parent: object
     firstNodeExpression: VarReferenceOrString
     secondNodeExpression: VarReferenceOrString
+    firewallNodeExpression: VarReferenceOrString
 
     def run(self, scope, remediator):
 
+
         firstNode = self.firstNodeExpression.getValue(scope)
         secondNode = self.secondNodeExpression.getValue(scope)
+        firewallNode = self.firewallNodeExpression.getValue(scope)
+
+        filteringRules = [
+            {"level": 4, "victimIP": firstNode,
+            "c2serversPort": "", "c2serversIP": secondNode,
+            "proto": "", "action": "ALLOW"},
+            {"level": 4, "victimIP": secondNode,
+            "c2serversPort": "", "c2serversIP": firstNode,
+            "proto": "", "action": "ALLOW"}
+        ]
 
         logger.info("allow_traffic between " + f"{firstNode}" + " and " + f"{secondNode}")
 
         try:
-            remediator.service_graph_instance.add_link(firstNode, secondNode)
+            translatedRules = []
+            for rule in filteringRules:
+                if rule["level"] == 4:
+                    if settings.ENABLE_IDENTICAL_L4_FILTERING_RULE_SKIPPING == "1":
+                        rule_existing = False
+                        for existing_rule in remediator.service_graph_instance.get_filtering_rules(firewallNode, 4):
+                            same_rule = True
+                            for key in rule:
+                                if rule[key] != existing_rule["policy"][key]:
+                                    same_rule = False
+                                    break
+                            if same_rule:
+                                rule_existing = same_rule
+                                break
+                        if rule_existing:
+                            logger.info("Identical rule already applied, skipping...")
+                            continue
+                    generatedRule = remediator.generateRule("level_4_filtering", rule)
+                    if generatedRule == "":
+                        logger.error("Error generating concrete rule, skipping...")
+                    else:
+                        translatedRules.append(generatedRule)
+                else:
+                    translatedRules.append(remediator.generateRule("level_7_filtering", rule))
+
+            remediator.service_graph_instance.add_filtering_rules(firewallNode, translatedRules)
         except Exception as ex:
             raise ex  # just rethrow it for now
+
 
     def testRun(self, scope):
         super().info()

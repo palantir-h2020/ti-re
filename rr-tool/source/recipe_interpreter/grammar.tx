@@ -65,6 +65,7 @@ AllowTraffic:
     'allow_traffic'
     ('between' firstNodeExpression=VarReferenceOrString)
     ('and' secondNodeExpression=VarReferenceOrString)
+    ('at' firewallNodeExpression=VarReferenceOrString))
 ;
 
 AddDnsPolicy:
