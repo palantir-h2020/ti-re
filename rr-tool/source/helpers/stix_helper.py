@@ -92,6 +92,8 @@ def getSTIXReport_unauthorized_access(global_scope):
     # Indicator of compromise
     IoCSDO = stix2.v21.Indicator(indicator_types=["malicious-activity"],
                                 valid_from=timestamp_now,
+                                pattern_type="None",
+                                pattern="None",
                                 name="Malicious traffic",
                                 description="Traffic related to multiple unauthorized login attempts",
                                 kill_chain_phases=kill_chain_phases,
@@ -234,7 +236,7 @@ def getSTIXReport_unauthorized_access(global_scope):
 
 def getSTIXReport_ransomware(global_scope):
 
-    
+
     pass
 
 def getSTIXReport_botnet(global_scope):
