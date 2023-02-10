@@ -2,7 +2,7 @@ import json
 import urllib3
 from typing import Tuple
 from pymisp import PyMISP
-from pymisp import MISPEvent, MISPAttribute, MISPObject
+from pymisp import MISPEvent, MISPAttribute, MISPObject, MISPTag
 from pymisp.tools import GenericObjectGenerator
 from pymisp.tools import stix
 from uuid import uuid4
@@ -61,7 +61,9 @@ def publish_on_misp_test():
     event.add_tag(mitre_attack_pattern_tag)
     attribute2.add_tag(mitre_attack_pattern_tag2)
 
-    event.add_tag("tlp:red", colour="#FF2B2B")
+    tlp_red_tag = MISPTag(name="tlp:red", colour="#FF2B2B")
+    #event.add_tag("tlp:red", colour="#FF2B2B")
+    event.add_tag(tlp_red_tag)
 
     event = misp.add_event(event)
 
