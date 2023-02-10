@@ -57,6 +57,8 @@ def publish_on_misp_test():
     event.add_tag(mitre_attack_pattern_tag)
     attribute2.add_tag(mitre_attack_pattern_tag2)
 
+    event.add_tag("tlp:red")
+
     event = misp.add_event(event)
 
     logger.debug(f"Published test event on MISP")
@@ -111,6 +113,7 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
             attribute3 = event.add_attribute(type="ip-src",
                                         value=impacted_host_ip)
             attribute3.add_tag("tlp:red")
+            event.add_tag("tlp:red")
 
     elif threat_type == "ransomware": # ransomware specific attributes
         event.info = "Ransomware report"
@@ -129,7 +132,7 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
         if ENABLE_PRIVATE_ARTIFACTS_SHARING == "1":
             attribute3 = event.add_attribute(type="ip-src",
                                         value=impacted_host_ip)
-            attribute3.add_tag("tlp:red")
+            event.add_tag("tlp:red")
 
         # pattern object https://github.com/MISP/misp-objects/blob/main/objects/stix2-pattern/definition.json
         pattern_object = MISPObject("stix2-pattern", standalone=False)
