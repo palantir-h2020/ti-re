@@ -43,12 +43,14 @@ class RecipeFilter:
             recipesForThreat = self.threat_repository[threat_category]["unknown"]["recipes"]
         for el in recipesForThreat:
             isEnforceable = self.checkEnforceability(el["recipeName"])
-            isProactiveCompatible = self.checkProactiveCompatibility(el["recipeName"], proactive)
-            # for now artifact availability requirement is only checked for proactive remediation
+            # for now availability requirements are only checked for proactive remediation
             if proactive:
+                # the following line is used to check if the recipe is compatible with proactive remediation
+                isProactiveCompatible = self.checkProactiveCompatibility(el["recipeName"], proactive)
                 areRequiredArtifactsAvailable = self.checkArtifactsAvailability(el["recipeName"], availableArtifacts)
             else:
                 areRequiredArtifactsAvailable = True
+                isProactiveCompatible = True
             if el["priority"] > maxPriority and isEnforceable and isProactiveCompatible and areRequiredArtifactsAvailable:
                 maxPriority = el["priority"]
                 bestRecipeName = el["recipeName"]
