@@ -61,10 +61,6 @@ def publish_on_misp_test():
     event.add_tag(mitre_attack_pattern_tag)
     attribute2.add_tag(mitre_attack_pattern_tag2)
 
-    new_tag = MISPTag()
-    new_tag.from_dict(name="tlp:red", colour="#FF2B2B")
-    event.add_tag(new_tag)
-
     event = misp.add_event(event)
 
     logger.debug(f"Published test event on MISP")
