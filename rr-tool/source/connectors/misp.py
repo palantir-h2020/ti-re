@@ -29,6 +29,10 @@ misp_verifycert = False
 # PyMISP tutorial
 # https://github.com/MISP/PyMISP/blob/main/docs/tutorial/FullOverview.ipynb
 
+
+# tag colours
+# https://github.com/MISP/misp-taxonomies/blob/main/tlp/machinetag.json
+
 def publish_on_misp_test():
 
     stix_report_json, stix_report_base64 = stix_helper.getSTIXReport_test()
@@ -57,7 +61,7 @@ def publish_on_misp_test():
     event.add_tag(mitre_attack_pattern_tag)
     attribute2.add_tag(mitre_attack_pattern_tag2)
 
-    event.add_tag("tlp:red")
+    event.add_tag("tlp:red", colour="#FF2B2B")
 
     event = misp.add_event(event)
 
