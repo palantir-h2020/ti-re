@@ -59,6 +59,8 @@ def publish_on_misp_test():
 
     event = misp.add_event(event)
 
+    logger.debug(f"Published test event on MISP")
+
 def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_type):
 
     misp = PyMISP(misp_url, misp_key, misp_verifycert)
@@ -144,6 +146,8 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
 
     event = misp.add_event(event)
 
+    logger.info(f"Published event on MISP")
+
     # attributeAsDict = [{'MyCoolAttribute': {'value': 'critical thing', 'type': 'text'}},
     #                {'MyCoolerAttribute': {'value': 'even worse',  'type': 'text'}}]
     # misp_object = GenericObjectGenerator('my-cool-template')
@@ -206,9 +210,6 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
     #     break
 
     #logger.debug("Event sent to central MISP instance: " + str(event))
-
-    logger.info(f"Sent MISP event to MISP instance")
-
 
 if __name__ == "__main__":
     pass
