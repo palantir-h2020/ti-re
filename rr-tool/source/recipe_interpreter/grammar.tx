@@ -63,7 +63,7 @@ AddFilteringRules:
 
 AllowTraffic:
     'allow_traffic'
-    ('between' firstNodeExpression=VarReferenceOrString)
+    (('between' firstNodeExpression=VarReferenceOrString)
     ('and' secondNodeExpression=VarReferenceOrString)
     ('at' firewallNodeExpression=VarReferenceOrString))
 ;
