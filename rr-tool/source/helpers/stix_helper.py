@@ -122,7 +122,7 @@ def getSTIXReport_unauthorized_access(global_scope):
                                     created_by_ref=identitySDO["id"])
 
     # Report
-    reportSDO = stix2.v21.Report(name="Botnet remediation",
+    reportSDO = stix2.v21.Report(name="Unauthorized access remediation",
                             published=timestamp_now,
                             object_refs=[IoCSDO["id"], identitySDO["id"] ]) # CoASDO["id"], ext["id"]
 
