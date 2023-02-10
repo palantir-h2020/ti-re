@@ -146,9 +146,6 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
         event.add_object(pattern_object)
 
 
-
-
-
     event = misp.add_event(event)
 
     logger.info(f"Published event on MISP")

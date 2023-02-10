@@ -2,7 +2,7 @@
     "rules": [],
     "recipes": [
         {
-            "recipeName": "fbm_wazuh",
+            "recipeName": "fbm",
             "priority": 8,
             "impact": 1
         }
