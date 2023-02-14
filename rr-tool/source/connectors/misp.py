@@ -10,6 +10,7 @@ from datetime import datetime, time, date, timedelta
 from helpers import stix_helper
 from settings import ENABLE_PRIVATE_ARTIFACTS_SHARING
 
+# this avoids showing insecure connection warnings in the logs
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from helpers.logging_helper import get_logger

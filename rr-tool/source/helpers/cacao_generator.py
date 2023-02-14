@@ -306,7 +306,7 @@ class Recipe():
                 scope["rowCursor"] = elseScope["rowCursor"]
 
             return 0
-        elif tokens[0] == "enditeration":
+        elif tokens[0] == "end_iteration":
             logging.info("Exiting iteration construct")
             scope["rowCursor"] += 1
             return 1
