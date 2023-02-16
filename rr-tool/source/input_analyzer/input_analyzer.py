@@ -159,26 +159,25 @@ def prepareDataForRemediationOfRansomware(global_scope, service_graph_instance, 
 
     global_scope["threat_category"] = "ransomware"
     global_scope["threat_label"] = alert["Threat_Label"]
-    global_scope["UnauthorizedAccessAlert"] = alert
-    global_scope["UnauthorizedAccessAlertSourceIp"] = alert[settings.TI_SYSLOG_VICTIM_IP_FIELD_NAME]
-    global_scope["BackupServerIp"] = settings.BACKUP_SERVER_IP
+    global_scope["RansomwareAlert"] = alert
+    global_scope["RansomwareAlertSourceIp"] = alert[settings.TI_SYSLOG_VICTIM_IP_FIELD_NAME]
 
     # TODO remove this temporary fix after having landscape information/ip changes in alerts
     service_graph_instance.changeNodeIP("victim", global_scope["UnauthorizedAccessAlertSourceIp"])
 
-    # Add a filtering rule for both traffic directions:
-    global_scope["rules_level_4"] = [
-        {"level": 4, "victimIP": global_scope["UnauthorizedAccessAlertSourceIp"],
-         "c2serversPort": "", "action": "DENY"},
-        {"level": 4, "c2serversIP": global_scope["UnauthorizedAccessAlertSourceIp"],
-         "c2serversPort": "", "action": "DENY"},
-        {"level": 4, "victimIP": global_scope["UnauthorizedAccessAlertSourceIp"],
-         "c2serversPort": "", "c2serversIP": settings.BACKUP_SERVER_IP,
-         "proto": "", "action": "ALLOW"},
-        {"level": 4, "victimIP": settings.BACKUP_SERVER_IP,
-         "c2serversPort": "", "c2serversIP": global_scope["UnauthorizedAccessAlertSourceIp"],
-         "proto": "", "action": "ALLOW"}
-    ]
+    # # Add a filtering rule for both traffic directions:
+    # global_scope["rules_level_4"] = [
+    #     {"level": 4, "victimIP": global_scope["UnauthorizedAccessAlertSourceIp"],
+    #      "c2serversPort": "", "action": "DENY"},
+    #     {"level": 4, "c2serversIP": global_scope["UnauthorizedAccessAlertSourceIp"],
+    #      "c2serversPort": "", "action": "DENY"},
+    #     {"level": 4, "victimIP": global_scope["UnauthorizedAccessAlertSourceIp"],
+    #      "c2serversPort": "", "c2serversIP": settings.BACKUP_SERVER_IP,
+    #      "proto": "", "action": "ALLOW"},
+    #     {"level": 4, "victimIP": settings.BACKUP_SERVER_IP,
+    #      "c2serversPort": "", "c2serversIP": global_scope["UnauthorizedAccessAlertSourceIp"],
+    #      "proto": "", "action": "ALLOW"}
+    # ]
 
 def prepareDataForProactiveRemediation(global_scope, threat_repository, threat_category, threat_label, artifacts):
 

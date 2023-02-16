@@ -1,8 +1,8 @@
-list_paths from RansomwareSourceIp to WazuhServer
+list_paths from CryptominingSourceIp to WazuhServer
    iterate_on path_list
        find_node of type 'firewall' in iteration_element with 'level_4_filtering'
        if found
-           allow_traffic between RansomwareSourceIp and WazuhServer at found_node
+           allow_traffic between CryptominingSourceIp and WazuhServer at found_node
        endif
 end_iteration
-execute 'fbm_call_ransomware' RansomwareThreat RansomwareSourceIp
+execute 'fbm_call_cryptomining' CryptominingThreat CryptominingSourceIp

@@ -2,7 +2,7 @@
     "rules": [],
     "recipes": [
         {
-            "recipeName": "fbm",
+            "recipeName": "fbm_ransomware",
             "priority": 8,
             "impact": 1
         }

@@ -1,6 +1,7 @@
 import requests
 
 from . import portal
+from . import service_matching
 from settings import *
 
 from helpers.logging_helper import get_logger
@@ -16,6 +17,18 @@ def addNode(node, node_type):
 
 # noinspection PyUnusedLocal
 def addFirewall(new_node, path, capabilities):
+
+    # new_node["nodeType"] = "firewall"
+    # new_node["rules_level_4"] = []
+    # new_node["rules_level_7"] = []
+    # new_node["capabilities"] = capabilities
+
+    # service_matching.query_sm_for_secap()
+
+    consumer_topic = "reply_topic"
+
+
+
     new_node_name = new_node["name"]
     new_node["id"] = "0"  # TODO get from orchestrator the id of the newly created firewall
     logger.info(f"new firewall node {new_node_name} deployed")
