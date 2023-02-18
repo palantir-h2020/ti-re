@@ -473,7 +473,7 @@ class Recipe():
         self.GlobalScope["rowCursor"] = 0
 
         for key, value in self.playbook_scope.items():
-            playbook.addGlobalVariable(key, json.dumps(value), "string")
+            playbook.addGlobalVariable(key, value, "string")
 
         rawSentences = nltk.line_tokenize(self.text)
         sentences = []
