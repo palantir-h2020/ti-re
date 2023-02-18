@@ -2,13 +2,13 @@ import json
 import logging
 import nltk
 import yaml
-from cacao_classes import Command, EndStep, IfConditionStep, Playbook, SingleActionStep, StartStep, Step, WhileConditionStep
+from helpers.cacao_classes import Command, EndStep, IfConditionStep, Playbook, SingleActionStep, StartStep, Step, WhileConditionStep
 
 logging.basicConfig(level=logging.DEBUG)
 
 class Recipe():
 
-    def __init__(self, text: str) -> None:
+    def __init__(self, text: str, playbook_scope={}) -> None:
         self.text: str = text
         self.workflow: list[Step] = []
         self.GlobalScope: dict = {
@@ -17,6 +17,8 @@ class Recipe():
             "testList2": ["e1", "e2"],
             "previousStep": StartStep()
         }
+        self.playbook_scope = playbook_scope
+        self.GlobalScope.update(playbook_scope)
         self.workflow.append(self.GlobalScope["previousStep"])
 
     def updateWorkflowSequence(self, scope, new_step):
@@ -63,15 +65,17 @@ class Recipe():
         if len(tokens) < 5:  # for now very basic syntax checking
             raise Exception("Malformed statement: too few arguments")
 
+        step = SingleActionStep()
 
         source = tokens[2].replace("'", "")
         if source == tokens[2]:
             source = f"$${source}$$"
+            step.addInArg(source)
         destination = tokens[4].replace("'", "")
         if destination == tokens[4]:
             destination = f"$${destination}$$"
+            step.addInArg(destination)
 
-        step = SingleActionStep()
         self.updateWorkflowSequence(scope, step)
         command = Command(type="manual", command=tokens[0] + " " + tokens[1] + " " + f"{source}" + " " + tokens[3] + " " + f"{destination}")
         step.addCommands(command)
@@ -81,171 +85,242 @@ class Recipe():
         if len(tokens) < 6:  # for now very basic syntax checking
             raise Exception("Malformed statement: too few arguments")
 
+        step = SingleActionStep()
+
         nodeType = tokens[3].replace("'", "")  # node type to search for
         if nodeType == tokens[3]:
             nodeType = f"$${nodeType}$$"
+            step.addInArg(nodeType)
         path = tokens[5].replace("'", "")  # where to search in for the node
         if path == tokens[5]:
             path = f"$${path}$$"
+            step.addInArg(path)
 
         # Support for additional "capability" argument
         if len(tokens) == 8:
             capability = tokens[7].replace("'", "")
             if capability == tokens[7]:
                 capability = f"$${capability}$$"
+                step.addInArg(capability)
             capabilities = [capability]  # for now supports only one capability as input
         else:
             capabilities = []
 
-        step = SingleActionStep()
         self.updateWorkflowSequence(scope, step)
         command = Command(type="manual", command=tokens[0] + " " + tokens[1] + " " + tokens[2] + " " + f"{nodeType}" + " " + tokens[4] + " " + f"{path}")
         step.addCommands(command)
-        step.addOutArg("$$path_list$$", "$$found$$")
+        step.addOutArg("$$found$$", "$$found_node$$")
 
     def add_node(self, tokens, scope):
         if len(tokens) < 8:  # for now very basic syntax checking
             raise Exception("Malformed statement: too few arguments")
 
+        step = SingleActionStep()
+
         nodeType = tokens[3].replace("'", "")
         if nodeType == tokens[3]:
             nodeType = f"$${nodeType}$$"
+            step.addInArg(nodeType)
         node1 = tokens[5].replace("'", "")
         if node1 == tokens[3]:
             node1 = f"$${node1}$$"
+            step.addInArg(node1)
         node2 = tokens[7].replace("'", "")
         if node2 == tokens[3]:
             node2 = f"$${node2}$$"
+            step.addInArg(node2)
 
-
-        step = SingleActionStep()
         self.updateWorkflowSequence(scope, step)
         command = Command(type="manual", command=tokens[0] + " " + tokens[1] + " " + tokens[2] + " " + f"{nodeType}" + " " + tokens[4]+ " " + f"{node1}" + " " + tokens[6] + " " + f"{node2}")
         step.addCommands(command)
-        step.addOutArg("$$new_node$$")
+        step.addOutArg("$$new_node$$", "$$done$$")
 
     def add_firewall(self, tokens, scope):
         if len(tokens) < 5:  # for now very basic syntax checking
             raise Exception("Malformed statement: too few arguments")
 
+        step = SingleActionStep()
+
         node = tokens[2].replace("'", "")
         if node == tokens[2]:
             node = f"$${node}$$"
+            step.addInArg(node)
         path = tokens[4].replace("'", "")
         if path == tokens[4]:
             path = f"$${path}$$"
+            step.addInArg(path)
 
         # Support for additional "capability" argument
         if len(tokens) == 7:
             capability = tokens[6].replace("'", "")
             if capability == tokens[6]:
                 capability = f"$${capability}$$"
+                step.addInArg(capability)
             capabilities = [capability]  # for now supports only one capability as input
         else:
             capabilities = ["level_4_filtering", "level_7_filtering"]
 
-        step = SingleActionStep()
         self.updateWorkflowSequence(scope, step)
         command = Command(type="manual", command=tokens[0] + " " + tokens[1] + " " + f"{node}" + " " + tokens[3] + " " + f"{path}" + " " + tokens[5])
         step.addCommands(command)
-        step.addOutArg("$$new_node$$")
+        step.addOutArg("$$new_node$$", "$$done$$")
 
     def add_filtering_rules(self, tokens, scope):
         if len(tokens) < 4:  # for now very basic syntax checking
             raise Exception("Malformed statement: too few arguments")
 
+        step = SingleActionStep()
+
         node = tokens[3].replace("'", "")
         if node == tokens[3]:
             node = f"$${node}$$"
+            step.addInArg(node)
         rules = tokens[1].replace("'", "")
         if rules == tokens[1]:
             rules = f"$${rules}$$"
+            step.addInArg(rules)
+
+        self.updateWorkflowSequence(scope, step)
+        command = Command(type="manual", command=tokens[0]+ " " + rules + " " + tokens[2] + " " + f"{node}")
+        step.addCommands(command)
+        step.addOutArg("$$done$$")
+
+    def allow_traffic(self, tokens, scope):
+        if len(tokens) < 7:  # for now very basic syntax checking
+            raise Exception("Malformed statement: too few arguments")
 
         step = SingleActionStep()
+
+        node1 = tokens[3].replace("'", "")
+        if node1 == tokens[3]:
+            node1 = f"$${node1}$$"
+            step.addInArg(node1)
+        node2 = tokens[5].replace("'", "")
+        if node2 == tokens[5]:
+            node2 = f"$${node2}$$"
+            step.addInArg(node2)
+        firewall = tokens[7].replace("'", "")
+        if firewall == tokens[7]:
+            firewall = f"$${firewall}$$"
+            step.addInArg(firewall)
+
         self.updateWorkflowSequence(scope, step)
-        command = Command(type="manual", command=tokens[0]+ " " + "rules" + " " + tokens[2] + " " + f"{node}")
+        command = Command(type="manual", command=f"allow_traffic between {node1} and {node2} at {firewall}")
         step.addCommands(command)
+        step.addOutArg("$$done$$")
 
     def shutdown(self, tokens, scope):
         # shutdown 'host1' # can be also a list of nodes
         if len(tokens) < 2:  # for now very basic syntax checking
             raise Exception("Malformed statement: too few arguments")
 
+        step = SingleActionStep()
+
         node = tokens[1].replace("'", "")
         if node == tokens[1]:
             node = f"$${node}$$"
+            step.addInArg(node)
 
-        step = SingleActionStep()
         self.updateWorkflowSequence(scope, step)
         command = Command(type="manual", command=tokens[0] + " " + f"{node}")
         step.addCommands(command)
+        step.addOutArg("$$done$$")
 
     def isolate(self, tokens, scope):
         # isolate 'host1' # can be also a list of nodes
         if len(tokens) < 2:  # for now very basic syntax checking
             raise Exception("Malformed statement: too few arguments")
 
+        step = SingleActionStep()
+
         node = tokens[1].replace("'", "")
         if node == tokens[1]:
             node = f"$${node}$$"
+            step.addInArg(node)
 
-        step = SingleActionStep()
         self.updateWorkflowSequence(scope, step)
         command = Command(type="manual", command=tokens[0] + " " + f"{node}")
         step.addCommands(command)
+        step.addOutArg("$$done$$")
+
+    def execute(self, tokens, scope):
+        if len(tokens) < 2:  # for now very basic syntax checking
+            raise Exception("Malformed statement: too few arguments")
+
+        step = SingleActionStep()
+
+        function_name = tokens[1].replace("'", "")
+        if function_name == tokens[1]:
+            function_name = f"$${function_name}$$"
+            step.addInArg(function_name)
+        first_argument = tokens[1].replace("'", "")
+        if first_argument == tokens[1]:
+            first_argument = f"$${first_argument}$$"
+            step.addInArg(first_argument)
+
+        self.updateWorkflowSequence(scope, step)
+        command = Command(type="manual", command=f"execute {function_name} {first_argument}")
+        step.addCommands(command)
+        step.addOutArg("$$done$$")
 
     def add_honeypot(self, tokens, scope):
         # add_honeypot with 'apache_vulnerability' # can be also a list of vulnerabilities
         if len(tokens) < 3:  # for now very basic syntax checking
             raise Exception("Malformed statement: too few arguments")
 
+        step = SingleActionStep()
+
         vulnerability = tokens[2].replace("'", "")
         if vulnerability == tokens[2]:
             vulnerability = f"$${vulnerability}$$"
+            step.addInArg(vulnerability)
 
-        step = SingleActionStep()
         self.updateWorkflowSequence(scope, step)
         command = Command(type="manual", command=tokens[0] + " " + tokens[1] + " " + f"{vulnerability}")
         step.addCommands(command)
-        step.addOutArg("$$new_node$$")
+        step.addOutArg("$$new_node$$", "$$done$$")
 
     def add_network_monitor(self, tokens, scope):
         # add_network_monitor behind 'host1' in path # path is a list of nodes, and in it 'host1' must be present
         if len(tokens) < 5:  # for now very basic syntax checking
             raise Exception("Malformed statement: too few arguments")
 
+        step = SingleActionStep()
+
         node = tokens[2].replace("'", "")
         if node == tokens[2]:
             node = f"$${node}$$"
+            step.addInArg(node)
         path = tokens[4].replace("'", "")
         if path == tokens[4]:
             path = f"$${path}$$"
+            step.addInArg(path)
 
-
-        step = SingleActionStep()
         self.updateWorkflowSequence(scope, step)
         command = Command(type="manual", command=tokens[0] + " " + tokens[1] + " " + f"{node}" + " " + tokens[3] + " " + f"{path}")
         step.addCommands(command)
-        step.addOutArg("$$new_node$$")
+        step.addOutArg("$$new_node$$", "$$done$$")
 
     def move(self, tokens, scope):
         # move iteration_element to reconfiguration_net
         if len(tokens) < 4:  # for now very basic syntax checking
             raise Exception("Malformed statement: too few arguments")
 
+        step = SingleActionStep()
+
         node = tokens[1].replace("'", "")
         if node == tokens[1]:
             node = f"$${node}$$"
+            step.addInArg(node)
         net = tokens[3].replace("'", "")
         if net == tokens[3]:
             net = f"$${net}$$"
+            step.addInArg(net)
 
-
-        step = SingleActionStep()
         self.updateWorkflowSequence(scope, step)
         command = Command(type="manual", command=tokens[0] + " " + f"{node}" + " " + tokens[2] + " " + f"{net}")
         step.addCommands(command)
-        step.addOutArg("$$new_node$$")
+        step.addOutArg("$$moved_node$$", "$$done$$")
 
     def evaluateRow(self, riga, scope, statements) -> int:
         tokens = riga.split(" ")
@@ -338,6 +413,11 @@ class Recipe():
             self.add_firewall(tokens, scope)
             scope["rowCursor"] += 1
             return 0
+        elif tokens[0] == "allow_traffic":
+            logging.info("Now calling allow_traffic function ...")
+            self.allow_traffic(tokens, scope)
+            scope["rowCursor"] += 1
+            return 0
         elif tokens[0] == "add_honeypot":
             logging.info("Now calling add_honeypot function ...")
             self.add_honeypot(tokens, scope)
@@ -392,7 +472,8 @@ class Recipe():
         self.GlobalScope["iterateOnExtensionId"] = playbook.addExtensionDefinition(name="iterate_on extension")
         self.GlobalScope["rowCursor"] = 0
 
-
+        for key, value in self.playbook_scope.items():
+            playbook.addGlobalVariable(key, json.dumps(value), "string")
 
         rawSentences = nltk.line_tokenize(self.text)
         sentences = []
@@ -413,9 +494,9 @@ if __name__ == "__main__":
                     iterate_on testList2\n\
                         add_dns_policy for iteration_element of type 'block_all_queries'\n\
                         prova prova prova3\n\
-                    enditeration\n\
+                    end_iteration\n\
                     fuori while\n\
-                enditeration\n\
+                end_iteration\n\
                 proprioEnd"
 
     interpreterTest2 = "list_paths from impacted_host_ip to 'attacker'                                           \n\
@@ -424,7 +505,7 @@ if __name__ == "__main__":
                         if not found                                                                         \n\
                             add_network_monitor behind impacted_host_ip in iteration_element                 \n\
                         endif                                                                                \n\
-                    enditeration\n\
+                    end_iteration\n\
                     dopoteration"
 
     interpreterTest3 = "iterate_on listTest1\n                                       \
@@ -436,8 +517,8 @@ if __name__ == "__main__":
                 else\n                                                               \
                     testElse other optional keywords and parameters\n                \
                 endif\n                                                              \
-            enditeration\n                                                           \
-        enditeration"
+            end_iteration\n                                                           \
+        end_iteration"
 
     interpreterTest4= "iterate_on listTest1\n\
                             iterate_on listTest2\n\
@@ -454,9 +535,9 @@ if __name__ == "__main__":
                                                 testIf3 other optional keywords and parameters\n                  \
                                             endif\n \
                                         endif\n \
-                                    enditeration \n\
-                            enditeration \n\
-                        enditeration"
+                                    end_iteration \n\
+                            end_iteration \n\
+                        end_iteration"
 
 
     filter_payload_recipe ="list_paths from impacted_host_ip to 'attacker'                                             \n\
@@ -468,7 +549,7 @@ if __name__ == "__main__":
                             else                                                                                   \n\
                                 add_filtering_rules rules_level_7 to found_node                                    \n\
                             endif                                                                                  \n\
-                        enditeration"
+                        end_iteration"
 
     filter_ip_port_recipe = "list_paths from impacted_host_ip to 'attacker'                                            \n\
                             iterate_on path_list                                                                       \n\
@@ -479,11 +560,11 @@ if __name__ == "__main__":
                                 else                                                                                   \n\
                                     add_filtering_rules rules_level_4 to found_node                                    \n\
                                 endif                                                                                  \n\
-                            enditeration"
+                            end_iteration"
 
     redirect_domains_recipe = "iterate_on domains                                                                      \n\
                                 add_dns_policy for iteration_element of type 'block_all_queries'                       \n\
-                            enditeration"
+                            end_iteration"
 
     monitor_traffic_recipe = "list_paths from impacted_host_ip to 'attacker'                                           \n\
                             iterate_on path_list                                                                       \n\
@@ -491,30 +572,43 @@ if __name__ == "__main__":
                                 if not found                                                                           \n\
                                     add_network_monitor behind impacted_host_ip in iteration_element                   \n\
                                 endif                                                                                  \n\
-                            enditeration"
+                            end_iteration"
 
     put_into_reconfiguration_recipe = "iterate_on impacted_nodes                                                       \n\
                                             move iteration_element to 'reconfiguration_net'                            \n\
-                                        enditeration"
+                                        end_iteration"
 
     add_honeypot_recipe = "iterate_on impacted_nodes                                                                   \n\
                                 add_honeypot with 'apache_vulnerability'                                               \n\
-                            enditeration"
+                            end_iteration"
 
     shutdown_recipe = "iterate_on impacted_nodes                                                                       \n\
                             shutdown iteration_element                                                                 \n\
-                        enditeration"
+                        end_iteration"
 
     isolate_recipe = "iterate_on impacted_nodes                                                                        \n\
                         isolate iteration_element                                                                      \n\
-                    enditeration"
+                    end_iteration"
 
-    ricetta = Recipe(isolate_recipe)
+    p1 = "execute 'fbm_call_ransomware' RansomwareAlert RansomwareAlertSourceIp"
+
+    p2 = """list_paths from impacted_host_ip to 'attacker'
+            iterate_on path_list
+                find_node of type 'firewall' in iteration_element with 'level_4_filtering'
+                if not found
+                    add_firewall behind impacted_host_ip in iteration_element with 'level_4_filtering'
+                    add_filtering_rules rules_level_4 to new_node
+                else
+                    add_filtering_rules rules_level_4 to found_node
+                endif
+            end_iteration"""
+
+    ricetta = Recipe(p2)
 
     with open('cacaoPlaybook.json', 'w', encoding='utf8') as outfile:
         json.dump(ricetta.toCACAOPlaybook().toDict(), outfile, indent=4)
 
-    print(yaml.dump(ricetta.toCACAOPlaybook().toDict(), default_flow_style=False, sort_keys=False))
+    # print(yaml.dump(ricetta.toCACAOPlaybook().toDict(), default_flow_style=False, sort_keys=False))
     # for el in ricetta.toCACAOPlaybook():
     #     print(el)
 

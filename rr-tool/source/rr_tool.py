@@ -327,7 +327,7 @@ class RRTool:
         self.setCapabilitiesToSecurityControlMappings(
                 self.recipe_repository[bestRecipeName]["requiredCapabilities"])
 
-        recipeToRun = self.recipe_repository[bestRecipeName]["value"] # not used anymore with transition to textx interpreter
+        recipe_text = self.recipe_repository[bestRecipeName]["value"]
 
         # TODO create a generic prepareData function in input analyzer
         try:
@@ -360,12 +360,13 @@ class RRTool:
         recipe_interpreter_instance = recipe_interpreter.RecipeInterpreter(self.service_graph_instance,
                                                                 self.global_scope,
                                                                 self.capability_to_security_control_mappings)
-        #recipe_interpreter_instance.remediate(recipeToRun)
+        #recipe_interpreter_instance.remediate(recipe_text)
 
         recipe_interpreter_instance.remediate_new(bestRecipeName)
 
 
         cacao_playbook_json, cacao_playbook_base64 = cacao_helper.getCACAOPlaybook(self.global_scope,
+                                                                        recipe_text,
                                                                         threat_type=alert["Threat_Category"])
 
         self.global_scope["cacao_playbook_json"] = cacao_playbook_json

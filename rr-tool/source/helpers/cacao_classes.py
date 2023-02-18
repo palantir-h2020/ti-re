@@ -203,7 +203,7 @@ class Playbook:
     def __init__(self, playbook_type=None, name=None,
                                     playbook_types=None,
                                     playbook_id=f"playbook--uuid{str(getNewID())}",
-                                    created_by="Politecnico di Torino",
+                                    created_by="Org",
                                     created="2022",
                                     modified="2022",
                                     spec_version="1.1",
@@ -259,11 +259,11 @@ class Playbook:
         return newId
 
     def addGlobalVariable(self, name,
-                                variable_type,
                                 value,
-                                constant,
-                                description,
-                                external):
+                                variable_type,
+                                constant=None,
+                                description=None,
+                                external=None):
         self._properties["playbook_variables"][f"$${name}$$"] = {"type": variable_type,
                                                                     "description": description,
                                                                     "value": value,
