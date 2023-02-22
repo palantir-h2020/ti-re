@@ -11,23 +11,24 @@ from confluent_kafka import Consumer
 logger = get_logger('IR_API')
 
 
-def find_best_secap(nature):
-    """ Obtain the list of all the SC subscribed by the user -> LISTSC_FEAT command field
-    """
-    message = {
-        "test": "test",
-        "test2": "test"
-    }
-
-    message_producer.produce("topiccc", json.dumps(message), callback=None)
+def deploy_secap(capabilities, nature, vim_id):
+    """ Returns the ID of the security capability deployed """
 
     consumer_topic = "test"
+    producer_topic = "test"
+
+    message = {
+        "capabilities": capabilities,
+        "nature": nature,
+        "vim_id": vim_id
+    }
+
+    # Send a message to the endpoint on a certain topic
+    message_producer.produce(producer_topic, json.dumps(message), callback=None)
 
     kafka_consumer = Consumer(KAFKA_CONSUMER_PROPERTIES)
     kafka_consumer.subscribe([consumer_topic])
 
-    # Send a message to the endpoint on a certain topic
-    kafka_consumer.subscribe([consumer_topic])
     message = kafka_consumer.poll(timeout=100.0)
 
     # check if a message was received
@@ -41,10 +42,6 @@ def find_best_secap(nature):
     # Close the consumer
     kafka_consumer.close()
 
-    secap_name = message.get("secap_name")
-    secap_package_id = message.get("secap_package_id")
+    secap_id = message["secap_id"]
 
-    return secap_name
-
-def deploy_secap(secap_package_id, deplyoment_node):
-    pass
+    return secap_id

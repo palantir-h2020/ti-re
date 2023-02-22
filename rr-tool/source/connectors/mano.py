@@ -23,11 +23,11 @@ def addFirewall(new_node, path, capabilities):
     # new_node["rules_level_7"] = []
     # new_node["capabilities"] = capabilities
 
-    # service_matching.query_sm_for_secap()
+    service_matching.deploy_secap()
 
-    consumer_topic = "reply_topic"
-
-
+    #todo consider whether adding the secap liveness probe, inside the deploy_secap() function
+    #todo the livenes probe consists in querying the security orchestrator repeatedly until it
+    #todo replies with the secap status as running
 
     new_node_name = new_node["name"]
     new_node["id"] = "0"  # TODO get from orchestrator the id of the newly created firewall
