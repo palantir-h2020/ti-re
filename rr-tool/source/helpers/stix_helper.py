@@ -236,7 +236,7 @@ def getSTIXReport_unauthorized_access(global_scope):
 
 def getSTIXReport_ransomware(global_scope):
 
-
+    #todo
     pass
 
 def getSTIXReport_botnet(global_scope):
