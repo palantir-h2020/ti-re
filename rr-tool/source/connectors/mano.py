@@ -23,7 +23,7 @@ def addFirewall(new_node, path, capabilities):
     # new_node["rules_level_7"] = []
     # new_node["capabilities"] = capabilities
 
-    service_matching.deploy_secap()
+    # service_matching.deploy_secap()
 
     #todo consider whether adding the secap liveness probe, inside the deploy_secap() function
     #todo the livenes probe consists in querying the security orchestrator repeatedly until it
