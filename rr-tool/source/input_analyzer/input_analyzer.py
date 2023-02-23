@@ -163,7 +163,7 @@ def prepareDataForRemediationOfRansomware(global_scope, service_graph_instance, 
     global_scope["RansomwareAlertSourceIp"] = alert[settings.TI_SYSLOG_VICTIM_IP_FIELD_NAME]
 
     # TODO remove this temporary fix after having landscape information/ip changes in alerts
-    service_graph_instance.changeNodeIP("victim", global_scope["UnauthorizedAccessAlertSourceIp"])
+    service_graph_instance.changeNodeIP("victim", global_scope["RansomwareAlertSourceIp"])
 
     # # Add a filtering rule for both traffic directions:
     # global_scope["rules_level_4"] = [
