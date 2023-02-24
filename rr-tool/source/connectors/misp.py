@@ -145,7 +145,7 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
                                     value=attacker_ip)
 
         if ENABLE_PRIVATE_ARTIFACTS_SHARING == "1":
-            attribute3 = event.add_attribute(type="ip",
+            attribute3 = event.add_attribute(type="ip-src",
                                         value=impacted_host_ip)
             event.add_tag("tlp:red")
 
