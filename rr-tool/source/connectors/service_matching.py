@@ -34,7 +34,7 @@ def deploy_secap(capabilities, nature, vim_id):
     # check if a message was received
     if message is not None:
         # process the message
-        print(f'Received message: key={message.key()}, value={message.value()}')
+        print(f"Received message: key={message.key()}, value={message.value().decode('utf-8')}")
     else:
         # handle the timeout condition
         raise Exception('Timeout waiting for message')

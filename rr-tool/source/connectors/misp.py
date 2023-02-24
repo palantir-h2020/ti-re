@@ -120,7 +120,13 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
 
     elif threat_type == "ransomware": # ransomware specific attributes
         event.info = "Ransomware report"
-        pass
+        impacted_host_ip = global_scope.get("RansomwareAlertSourceIp")
+
+        if ENABLE_PRIVATE_ARTIFACTS_SHARING == "1":
+            attribute3 = event.add_attribute(type="ip",
+                                        value=impacted_host_ip)
+            attribute3.add_tag("tlp:red")
+            event.add_tag("tlp:red")
 
     elif threat_type == "botnet": # botnet specific attributes
         event.info = "Botnet report"

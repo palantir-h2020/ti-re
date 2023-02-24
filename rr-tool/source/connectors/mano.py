@@ -25,6 +25,8 @@ def addFirewall(new_node, path, capabilities):
 
     # service_matching.deploy_secap()
 
+    # check_secap_liveness()
+
     #todo consider whether adding the secap liveness probe, inside the deploy_secap() function
     #todo the livenes probe consists in querying the security orchestrator repeatedly until it
     #todo replies with the secap status as running
@@ -82,6 +84,9 @@ def add_network_monitor(new_node, path):
 def move(node1, net):
     logger.info(f"moved {node1} to {net}")
 
+
+def check_secap_liveness():
+    pass
 
 def send_action(node,
                 payload,
