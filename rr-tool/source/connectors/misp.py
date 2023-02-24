@@ -128,7 +128,7 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
 
             ip_object = MISPObject("domain-ip", standalone=False)
             ip_object.comment = "Victim host"
-            ip_object.add_attribute("ip-dst",
+            ip_object.add_attribute("ip",
                                     value = impacted_host_ip)
             event.add_object(ip_object)
 
