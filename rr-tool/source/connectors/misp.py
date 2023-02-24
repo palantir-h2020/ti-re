@@ -132,7 +132,7 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
                                     value = impacted_host_ip)
             event.add_object(ip_object)
 
-            attribute3.add_tag("tlp:red")
+            ip_object.add_tag("tlp:red")
             event.add_tag("tlp:red")
 
     elif threat_type == "botnet": # botnet specific attributes
