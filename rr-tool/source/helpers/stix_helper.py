@@ -385,7 +385,7 @@ def getSTIXReport_ransomware(global_scope):
 
     rel13 = stix2.v21.Relationship(relationship_type="targets",
                                     source_ref=MalwareSDO["id"],
-                                    target_ref=impactedHostIpSCO["id"])
+                                    target_ref=infraVictim["id"])
 
     # Sightning relationship between identitySDO and the indicator of compromise
     # sig = stix2.v21.Sighting(created_by_ref=identitySDO["id"],
