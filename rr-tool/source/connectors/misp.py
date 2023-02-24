@@ -123,8 +123,15 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
         impacted_host_ip = global_scope.get("RansomwareAlertSourceIp")
 
         if ENABLE_PRIVATE_ARTIFACTS_SHARING == "1":
-            attribute3 = event.add_attribute(type="ip",
-                                        value=impacted_host_ip)
+            # attribute3 = event.add_attribute(type="ip-dst",
+            #                             value=impacted_host_ip)
+
+            ip_object = MISPObject("ip", standalone=False)
+            ip_object.comment = "Victim host"
+            ip_object.add_attribute("ip-dst",
+                                    value = impacted_host_ip)
+            event.add_object(ip_object)
+
             attribute3.add_tag("tlp:red")
             event.add_tag("tlp:red")
 
@@ -139,7 +146,7 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
                                     value=attacker_ip)
 
         if ENABLE_PRIVATE_ARTIFACTS_SHARING == "1":
-            attribute3 = event.add_attribute(type="ip-src",
+            attribute3 = event.add_attribute(type="ip",
                                         value=impacted_host_ip)
             event.add_tag("tlp:red")
 
