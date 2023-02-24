@@ -205,6 +205,7 @@ def getSTIXReport_unauthorized_access(global_scope):
                                 rel9,
                                 rel10,
                                 rel11,
+                                rel12
                                 TLP_RED,
                                 reportSDO,
                                 infraAttacker,
@@ -382,6 +383,10 @@ def getSTIXReport_ransomware(global_scope):
                                     source_ref=CoASDO["id"],
                                     target_ref=attack_pattern["id"])
 
+    rel12 = stix2.v21.Relationship(relationship_type="targets",
+                                    source_ref=MalwareSDO["id"],
+                                    target_ref=impactedHostIpSCO["id"])
+
     # Sightning relationship between identitySDO and the indicator of compromise
     # sig = stix2.v21.Sighting(created_by_ref=identitySDO["id"],
     #                             sighting_of_ref=IoCSDO["id"],
@@ -405,6 +410,8 @@ def getSTIXReport_ransomware(global_scope):
                                 rel9,
                                 rel10,
                                 rel11,
+                                rel12,
+                                rel13,
                                 TLP_RED,
                                 reportSDO,
                                 infraAttacker,
@@ -612,6 +619,7 @@ def getSTIXReport_botnet(global_scope):
                                 rel9,
                                 rel10,
                                 rel11,
+                                rel12,
                                 TLP_RED,
                                 reportSDO,
                                 infraAttacker,
