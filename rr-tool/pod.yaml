@@ -10,6 +10,8 @@ spec:
       image: 10.101.10.244:5000/palantir-rr-tool:1.0
       imagePullPolicy: Always
       env:
+        - name: VIM_ID
+          value: "1000"
         - name: ENABLE_PRIVATE_ARTIFACTS_SHARING
           value: "1"
         - name: RR_INSTANCE_IDENTIFIER
@@ -34,6 +36,10 @@ spec:
           value: "rr.new_attack_remedation"
         - name: TOPIC_PORTAL_NOTIFICATIONS
           value: "actions-notifications"
+        - name: TOPIC_SERVICE_MATCHING_REQUESTS
+          value: "cmr.requests"
+        - name: TOPIC_SERVICE_MATCHING_RESPONSES
+          value: "cmr.responses"
         - name: TOPIC_IR_INCIDENT_DETECTED
           value: "ir.detected_incident"
         - name: RR_TOOL_IP

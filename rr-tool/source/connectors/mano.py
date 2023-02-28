@@ -27,10 +27,6 @@ def addFirewall(new_node, path, capabilities):
 
     # check_secap_liveness()
 
-    #todo consider whether adding the secap liveness probe, inside the deploy_secap() function
-    #todo the livenes probe consists in querying the security orchestrator repeatedly until it
-    #todo replies with the secap status as running
-
     new_node_name = new_node["name"]
     new_node["id"] = "0"  # TODO get from orchestrator the id of the newly created firewall
     logger.info(f"new firewall node {new_node_name} deployed")
@@ -116,6 +112,39 @@ def send_action(node,
             logger.error("action failed: " + action_name)
             logger.error("response headers from orchestrator " + str(r.headers))
             logger.error("response text from orchestrator " + str(r.text))
+    else:
+        logger.info("disabled, logging request data")
+        logger.info("request headers: " + str(headers))
+        logger.info("request url: " + str(url))
+        logger.info("request payload: " + str(payload))
+
+def verify_secap_readiness(node,
+                payload,
+                action_name,
+                action_description,
+                headers=None,
+                component_type="Recommendation and Remediation",
+                component_id="0"):
+    """Returns True if the securtiy capability is ready to receive new rules.
+    Returns False otherwise."""
+
+    base_url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns/action?id='
+
+    if headers is None:
+        headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
+    url = base_url + node["id"]
+    if ENABLE_MANO_API == "1":
+        r = requests.post(url, headers=headers, json=payload)
+
+        logger.info("response code from orchestrator " + str(r.status_code))
+        if r.ok:
+            logger.info("Security Capability ready")
+            return True
+        else:
+            logger.error("action failed: " + action_name)
+            logger.error("response headers from orchestrator " + str(r.headers))
+            logger.error("response text from orchestrator " + str(r.text))
+            return False
     else:
         logger.info("disabled, logging request data")
         logger.info("request headers: " + str(headers))
