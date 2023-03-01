@@ -107,7 +107,7 @@ def deploy_secap(requested_capability,
 
             # check response correlation with the request sent on the producer_topic
             if message["session"] == correlation_id:
-
+                logger.info(f"Received response from SM!")
                 if message.get("success") is True:
                     logger.info(f"Successfully deployed new security capability")
 
@@ -118,6 +118,9 @@ def deploy_secap(requested_capability,
                 else:
                     logger.info(f"An error occurred in the Service Matching: {message.get('error')}")
                     logger.info(f"Unable to deploy new security capability.")
+            else:
+                logger.info(f"Message not for RR-tool, discard it")
+
 
 
     # Close the consumer
