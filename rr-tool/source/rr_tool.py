@@ -420,7 +420,7 @@ def main():
         case "kafka":
             from connectors import kafka_consumer
 
-            misp.publish_on_misp_test() #todo remove from here after finishing testing misp
+            # misp.publish_on_misp_test() #todo remove from here after finishing testing misp
 
             kafka_consumer.consume_topics(RRTool())
         case _:
