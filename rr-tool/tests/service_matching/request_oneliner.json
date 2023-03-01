@@ -1,0 +1,1 @@
+{    "session": "43",    "realm": "orion",    "action": "SIMULDEPLOY",    "parameter":[{        "mechName": "",        "nature": "network_flow_monitoring",        "subscriptionId": "",        "billingPeriod": "1000",        "imposedInfras": ["3f5eb7fa-a58d-4589-a93b-7ae403716a0f"],        "whitelistScs": ["snort2"]    }]}
