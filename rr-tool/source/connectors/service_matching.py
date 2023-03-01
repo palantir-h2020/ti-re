@@ -102,7 +102,8 @@ def deploy_secap(requested_capability,
         if message is not None:
             logger.info(f"Received message: key={message.key()}, value={message.value().decode('utf-8')}")
 
-            message = message.value().decode('utf-8')
+            # serialize message
+            message = json.loads(message.value().decode('utf-8'))
 
             # check response correlation with the request sent on the producer_topic
             if message["session"] == correlation_id:
