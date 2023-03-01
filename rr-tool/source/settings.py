@@ -45,6 +45,8 @@ KAFKA_CONSUMER_PROPERTIES = {
 KAFKA_CONSUMER_SM_PROPERTIES = {
     "bootstrap.servers": (os.environ['KAFKA_IP']) + ":" + (os.environ['KAFKA_PORT']),
     "group.id": "test-consumer-sm-group",
+    # WARNING: this consumer MUST use a different group.id from the one used by the
+    # main consumer, otherwise it won't work.
     # "auto.offset.reset": "earliest"
 }
 KAFKA_POLLING_TIMEOUT = float(os.environ['KAFKA_POLLING_TIMEOUT'])

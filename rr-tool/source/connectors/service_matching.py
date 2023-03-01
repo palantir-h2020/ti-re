@@ -85,11 +85,12 @@ def deploy_secap(requested_capability,
                             json.dumps(request_message),
                             callback=None)
 
-    kafka_consumer = Consumer(settings.KAFKA_CONSUMER_PROPERTIES)
+    # WARNING: this consumer MUST use a different group.id from the one used by the
+    # main consumer, otherwise it won't work. Check KAFKA_CONSUMER_SM_PROPERTIES in settings
+    kafka_consumer = Consumer(settings.KAFKA_CONSUMER_SM_PROPERTIES)
     kafka_consumer.subscribe([settings.TOPIC_SERVICE_MATCHING_RESPONSES])
 
     response = None
-
 
     while response == None:
 
