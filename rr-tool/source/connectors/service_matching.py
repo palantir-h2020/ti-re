@@ -96,7 +96,7 @@ def deploy_secap(requested_capability,
         logger.info("Waiting for SM response from Kafka broker on topic "
                 + settings.TOPIC_SERVICE_MATCHING_REQUESTS)
 
-        message = kafka_consumer.poll(timeout=100.0)
+        message = kafka_consumer.poll(settings.KAFKA_POLLING_TIMEOUT)
 
         # check if a message was received
         if message is not None:
