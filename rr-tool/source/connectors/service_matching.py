@@ -9,7 +9,7 @@ from connectors import message_producer
 from confluent_kafka import Consumer
 
 
-logger = get_logger('IR_API')
+logger = get_logger('SERVICE_MATCHING_CONNECTOR')
 
 request_message_example = {
     "session": "43", # correlation id
@@ -96,7 +96,7 @@ def deploy_secap(requested_capability,
         logger.info("Waiting for SM response from Kafka broker on topic "
                 + settings.TOPIC_SERVICE_MATCHING_REQUESTS)
 
-        message = kafka_consumer.poll(settings.KAFKA_POLLING_TIMEOUT)
+        message = kafka_consumer.poll(timeout=100.0)
 
         # check if a message was received
         if message is not None:

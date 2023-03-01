@@ -42,6 +42,11 @@ KAFKA_CONSUMER_PROPERTIES = {
     "group.id": "test-consumer-group",
     # "auto.offset.reset": "earliest"
 }
+KAFKA_CONSUMER_SM_PROPERTIES = {
+    "bootstrap.servers": (os.environ['KAFKA_IP']) + ":" + (os.environ['KAFKA_PORT']),
+    "group.id": "test-consumer-sm-group",
+    # "auto.offset.reset": "earliest"
+}
 KAFKA_POLLING_TIMEOUT = float(os.environ['KAFKA_POLLING_TIMEOUT'])
 
 TOPIC_TI_NETFLOW = (os.environ['TOPIC_TI_NETFLOW'])

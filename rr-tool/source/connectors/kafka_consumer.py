@@ -27,7 +27,7 @@ def start_kafka_consumer(stop_event, remediator):
 
     logger.info("setup started")
 
-    kafka_consumer = Consumer(KAFKA_CONSUMER_PROPERTIES)
+    kafka_consumer = Consumer(KAFKA_CONSUMER_SM_PROPERTIES)
 
     kafka_consumer.subscribe([TOPIC_TI_NETFLOW, TOPIC_TI_SYSLOG, TOPIC_RR_PROACTIVE_REMEDIATION, TOPIC_RR_NEW_ATTACK_REMEDIATION])
 
