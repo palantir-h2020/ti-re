@@ -23,13 +23,13 @@ def addFirewall(new_node, path, capabilities):
     # new_node["rules_level_7"] = []
     # new_node["capabilities"] = capabilities
 
-    # service_matching.deploy_secap()
+    service_matching.deploy_secap("level_4_filtring", ["iptnetflow"])
 
     # check_secap_liveness()
 
-    new_node_name = new_node["name"]
-    new_node["id"] = "0"  # TODO get from orchestrator the id of the newly created firewall
-    logger.info(f"new firewall node {new_node_name} deployed")
+    # new_node_name = new_node["name"]
+    # new_node["id"] = "0"  # TODO get from orchestrator the id of the newly created firewall
+    # logger.info(f"new firewall node {new_node_name} deployed")
 
 
 def add_filtering_rules(node1, iptables_rule):
