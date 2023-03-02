@@ -31,15 +31,15 @@ response_message_example = {
     "error": 0,
     "content": {
         "cost": 20040.0,
-        "effectivelyDeployed": False,
+        "effectivelyDeployed": True,
         "content":[{
             "scId": "ed55d9c0-12ab-4df7-8695-22e1ac38a18b",
             "billingModel": "HOURLY",
             "sla": 0.0,
             "infrastructureId": "3f5eb7fa-a58d-4589-a93b-7ae403716a0f",
             "deploymentModel": "Cloud",
-            "typeCounterMeasure": "network_flow_monitoring_",
-            "instanceId": "-1"
+            "typeCounterMeasure": "network_flow_monitoring_", # detectionMethod_mitigationMethod
+            "instanceId": "-1" # 
         }]
     }
 }
@@ -64,7 +64,7 @@ def deploy_secap(requested_capability,
         Returns:
             string: the ID of the security capability deployed
     """
-    correlation_id = random.randint(10, 1000)
+    correlation_id = random.randint(10, 100000)
 
     request_message = {
         "session": correlation_id, # correlation id
@@ -72,11 +72,11 @@ def deploy_secap(requested_capability,
         "action": "SIMULDEPLOY",
         "parameter":[{
             "mechName": "",
-            "nature": requested_capability,  # rr-tool internal: level_4_filtering. sm:
+            "nature": "network_flow_monitoring", # requested_capability,  # rr-tool internal: level_4_filtering. sm equivalent:
             "subscriptionId": "",
             "billingPeriod": "1000",
             "imposedInfras": [vim_id], # vim id
-            "whitelistScs": compatible_security_controls # iptables compatible secap... iptnetflow?
+            "whitelistScs": "snort2" # compatible_security_controls # iptables compatible secap... iptnetflow?
         }]
     }
 
