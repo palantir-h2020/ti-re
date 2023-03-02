@@ -39,7 +39,7 @@ response_message_example = {
             "infrastructureId": "3f5eb7fa-a58d-4589-a93b-7ae403716a0f",
             "deploymentModel": "Cloud",
             "typeCounterMeasure": "network_flow_monitoring_", # detectionMethod_mitigationMethod
-            "instanceId": "-1" # 
+            "instanceId": "-1" #
         }]
     }
 }
@@ -76,7 +76,7 @@ def deploy_secap(requested_capability,
             "subscriptionId": "",
             "billingPeriod": "1000",
             "imposedInfras": [vim_id], # vim id
-            "whitelistScs": "snort2" # compatible_security_controls # iptables compatible secap... iptnetflow?
+            "whitelistScs": ["snort2"] # compatible_security_controls # iptables compatible secap... iptnetflow?
         }]
     }
 

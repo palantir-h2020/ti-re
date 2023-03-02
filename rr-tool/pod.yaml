@@ -11,7 +11,7 @@ spec:
       imagePullPolicy: Always
       env:
         - name: VIM_ID
-          value: "1000"
+          value: "3f5eb7fa-a58d-4589-a93b-7ae403716a0f"
         - name: ENABLE_PRIVATE_ARTIFACTS_SHARING
           value: "1"
         - name: RR_INSTANCE_IDENTIFIER
