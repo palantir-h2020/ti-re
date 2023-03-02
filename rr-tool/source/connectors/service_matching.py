@@ -85,8 +85,9 @@ def deploy_secap(requested_capability,
                             json.dumps(request_message),
                             callback=None)
 
-    # WARNING: this consumer MUST use a different group.id from the one used by the
-    # main consumer, otherwise it won't work. Check KAFKA_CONSUMER_SM_PROPERTIES in settings
+    # WARNING: this consumer MUST use a different group.id from the one used by the RR-tool
+    # main consumer (the one receiving threat alerts), otherwise it won't work.
+    # Check KAFKA_CONSUMER_SM_PROPERTIES in settings
     kafka_consumer = Consumer(settings.KAFKA_CONSUMER_SM_PROPERTIES)
     kafka_consumer.subscribe([settings.TOPIC_SERVICE_MATCHING_RESPONSES])
 
@@ -107,12 +108,12 @@ def deploy_secap(requested_capability,
             message = json.loads(message.value().decode('utf-8'))
 
             # check response correlation with the request sent on the producer_topic
-            if message["session"] == correlation_id:
+            if message.get("session") == correlation_id:
                 logger.info(f"Received response from SM!")
                 if message.get("success") is True:
                     logger.info(f"Successfully deployed new security capability")
 
-                    # is it safe to assume only 1 secap in the list, given that only 1 was required in the request ?
+                    # is it safe to assume only 1 secap is present in the list, given that only 1 was required in the request ?
                     response = message.get("content").get("content")[0].get("instanceId")
                     break
 
