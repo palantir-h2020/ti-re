@@ -138,13 +138,15 @@ def check_secap_readiness(secap_id):
             response = json.loads(raw_response.text)
 
             logger.info("response code from orchestrator " + str(raw_response.status_code))
+            logger.info("response from orchestrator: ")
+            logger.info(response)
 
             if not raw_response.ok:
                 logger.error("response headers from orchestrator " + str(raw_response.headers))
                 logger.error("response text from orchestrator " + str(raw_response.text))
                 continue
 
-            for secap in response.get("ns").get():
+            for secap in response.get("ns"):
                 status = secap.get("status").get("operational")
                 if secap.get("id") == secap_id and status == "running":
                     logger.error(f"The security capability with id:{secap_id} is operational")
