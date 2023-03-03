@@ -66,6 +66,9 @@ def deploy_secap(requested_capability,
     """
     correlation_id = random.randint(10, 100000)
 
+
+# 6 corresponds to iptnetflow
+
     request_message = {
         "session": correlation_id, # correlation id
         "realm": "orion",
@@ -110,7 +113,10 @@ def deploy_secap(requested_capability,
             # check response correlation with the request sent on the producer_topic
             if message.get("session") == correlation_id:
                 logger.info(f"Received response from SM!")
-                if message.get("success") is True:
+                if (message.get("success") is True and
+                    message.get("content").get("effectivelyDeployed") is True and
+                    message.get("content").get("content")[0].get("instanceId") != "-1"):
+
                     logger.info(f"Successfully deployed new security capability")
 
                     # is it safe to assume only 1 secap is present in the list, given that only 1 was required in the request ?
@@ -118,8 +124,8 @@ def deploy_secap(requested_capability,
                     break
 
                 else:
-                    logger.info(f"An error occurred in the Service Matching: {message.get('error')}")
-                    logger.info(f"Unable to deploy new security capability.")
+                    logger.error(f"An error occurred in the Service Matching: {message.get('error')}")
+                    logger.error(f"Unable to deploy new security capability.")
             else:
                 logger.info(f"Message not for RR-tool, discard it")
 
