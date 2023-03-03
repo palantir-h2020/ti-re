@@ -135,7 +135,7 @@ def check_secap_readiness(secap_id):
             time.sleep(2)
 
             raw_response = requests.get(url, headers=headers)
-            response = json.loads(raw_response.text.decode('utf-8'))
+            response = json.loads(raw_response.text)
 
             logger.info("response code from orchestrator " + str(raw_response.status_code))
 
