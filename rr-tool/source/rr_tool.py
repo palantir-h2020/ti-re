@@ -354,6 +354,11 @@ class RRTool:
                     prepareDataForRemediationOfRansomware(global_scope=self.global_scope,
                                                         service_graph_instance=self.service_graph_instance,
                                                         alert=alert)
+            elif alert["Threat_Category"] == "cryptomining":
+                input_analyzer. \
+                    prepareDataForRemediationOfCryptomining(global_scope=self.global_scope,
+                                                        service_graph_instance=self.service_graph_instance,
+                                                        alert=alert)
         except KeyError:
             logger.error("Malformed alert received, skipping...")
             return

@@ -52,12 +52,12 @@ def getSTIXReport_unauthorized_access(global_scope):
     coa_extension_definition_file.load_from_file("stix_coa_extension_definition.json")
     coa_extension_definition = coa_extension_definition_file.get("extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c")
 
-    attack_pattern = mitre_enterprise_attack_file.query([
-        stix2.Filter("external_references.external_id", "=", "T1134"),
-        stix2.Filter("type", "=", "attack-pattern")
-    ])[0]
+    # attack_pattern = mitre_enterprise_attack_file.query([
+    #     stix2.Filter("external_references.external_id", "=", "T1134"),
+    #     stix2.Filter("type", "=", "attack-pattern")
+    # ])[0]
 
-    kill_chain_phases = attack_pattern.kill_chain_phases
+    # kill_chain_phases = attack_pattern.kill_chain_phases
 
     identitySDO = stix2.Identity(name=f"Organization ID.{organization_id}",
                                 identity_class="organization")
@@ -86,8 +86,8 @@ def getSTIXReport_unauthorized_access(global_scope):
 
     # Malware
     MalwareSDO = stix2.v21.Malware(name=threat_name,
-                                    is_family=False,
-                                    kill_chain_phases=kill_chain_phases)
+                                    is_family=False)
+                                    #kill_chain_phases=kill_chain_phases)
 
     # Indicator of compromise
     IoCSDO = stix2.v21.Indicator(indicator_types=["malicious-activity"],
@@ -96,7 +96,7 @@ def getSTIXReport_unauthorized_access(global_scope):
                                 pattern="None",
                                 name="Malicious traffic",
                                 description="Traffic related to multiple unauthorized login attempts",
-                                kill_chain_phases=kill_chain_phases,
+                                #kill_chain_phases=kill_chain_phases,
                                 labels= ["malicious-activity"])
 
     infraVictim = stix2.v21.Infrastructure(name = "Victim host",
@@ -162,25 +162,25 @@ def getSTIXReport_unauthorized_access(global_scope):
                                     source_ref=infraVictim["id"],
                                     target_ref=infraAttacker["id"])
 
-    rel8 = stix2.v21.Relationship(relationship_type="targets",
-                                    source_ref=attack_pattern["id"],
-                                    target_ref=identitySDO["id"])
+    # rel8 = stix2.v21.Relationship(relationship_type="targets",
+    #                                 source_ref=attack_pattern["id"],
+    #                                 target_ref=identitySDO["id"])
 
-    rel9 = stix2.v21.Relationship(relationship_type="indicates",
-                                    source_ref=IoCSDO["id"],
-                                    target_ref=attack_pattern["id"])
+    # rel9 = stix2.v21.Relationship(relationship_type="indicates",
+    #                                 source_ref=IoCSDO["id"],
+    #                                 target_ref=attack_pattern["id"])
 
     rel10 = stix2.v21.Relationship(relationship_type="indicates",
                                     source_ref=IoCSDO["id"],
                                     target_ref=MalwareSDO["id"])
 
-    rel11 = stix2.v21.Relationship(relationship_type="uses",
-                                    source_ref=MalwareSDO["id"],
-                                    target_ref=attack_pattern["id"])
+    # rel11 = stix2.v21.Relationship(relationship_type="uses",
+    #                                 source_ref=MalwareSDO["id"],
+    #                                 target_ref=attack_pattern["id"])
 
-    rel12 = stix2.v21.Relationship(relationship_type="remediates",
-                                    source_ref=CoASDO["id"],
-                                    target_ref=attack_pattern["id"])
+    # rel12 = stix2.v21.Relationship(relationship_type="remediates",
+    #                                 source_ref=CoASDO["id"],
+    #                                 target_ref=attack_pattern["id"])
 
     # Sightning relationship between identitySDO and the indicator of compromise
     sig = stix2.v21.Sighting(created_by_ref=identitySDO["id"],
@@ -201,16 +201,16 @@ def getSTIXReport_unauthorized_access(global_scope):
                                 rel5,
                                 rel6,
                                 rel7,
-                                rel8,
-                                rel9,
+                                #rel8,
+                                #rel9,
                                 rel10,
-                                rel11,
-                                rel12,
+                                #rel11,
+                                #rel12,
                                 TLP_RED,
                                 reportSDO,
                                 infraAttacker,
                                 infraVictim,
-                                attack_pattern,
+                                #attack_pattern,
                                 coa_extension_definition,
                                 CoASDO,
                                 IoCSDO,
@@ -256,12 +256,12 @@ def getSTIXReport_ransomware(global_scope):
     coa_extension_definition_file.load_from_file("stix_coa_extension_definition.json")
     coa_extension_definition = coa_extension_definition_file.get("extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c")
 
-    attack_pattern = mitre_enterprise_attack_file.query([
-        stix2.Filter("external_references.external_id", "=", "T1134"),
-        stix2.Filter("type", "=", "attack-pattern")
-    ])[0]
+    # attack_pattern = mitre_enterprise_attack_file.query([
+    #     stix2.Filter("external_references.external_id", "=", "T1134"),
+    #     stix2.Filter("type", "=", "attack-pattern")
+    # ])[0]
 
-    kill_chain_phases = attack_pattern.kill_chain_phases
+    # kill_chain_phases = attack_pattern.kill_chain_phases
 
     identitySDO = stix2.Identity(name=f"Organization ID.{organization_id}",
                                 identity_class="organization")
@@ -287,8 +287,8 @@ def getSTIXReport_ransomware(global_scope):
 
     # Malware
     MalwareSDO = stix2.v21.Malware(name=threat_name,
-                                    is_family=False,
-                                    kill_chain_phases=kill_chain_phases)
+                                    is_family=False)
+                                    #kill_chain_phases=kill_chain_phases)
 
     # Indicator of compromise
     IoCSDO = stix2.v21.Indicator(indicator_types=["malicious-activity"],
@@ -297,7 +297,7 @@ def getSTIXReport_ransomware(global_scope):
                                 pattern="None",
                                 name="Malicious traffic",
                                 description="Traffic related to ransomware activity",
-                                kill_chain_phases=kill_chain_phases,
+                                #kill_chain_phases=kill_chain_phases,
                                 labels= ["malicious-activity"])
 
     infraVictim = stix2.v21.Infrastructure(name = "Victim host",
@@ -363,25 +363,25 @@ def getSTIXReport_ransomware(global_scope):
                                     source_ref=infraVictim["id"],
                                     target_ref=infraAttacker["id"])
 
-    rel8 = stix2.v21.Relationship(relationship_type="targets",
-                                    source_ref=attack_pattern["id"],
-                                    target_ref=identitySDO["id"])
+    # rel8 = stix2.v21.Relationship(relationship_type="targets",
+    #                                 source_ref=attack_pattern["id"],
+    #                                 target_ref=identitySDO["id"])
 
-    rel9 = stix2.v21.Relationship(relationship_type="indicates",
-                                    source_ref=IoCSDO["id"],
-                                    target_ref=attack_pattern["id"])
+    # rel9 = stix2.v21.Relationship(relationship_type="indicates",
+    #                                 source_ref=IoCSDO["id"],
+    #                                 target_ref=attack_pattern["id"])
 
     rel10 = stix2.v21.Relationship(relationship_type="indicates",
                                     source_ref=IoCSDO["id"],
                                     target_ref=MalwareSDO["id"])
 
-    rel11 = stix2.v21.Relationship(relationship_type="uses",
-                                    source_ref=MalwareSDO["id"],
-                                    target_ref=attack_pattern["id"])
+    # rel11 = stix2.v21.Relationship(relationship_type="uses",
+    #                                 source_ref=MalwareSDO["id"],
+    #                                 target_ref=attack_pattern["id"])
 
-    rel12 = stix2.v21.Relationship(relationship_type="remediates",
-                                    source_ref=CoASDO["id"],
-                                    target_ref=attack_pattern["id"])
+    # rel12 = stix2.v21.Relationship(relationship_type="remediates",
+    #                                 source_ref=CoASDO["id"],
+    #                                 target_ref=attack_pattern["id"])
 
     rel13 = stix2.v21.Relationship(relationship_type="targets",
                                     source_ref=MalwareSDO["id"],
@@ -406,17 +406,17 @@ def getSTIXReport_ransomware(global_scope):
                                 rel5,
                                 #rel6,
                                 rel7,
-                                rel8,
-                                rel9,
+                                #rel8,
+                                #rel9,
                                 rel10,
-                                rel11,
-                                rel12,
+                                #rel11,
+                                #rel12,
                                 rel13,
                                 TLP_RED,
                                 reportSDO,
                                 infraAttacker,
                                 infraVictim,
-                                attack_pattern,
+                                #attack_pattern,
                                 coa_extension_definition,
                                 CoASDO,
                                 IoCSDO,
@@ -462,12 +462,12 @@ def getSTIXReport_botnet(global_scope):
     coa_extension_definition_file.load_from_file("stix_coa_extension_definition.json")
     coa_extension_definition = coa_extension_definition_file.get("extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c")
 
-    attack_pattern = mitre_enterprise_attack_file.query([
-        stix2.Filter("external_references.external_id", "=", "T1134"),
-        stix2.Filter("type", "=", "attack-pattern")
-    ])[0]
+    # attack_pattern = mitre_enterprise_attack_file.query([
+    #     stix2.Filter("external_references.external_id", "=", "T1134"),
+    #     stix2.Filter("type", "=", "attack-pattern")
+    # ])[0]
 
-    kill_chain_phases = attack_pattern.kill_chain_phases
+    # kill_chain_phases = attack_pattern.kill_chain_phases
 
     identitySDO = stix2.Identity(name=f"Organization ID.{organization_id}",
                                 identity_class="organization")
@@ -498,8 +498,8 @@ def getSTIXReport_botnet(global_scope):
 
     # Malware
     MalwareSDO = stix2.v21.Malware(name=threat_name,
-                                    is_family=False,
-                                    kill_chain_phases=kill_chain_phases)
+                                    is_family=False)
+                                    #kill_chain_phases=kill_chain_phases)
 
     # Indicator of compromise
     IoCSDO = stix2.v21.Indicator(indicator_types=["malicious-activity"],
@@ -509,7 +509,7 @@ def getSTIXReport_botnet(global_scope):
                                 name="Command and control traffic",
                                 description="This traffic indicates the source host is "
                                 "trying to reach to his command and control server",
-                                kill_chain_phases=kill_chain_phases,
+                                #kill_chain_phases=kill_chain_phases,
                                 labels= ["malicious-activity"])
 
     infraVictim = stix2.v21.Infrastructure(name = "Victim host",
@@ -575,25 +575,25 @@ def getSTIXReport_botnet(global_scope):
                                     source_ref=infraVictim["id"],
                                     target_ref=infraAttacker["id"])
 
-    rel8 = stix2.v21.Relationship(relationship_type="targets",
-                                    source_ref=attack_pattern["id"],
-                                    target_ref=identitySDO["id"])
+    # rel8 = stix2.v21.Relationship(relationship_type="targets",
+    #                                 source_ref=attack_pattern["id"],
+    #                                 target_ref=identitySDO["id"])
 
-    rel9 = stix2.v21.Relationship(relationship_type="indicates",
-                                    source_ref=IoCSDO["id"],
-                                    target_ref=attack_pattern["id"])
+    # rel9 = stix2.v21.Relationship(relationship_type="indicates",
+    #                                 source_ref=IoCSDO["id"],
+    #                                 target_ref=attack_pattern["id"])
 
     rel10 = stix2.v21.Relationship(relationship_type="indicates",
                                     source_ref=IoCSDO["id"],
                                     target_ref=MalwareSDO["id"])
 
-    rel11 = stix2.v21.Relationship(relationship_type="uses",
-                                    source_ref=MalwareSDO["id"],
-                                    target_ref=attack_pattern["id"])
+    # rel11 = stix2.v21.Relationship(relationship_type="uses",
+    #                                 source_ref=MalwareSDO["id"],
+    #                                 target_ref=attack_pattern["id"])
 
-    rel12 = stix2.v21.Relationship(relationship_type="remediates",
-                                    source_ref=CoASDO["id"],
-                                    target_ref=attack_pattern["id"])
+    # rel12 = stix2.v21.Relationship(relationship_type="remediates",
+    #                                 source_ref=CoASDO["id"],
+    #                                 target_ref=attack_pattern["id"])
 
     # Sightning relationship between identitySDO and the indicator of compromise
     sig = stix2.v21.Sighting(created_by_ref=identitySDO["id"],
@@ -615,16 +615,16 @@ def getSTIXReport_botnet(global_scope):
                                 rel5,
                                 rel6,
                                 rel7,
-                                rel8,
-                                rel9,
+                                #rel8,
+                                #rel9,
                                 rel10,
-                                rel11,
-                                rel12,
+                                #rel11,
+                                #rel12,
                                 TLP_RED,
                                 reportSDO,
                                 infraAttacker,
                                 infraVictim,
-                                attack_pattern,
+                                #attack_pattern,
                                 coa_extension_definition,
                                 CoASDO,
                                 IoCSDO,
@@ -807,13 +807,13 @@ def getSTIXReport_test_standalone():
         coa_extension_definition = coa_extension_definition_file.get("extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c")
         mem.add(coa_extension_definition)
 
-        attack_pattern = mitre_enterprise_attack_file.query([
-            stix2.Filter("external_references.external_id", "=", "T1134"),
-            stix2.Filter("type", "=", "attack-pattern")
-        ])[0]
-        mem.add(attack_pattern)
+        # attack_pattern = mitre_enterprise_attack_file.query([
+        #     stix2.Filter("external_references.external_id", "=", "T1134"),
+        #     stix2.Filter("type", "=", "attack-pattern")
+        # ])[0]
+        # mem.add(attack_pattern)
 
-        kill_chain_phases = attack_pattern.kill_chain_phases
+        # kill_chain_phases = attack_pattern.kill_chain_phases
 
         identitySDO = stix2.Identity(name=f"organization 1234",
                                     identity_class="organization")

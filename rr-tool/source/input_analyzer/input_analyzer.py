@@ -179,6 +179,20 @@ def prepareDataForRemediationOfRansomware(global_scope, service_graph_instance, 
     #      "proto": "", "action": "ALLOW"}
     # ]
 
+def prepareDataForRemediationOfCryptomining(global_scope, service_graph_instance, alert):
+    # GlobalScope["AnomalyDetectionSyslog"] = alert.get("AnomalyDetectionSyslog")
+    # GlobalScope["Threat_Label"] = alert.get("Threat_Label")
+    # GlobalScope["Classification_Confidence"] = alert("Classification_Confidence")
+    # GlobalScope["Outlier_Score"] = alert("Outlier_Score")
+
+    global_scope["threat_category"] = "cryptomining"
+    global_scope["threat_label"] = alert["Threat_Label"]
+    global_scope["CryptominingAlert"] = alert
+    global_scope["CryptominingAlertSourceIp"] = alert[settings.TI_SYSLOG_VICTIM_IP_FIELD_NAME]
+
+    # TODO remove this temporary fix after having landscape information/ip changes in alerts
+    service_graph_instance.changeNodeIP("victim", global_scope["CryptominingAlertSourceIp"])
+
 def prepareDataForProactiveRemediation(global_scope, threat_repository, threat_category, threat_label, artifacts):
 
     global_scope["threat_category"] = threat_category  # botnet
