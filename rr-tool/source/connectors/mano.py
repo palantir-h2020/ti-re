@@ -26,12 +26,12 @@ def addFirewall(new_node, path, capabilities):
 
     # service_matching.deploy_secap("level_4_filtring", ["iptnetflow"])
 
-    check_secap_readiness("91a41534-7597-4975-8763-0642ef98c84")
+    # check_secap_readiness("91a41534-7597-4975-8763-0642ef98c864")
 
     # todo uncomment following lines after finishing testing sm connector
-    # new_node_name = new_node["name"]
-    # new_node["id"] = "0"  # TODO get from orchestrator the id of the newly created firewall
-    # logger.info(f"new firewall node {new_node_name} deployed")
+    new_node_name = new_node["name"]
+    new_node["id"] = "0"  # TODO get from orchestrator the id of the newly created firewall
+    logger.info(f"new firewall node {new_node_name} deployed")
 
 
 def add_filtering_rules(node1, iptables_rule):
@@ -133,7 +133,7 @@ def check_secap_readiness(secap_id):
         counter = 0
         while counter < 20:
             counter += 1
-            time.sleep(2)
+            time.sleep(3)
 
             raw_response = requests.get(url, headers=headers)
             response = json.loads(raw_response.text)
