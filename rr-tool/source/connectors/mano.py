@@ -26,11 +26,12 @@ def addFirewall(new_node, path, capabilities):
 
     # service_matching.deploy_secap("level_4_filtring", ["iptnetflow"])
 
-    check_secap_readiness("91a41534-7597-4975-8763-0642ef98c864")
+    check_secap_readiness("91a41534-7597-4975-8763-0642ef98c84")
 
-    new_node_name = new_node["name"]
-    new_node["id"] = "0"  # TODO get from orchestrator the id of the newly created firewall
-    logger.info(f"new firewall node {new_node_name} deployed")
+    # todo uncomment following lines after finishing testing sm connector
+    # new_node_name = new_node["name"]
+    # new_node["id"] = "0"  # TODO get from orchestrator the id of the newly created firewall
+    # logger.info(f"new firewall node {new_node_name} deployed")
 
 
 def add_filtering_rules(node1, iptables_rule):
@@ -149,7 +150,7 @@ def check_secap_readiness(secap_id):
             for secap in response.get("ns"):
                 status = secap.get("status").get("operational")
                 if secap.get("id") == secap_id and status == "running":
-                    logger.error(f"The security capability with id:{secap_id} is operational")
+                    logger.info(f"The security capability with id:{secap_id} is operational")
                     return True
 
 
