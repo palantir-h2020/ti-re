@@ -359,6 +359,9 @@ class RRTool:
                     prepareDataForRemediationOfCryptomining(global_scope=self.global_scope,
                                                         service_graph_instance=self.service_graph_instance,
                                                         alert=alert)
+            else:
+                logger.error("Ignoring alert...")
+                return
         except KeyError:
             logger.error("Malformed alert received, skipping...")
             return
