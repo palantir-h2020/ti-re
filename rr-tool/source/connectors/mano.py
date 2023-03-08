@@ -26,7 +26,8 @@ def addFirewall(new_node, path, capabilities):
 
     secap_id = service_matching.deploy_secap("level_4_filtering", ["iptnetflow"])
 
-    check_secap_readiness("91a41534-7597-4975-8763-0642ef98c864")
+    # secap_id = "91a41534-7597-4975-8763-0642ef98c864"
+    check_secap_readiness(secap_id)
 
     # todo uncomment following lines after finishing testing sm connector
     new_node_name = new_node["name"]
