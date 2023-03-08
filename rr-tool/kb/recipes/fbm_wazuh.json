@@ -1,6 +1,0 @@
-{
-    "description": "Call the wazuh fbm function",
-    "requiredCapabilities": ["level_4_filtering"],
-    "requiredArtifacts": [],
-    "proactive": false
-}

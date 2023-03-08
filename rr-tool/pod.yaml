@@ -64,7 +64,11 @@ spec:
           value: "1"
         - name: SC_CLUSTER_PORT
           value: "50101"
+        - name: IPTNETFLOW_SECAP_ID
+          value: "-1"
         - name: TI_SYSLOG_VICTIM_IP_FIELD_NAME
+          value: "Source_IP"
+        - name: TI_CRYPTO_VICTIM_IP_FIELD_NAME
           value: "Source_IP"
         - name: BACKUP_SERVER_IP
           value: "10.225.1.73"

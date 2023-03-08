@@ -64,6 +64,8 @@ def deploy_secap(requested_capability,
         Returns:
             string: the ID of the security capability deployed
     """
+
+
     correlation_id = random.randint(10, 100000)
 
 

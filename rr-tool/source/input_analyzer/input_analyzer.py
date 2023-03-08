@@ -180,15 +180,18 @@ def prepareDataForRemediationOfRansomware(global_scope, service_graph_instance, 
     # ]
 
 def prepareDataForRemediationOfCryptomining(global_scope, service_graph_instance, alert):
-    # GlobalScope["AnomalyDetectionSyslog"] = alert.get("AnomalyDetectionSyslog")
-    # GlobalScope["Threat_Label"] = alert.get("Threat_Label")
-    # GlobalScope["Classification_Confidence"] = alert("Classification_Confidence")
-    # GlobalScope["Outlier_Score"] = alert("Outlier_Score")
-
     global_scope["threat_category"] = "cryptomining"
-    global_scope["threat_label"] = alert["Threat_Label"]
+    global_scope["threat_label"] = "unknown"
     global_scope["CryptominingAlert"] = alert
-    global_scope["CryptominingAlertSourceIp"] = alert[settings.TI_SYSLOG_VICTIM_IP_FIELD_NAME]
+    global_scope["CryptominingAlertSourceIp"] = alert[settings.TI_CRYPTO_VICTIM_IP_FIELD_NAME]
+
+    # threat_category=alert["Threat_Category"],
+    # threat_label=alert["Threat_Label"],
+    # protocol=alert["Threat_Finding"]["Protocol"],
+    # impacted_host_port=alert["Threat_Finding"]["Source_Port"],
+    # impacted_host_ip=alert["Threat_Finding"]["Source_Address"],
+    # attacker_port=alert["Threat_Finding"]["Destination_Port"],
+    # attacker_ip=alert["Threat_Finding"]["Destination_Address"]
 
     # TODO remove this temporary fix after having landscape information/ip changes in alerts
     service_graph_instance.changeNodeIP("victim", global_scope["CryptominingAlertSourceIp"])

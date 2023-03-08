@@ -59,7 +59,8 @@ def generate_victim_firewall_attacker_graph():# -> [ig.Graph, Dict]:
 
     border_firewall_node = get_vertex_by_name(gnet1, "border_firewall")
     border_firewall_node["nodeType"] = "firewall"
-    border_firewall_node["id"] = "910cad9d-ec96-44a5-85fb-b228d7e8da77"
+    border_firewall_node["secap_type"] = "iptnetflow-ns"
+    border_firewall_node["id"] = settings.IPTNETFLOW_SECAP_ID
     border_firewall_node["rules_level_4"] = []
     border_firewall_node["rules_level_7"] = []
     border_firewall_node["capabilities"] = ["level_4_filtering"]

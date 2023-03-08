@@ -24,9 +24,9 @@ def addFirewall(new_node, path, capabilities):
     # new_node["rules_level_7"] = []
     # new_node["capabilities"] = capabilities
 
-    # service_matching.deploy_secap("level_4_filtring", ["iptnetflow"])
+    secap_id = service_matching.deploy_secap("level_4_filtering", ["iptnetflow"])
 
-    # check_secap_readiness("91a41534-7597-4975-8763-0642ef98c864")
+    check_secap_readiness("91a41534-7597-4975-8763-0642ef98c864")
 
     # todo uncomment following lines after finishing testing sm connector
     new_node_name = new_node["name"]
@@ -94,6 +94,15 @@ def send_action(node,
                 base_url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns/action?id=',
                 component_type="Recommendation and Remediation",
                 component_id="0"):
+
+    if node["id"] == "-1":
+        # get id of first secap of type node["secap_type"]
+        pass
+        secap_id = ""
+        url = base_url + secap_id
+    else:
+        url = base_url + node["id"]
+
     if headers is None:
         headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
     url = base_url + node["id"]
