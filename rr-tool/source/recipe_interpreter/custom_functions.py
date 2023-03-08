@@ -6,7 +6,6 @@ logger = get_child_logger('recipe-interpreter', 'custom-functions')
 
 
 def fbm_call(alert, alert_source_ip):
-    logger.info('Incident response API: notifying data breach on host with IP ' + alert_source_ip)
 
     portal.notify(component_type="Recommendation and Remediation",
                   component_id="0",
@@ -17,7 +16,6 @@ def fbm_call(alert, alert_source_ip):
     ir.notify("brute-force-attack", alert_source_ip, "Data breach attempt detected: " + str(alert))
 
 def fbm_call_ransomware(alert, alert_source_ip):
-    logger.info('Incident response API: notifying data breach on host with IP ' + alert_source_ip)
 
     portal.notify(component_type="Recommendation and Remediation",
                   component_id="0",
