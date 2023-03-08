@@ -81,7 +81,7 @@ def deploy_secap(requested_capability,
             "subscriptionId": "",
             "billingPeriod": "1000",
             "imposedInfras": [vim_id], # vim id
-            "whitelistScs": ["snort2"] # compatible_security_controls # iptables compatible secap... iptnetflow?
+            "whitelistScs": compatible_security_controls # iptables compatible secap...
         }]
     }
 

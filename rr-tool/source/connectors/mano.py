@@ -24,7 +24,7 @@ def addFirewall(new_node, path, capabilities):
     # new_node["rules_level_7"] = []
     # new_node["capabilities"] = capabilities
 
-    secap_id = service_matching.deploy_secap("level_4_filtering", ["iptnetflow"])
+    secap_id = service_matching.deploy_secap("level_4_filtering", ["iptnetflow_cnf"])
 
     # secap_id = "91a41534-7597-4975-8763-0642ef98c864"
     check_secap_readiness(secap_id)
