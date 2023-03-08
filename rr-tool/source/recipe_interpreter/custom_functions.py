@@ -27,7 +27,7 @@ def fbm_call_ransomware(alert, alert_source_ip):
 
     ir.notify_ransomware("ransomware",
                         alert_source_ip,
-                        "Data breach attempt detected: " + str(alert),
+                        "Ransomware detected: " + str(alert),
                         alert.get("wazuh_agent_id"))
 
 FunctionMappings = {
