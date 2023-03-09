@@ -158,7 +158,7 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
                                 value = stix_ioc_pattern)
         event.add_object(pattern_object)
     elif threat_type == "malware": # cryptomining specific attributes
-        event.info = "Cryptomining malwares report"
+        event.info = "Cryptomining malware report"
         attacker_ip = global_scope.get("attacker_ip")
         c2serversPort = global_scope.get("c2serversPort")
         impacted_host_ip = global_scope.get("impacted_host_ip")
