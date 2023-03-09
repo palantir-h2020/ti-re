@@ -157,6 +157,29 @@ def publish_on_misp(global_scope, stix_report_json, stix_report_base64, threat_t
         pattern_object.add_attribute("stix2-pattern",
                                 value = stix_ioc_pattern)
         event.add_object(pattern_object)
+    elif threat_type == "malware": # cryptomining specific attributes
+        event.info = "Cryptomining malwares report"
+        attacker_ip = global_scope.get("attacker_ip")
+        c2serversPort = global_scope.get("c2serversPort")
+        impacted_host_ip = global_scope.get("impacted_host_ip")
+        stix_ioc_pattern = global_scope.get("stix_ioc_pattern")
+
+        attribute3 = event.add_attribute(type="ip-dst",
+                                    value=attacker_ip)
+
+        if ENABLE_PRIVATE_ARTIFACTS_SHARING == "1":
+            attribute3 = event.add_attribute(type="ip-src",
+                                        value=impacted_host_ip)
+            event.add_tag("tlp:red")
+
+        # pattern object https://github.com/MISP/misp-objects/blob/main/objects/stix2-pattern/definition.json
+        pattern_object = MISPObject("stix2-pattern", standalone=False)
+        pattern_object.comment = "STIX 2.1 IoC pattern"
+        pattern_object.add_attribute("version",
+                                value = "stix 2.1")
+        pattern_object.add_attribute("stix2-pattern",
+                                value = stix_ioc_pattern)
+        event.add_object(pattern_object)
 
 
     event = misp.add_event(event)

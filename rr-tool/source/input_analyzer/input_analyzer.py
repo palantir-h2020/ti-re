@@ -6,6 +6,34 @@ from helpers.logging_helper import get_logger
 logger = get_logger('input-analyzer')
 
 
+def setupDefaultL4RemediationRules(global_scope, protocol, impacted_host_ip, impacted_host_port, attacker_ip,
+                                   attacker_port):
+
+    # Add a filtering rule for both traffic directions:
+    rules = [{"level": 4, "c2serversIP": attacker_ip}, {"level": 4, "victimIP": attacker_ip}]
+
+    if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_VICTIM_IP == '1':
+        rules[0]["victimIP"] = impacted_host_ip
+        rules[1]["c2serversIP"] = impacted_host_ip
+
+    if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_ATTACKER_PORT == '1':
+        rules[0]["c2serversPort"] = attacker_port
+        rules[1]["victimPort"] = attacker_port
+
+    if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_VICTIM_PORT == '1':
+        rules[0]["victimPort"] = impacted_host_port
+        rules[1]["c2serversPort"] = impacted_host_port
+
+    if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_PROTOCOL == '1':
+        rules[0]["proto"] = protocol
+        rules[1]["proto"] = protocol
+
+    if "rules_level_4" not in global_scope.keys():
+        global_scope["rules_level_4"] = rules
+    else:
+        for rule in rules:
+            global_scope["rules_level_4"].append(rule)
+
 def prepareDataForRemediationOfBotnet(global_scope, service_graph_instance, threat_repository,
                                        threat_category, threat_label, protocol, impacted_host_port,
                                        impacted_host_ip, attacker_port, attacker_ip):
@@ -94,34 +122,6 @@ def prepareDataForRemediationOfBotnet(global_scope, service_graph_instance, thre
         payload = rule["payload"]
         logger.info(f"Payload: {payload}")
 
-def setupDefaultL4RemediationRules(global_scope, protocol, impacted_host_ip, impacted_host_port, attacker_ip,
-                                   attacker_port):
-
-    # Add a filtering rule for both traffic directions:
-    rules = [{"level": 4, "c2serversIP": attacker_ip}, {"level": 4, "victimIP": attacker_ip}]
-
-    if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_VICTIM_IP == '1':
-        rules[0]["victimIP"] = impacted_host_ip
-        rules[1]["c2serversIP"] = impacted_host_ip
-
-    if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_ATTACKER_PORT == '1':
-        rules[0]["c2serversPort"] = attacker_port
-        rules[1]["victimPort"] = attacker_port
-
-    if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_VICTIM_PORT == '1':
-        rules[0]["victimPort"] = impacted_host_port
-        rules[1]["c2serversPort"] = impacted_host_port
-
-    if settings.ENABLE_DEFAULT_L4_FILTERING_RULE_PROTOCOL == '1':
-        rules[0]["proto"] = protocol
-        rules[1]["proto"] = protocol
-
-    if "rules_level_4" not in global_scope.keys():
-        global_scope["rules_level_4"] = rules
-    else:
-        for rule in rules:
-            global_scope["rules_level_4"].append(rule)
-
 def prepareDataForRemediationOfUnauthorizedAccess(global_scope, service_graph_instance, alert):
     # GlobalScope["AnomalyDetectionSyslog"] = alert.get("AnomalyDetectionSyslog")
     # GlobalScope["Threat_Label"] = alert.get("Threat_Label")
@@ -179,22 +179,93 @@ def prepareDataForRemediationOfRansomware(global_scope, service_graph_instance, 
     #      "proto": "", "action": "ALLOW"}
     # ]
 
-def prepareDataForRemediationOfCryptomining(global_scope, service_graph_instance, alert):
-    global_scope["threat_category"] = "cryptomining"
-    global_scope["threat_label"] = "unknown"
-    global_scope["CryptominingAlert"] = alert
-    global_scope["CryptominingAlertSourceIp"] = alert[settings.TI_CRYPTO_VICTIM_IP_FIELD_NAME]
+def prepareDataForRemediationOfCryptomining(global_scope, service_graph_instance, threat_repository,
+                                       threat_category, threat_label, protocol, impacted_host_port,
+                                       impacted_host_ip, attacker_port, attacker_ip):
 
-    # threat_category=alert["Threat_Category"],
-    # threat_label=alert["Threat_Label"],
-    # protocol=alert["Threat_Finding"]["Protocol"],
-    # impacted_host_port=alert["Threat_Finding"]["Source_Port"],
-    # impacted_host_ip=alert["Threat_Finding"]["Source_Address"],
-    # attacker_port=alert["Threat_Finding"]["Destination_Port"],
-    # attacker_ip=alert["Threat_Finding"]["Destination_Address"]
+    global_scope["threat_category"] = threat_category  # malware
+    global_scope["threat_label"] = threat_label  # crypto
+    global_scope["protocol"] = protocol
+    global_scope["impacted_host_port"] = impacted_host_port
+    global_scope["impacted_host_ip"] = impacted_host_ip
+    global_scope["c2serversPort"] = attacker_port
+    global_scope["attacker_ip"] = attacker_ip
 
     # TODO remove this temporary fix after having landscape information/ip changes in alerts
-    service_graph_instance.changeNodeIP("victim", global_scope["CryptominingAlertSourceIp"])
+    service_graph_instance.changeNodeIP("victim", impacted_host_ip)
+    service_graph_instance.changeNodeIP("attacker", attacker_ip)
+
+    global_scope["rules_level_4"] = []
+    global_scope["rules_level_7"] = []
+
+    if threat_label in threat_repository[threat_category]:
+
+        logger.info("Threat found in the repository, adding specific countermeasures ...")
+
+        malware_specific_mitigation_rules = threat_repository[threat_category][threat_label]["rules"]
+
+        global_scope["rules_level_7"] = \
+            [rule for rule in malware_specific_mitigation_rules
+             if rule.get("level") == 7 and rule.get("proto") != "DNS"]  # DNS rules are managed below
+
+        global_scope["rules_level_4"] = \
+            [rule for rule in malware_specific_mitigation_rules
+             if rule.get("level") == 4]
+
+        # complete ThreatRepository data with fresh information regarding port and victim host received as alert
+        for rule in global_scope["rules_level_4"]:
+            rule["victimIP"] = impacted_host_ip
+            rule["victimPort"] = impacted_host_port
+            rule["c2serversPort"] = attacker_port
+
+        # Block the attacker ip took from the information present in the alert.
+        # A new L4 filtering rule is thus created if the attacker ip present in
+        # the alert isn't already in the ThreatRepository or if the threat
+        # repository doesn't contain specific level_4_filtering rules
+        threatRepositoryAttackers = \
+            [rule["c2serversIP"] for rule in malware_specific_mitigation_rules if rule.get("level") == 4]
+        if attacker_ip not in threatRepositoryAttackers or len(global_scope["rules_level_4"]) == 0:
+            setupDefaultL4RemediationRules(global_scope,
+                                        protocol,
+                                        impacted_host_ip,
+                                        impacted_host_port,
+                                        attacker_ip,
+                                        attacker_port)
+
+        # get dns rules
+        global_scope["domains"] = [rule["domain"] for rule in malware_specific_mitigation_rules if
+                                   rule.get("proto") == "DNS"]
+
+        # set impacted_nodes variable, that is used in the other recipes
+        global_scope["impacted_nodes"] = [impacted_host_ip]
+
+    else:
+
+        logger.info("Threat not found in the repository, applying generic countermeasures ...")
+        setupDefaultL4RemediationRules(global_scope,
+                                        protocol,
+                                        impacted_host_ip,
+                                        impacted_host_port,
+                                        attacker_ip,
+                                        attacker_port)
+
+    # Logging
+
+    logger.debug(f"Impacted host ip: {impacted_host_ip})")
+
+    if impacted_host_port != "":
+        logger.debug(f"Impacted host port: {impacted_host_port}")
+    logger.debug(f"Attacker ip: {attacker_ip}")
+
+    if attacker_port != "":
+        logger.debug(f"Attacker port {attacker_port}")
+
+    if protocol != "":
+        logger.debug(f"L4 protocol {protocol}")
+
+    for rule in global_scope["rules_level_7"]:
+        payload = rule["payload"]
+        logger.info(f"Payload: {payload}")
 
 def prepareDataForProactiveRemediation(global_scope, threat_repository, threat_category, threat_label, artifacts):
 

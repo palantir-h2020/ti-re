@@ -354,11 +354,18 @@ class RRTool:
                     prepareDataForRemediationOfRansomware(global_scope=self.global_scope,
                                                         service_graph_instance=self.service_graph_instance,
                                                         alert=alert)
-            elif alert["Threat_Category"] == "cryptomining":
+            elif alert["Threat_Category"] == "malware":
                 input_analyzer. \
                     prepareDataForRemediationOfCryptomining(global_scope=self.global_scope,
-                                                        service_graph_instance=self.service_graph_instance,
-                                                        alert=alert)
+                                                    service_graph_instance=self.service_graph_instance,
+                                                    threat_repository=self.threat_repository,
+                                                    threat_category=alert["Threat_Category"],
+                                                    threat_label=alert["Threat_Label"],
+                                                    protocol=alert["Threat_Finding"]["Protocol"],
+                                                    impacted_host_port=alert["Threat_Finding"]["Source_Port"],
+                                                    impacted_host_ip=alert["Threat_Finding"]["Source_Address"],
+                                                    attacker_port=alert["Threat_Finding"]["Destination_Port"],
+                                                    attacker_ip=alert["Threat_Finding"]["Destination_Address"])
             else:
                 logger.error("Ignoring alert...")
                 return
