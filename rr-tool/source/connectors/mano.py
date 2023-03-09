@@ -103,14 +103,36 @@ def add_filtering_rules(node1, iptables_rule):
 
 
 def flush_filtering_rules(node1):
+
     logger.info("flushing filtering rules on iptables instance")
-    send_action(node=node1,
-                payload={"action_name": "run", "action_params": {"cmd": "iptables-save | grep -v RR-TOOL_GENERATED | "
-                                                                        "iptables-restore"}},
-                action_name="Flush rules on iptables SC",
-                action_description="iptables SC reconfigured with command: iptables-save | grep -v "
-                                   "RR-TOOL_GENERATED | iptables-restore",
-                )
+    if node1["id"] == "-1":
+        url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns'
+        headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
+
+        raw_response = requests.get(url, headers=headers)
+        response = json.loads(raw_response.text)
+
+        logger.info("response code from orchestrator " + str(raw_response.status_code))
+        logger.info("response from orchestrator: ")
+        logger.info(response)
+
+        if not raw_response.ok:
+            logger.error("response headers from orchestrator " + str(raw_response.headers))
+            logger.error("response text from orchestrator " + str(raw_response.text))
+            return
+
+        for secap in response.get("ns"):
+            if secap.get("package").get("name") == node1["secap_type"]:
+               node1["id"] = secap.get("id")
+               break
+
+    if check_secap_readiness(node1["id"]):
+        send_action(node=node1,
+                    payload={"action_name": "run", "action_params": {"cmd": "iptables-save | grep -v RR-TOOL_GENERATED | "
+                                                                            "iptables-restore"}},
+                    action_name="Flush rules on iptables SC",
+                    action_description="iptables SC reconfigured with command: iptables-save | grep -v "
+                                    "RR-TOOL_GENERATED | iptables-restore")
 
 # noinspection PyUnusedLocal
 def add_dns_policy(domain, rule):
