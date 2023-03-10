@@ -20,7 +20,7 @@ def check_secap_readiness(secap_id):
     if ENABLE_MANO_API == "1":
 
         counter = 0
-        while counter < 20:
+        while counter < (20 * 5):
             counter += 1
             time.sleep(3)
 
@@ -126,13 +126,14 @@ def flush_filtering_rules(node1):
                node1["id"] = secap.get("id")
                break
 
-    if check_secap_readiness(node1["id"]):
-        send_action(node=node1,
-                    payload={"action_name": "run", "action_params": {"cmd": "iptables-save | grep -v RR-TOOL_GENERATED | "
-                                                                            "iptables-restore"}},
-                    action_name="Flush rules on iptables SC",
-                    action_description="iptables SC reconfigured with command: iptables-save | grep -v "
-                                    "RR-TOOL_GENERATED | iptables-restore")
+    # if check_secap_readiness(node1["id"]):
+
+    send_action(node=node1,
+                payload={"action_name": "run", "action_params": {"cmd": "iptables-save | grep -v RR-TOOL_GENERATED | "
+                                                                        "iptables-restore"}},
+                action_name="Flush rules on iptables SC",
+                action_description="iptables SC reconfigured with command: iptables-save | grep -v "
+                                "RR-TOOL_GENERATED | iptables-restore")
 
 # noinspection PyUnusedLocal
 def add_dns_policy(domain, rule):
