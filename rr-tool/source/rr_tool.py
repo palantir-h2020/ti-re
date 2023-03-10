@@ -381,20 +381,21 @@ class RRTool:
         recipe_interpreter_instance.remediate_new(bestRecipeName)
 
 
-        cacao_playbook_json, cacao_playbook_base64 = cacao_helper.getCACAOPlaybook(self.global_scope,
-                                                                        recipe_text,
-                                                                        threat_type=alert["Threat_Category"])
+        if settings.ENABLE_EXTERNAL_CTI_SHARING == "1":
+            cacao_playbook_json, cacao_playbook_base64 = cacao_helper.getCACAOPlaybook(self.global_scope,
+                                                                            recipe_text,
+                                                                            threat_type=alert["Threat_Category"])
 
-        self.global_scope["cacao_playbook_json"] = cacao_playbook_json
-        self.global_scope["cacao_playbook_base64"] = cacao_playbook_base64
+            self.global_scope["cacao_playbook_json"] = cacao_playbook_json
+            self.global_scope["cacao_playbook_base64"] = cacao_playbook_base64
 
-        stix_report_json, stix_report_base64 = stix_helper.getSTIXReport(self.global_scope,
-                                                                        threat_type=alert["Threat_Category"])
+            stix_report_json, stix_report_base64 = stix_helper.getSTIXReport(self.global_scope,
+                                                                            threat_type=alert["Threat_Category"])
 
-        misp.publish_on_misp(self.global_scope,
-                            stix_report_json,
-                            stix_report_base64,
-                            threat_type=alert["Threat_Category"])
+            misp.publish_on_misp(self.global_scope,
+                                stix_report_json,
+                                stix_report_base64,
+                                threat_type=alert["Threat_Category"])
 
         #todo send proactive after having filtered private data
 
