@@ -376,9 +376,6 @@ class RRTool:
                                                     impacted_host_ip=alert["Threat_Finding"]["Source_Address"],
                                                     attacker_port=alert["Threat_Finding"]["Destination_Port"],
                                                     attacker_ip=alert["Threat_Finding"]["Destination_Address"])
-            else:
-                logger.error("Ignoring alert...")
-                return
         except KeyError:
             logger.error("Malformed alert received, skipping...")
             return
