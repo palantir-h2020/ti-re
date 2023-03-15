@@ -178,6 +178,10 @@ class RRTool:
         logger.info("Serialized syslog threat report: " + str(json_msg))
         if json_msg.get("Threat_Category") != "ransomware":
             json_msg["Threat_Category"] = "unauthorized_access"
+        # # tmp fix for demo
+        # if json_msg.get("Threat_Category") == "ransomware2":
+        #     json_msg["Threat_Category"] = "ransomware"
+        #     json_msg["Threat_Label"] = "ransomware"
         self.jsonInput(json_msg)
 
     def stringInputNewAttackRemediation(self, msg):

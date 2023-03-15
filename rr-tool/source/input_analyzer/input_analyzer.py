@@ -157,7 +157,7 @@ def prepareDataForRemediationOfRansomware(global_scope, service_graph_instance, 
     # GlobalScope["Classification_Confidence"] = alert("Classification_Confidence")
     # GlobalScope["Outlier_Score"] = alert("Outlier_Score")
 
-    global_scope["threat_category"] = "ransomware"
+    global_scope["threat_category"] = alert["Threat_Category"]
     global_scope["threat_label"] = alert["Threat_Label"]
     global_scope["RansomwareAlert"] = alert
     global_scope["RansomwareAlertSourceIp"] = alert[settings.TI_SYSLOG_VICTIM_IP_FIELD_NAME]
