@@ -3,7 +3,7 @@
     "wazuh_agent_id": "001",
     "mitre": null,
     "AnomalyDetectionSyslog": "ossec: File rotated (inode changed): '/var/log/syslog'.",
-    "Threat_Label": "ransomware",
+    "Threat_Label": "lockbit",
     "Threat_Category": "ransomware",
     "Source_IP": "10.101.41.17",
     "Classification_Confidence": null,
