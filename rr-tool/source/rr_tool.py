@@ -299,16 +299,6 @@ class RRTool:
 
     def jsonInput(self, alert):
 
-        # tmp fix for palantir tests
-        if alert["Threat_Category"] == "unauthorized_access" or \
-            alert["Threat_Category"] == "botnet" or \
-            alert["Threat_Category"] == "ransomware" or \
-            alert["Threat_Category"] == "malware":
-            pass
-        else:
-            logger.error("Ignoring alert...")
-            return
-
         # First clean global_scope status
         self.global_scope.clear()
 
@@ -324,6 +314,16 @@ class RRTool:
             alert["Threat_Category"] = str(alert["Threat_Category"]).casefold()
         except Exception:
             logger.error("Malformed alert received (ex: threat category missing), skipping...")
+            return
+
+        # tmp fix for palantir tests
+        if alert["Threat_Category"] == "unauthorized_access" or \
+            alert["Threat_Category"] == "botnet" or \
+            alert["Threat_Category"] == "ransomware" or \
+            alert["Threat_Category"] == "malware":
+            pass
+        else:
+            logger.error("Ignoring alert...")
             return
 
         # TODO here we should give present the user with the best recipe and
