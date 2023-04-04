@@ -157,7 +157,8 @@ class RRTool:
             if msg_type == "netflow":
                 self.jsonInput(msg)
             elif msg_type == "syslog":
-                msg["Threat_Category"] = "unauthorized_access"
+                if msg["Threat_Category"] != "ransomware":
+                    msg["Threat_Category"] = "unauthorized_access"
                 self.jsonInput(msg)
             elif msg_type == "new_attack_remediation":
                 self.addNewAttackRemediation(msg)
@@ -447,7 +448,7 @@ def main():
         case "kafka":
             from connectors import kafka_consumer
 
-            # misp.publish_on_misp_test() #todo remove from here after finishing testing misp
+            # misp.publish_on_misp_test() #todo just for quick tests of misp
 
             kafka_consumer.consume_topics(RRTool())
         case _:
