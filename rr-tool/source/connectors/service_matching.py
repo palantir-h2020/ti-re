@@ -91,7 +91,8 @@ def deploy_secap(requested_capability,
                             callback=None)
 
     # WARNING: this consumer MUST use a different group.id from the one used by the RR-tool
-    # main consumer (the one receiving threat alerts), otherwise it won't work.
+    # main consumer (the one receiving threat alerts), otherwise strange behavior may occur,
+    # or itwon't work at all.
     # Check KAFKA_CONSUMER_SM_PROPERTIES in settings
     kafka_consumer = Consumer(settings.KAFKA_CONSUMER_SM_PROPERTIES)
     kafka_consumer.subscribe([settings.TOPIC_SERVICE_MATCHING_RESPONSES])
