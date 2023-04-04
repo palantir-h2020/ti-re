@@ -47,12 +47,12 @@ def getSTIXReport_unauthorized_access(global_scope):
     organization_id = global_scope.get("organization_id")
 
     mitre_enterprise_attack_file = stix2.MemoryStore()
-    mitre_enterprise_attack_file.load_from_file("enterprise-attack.json")
+    mitre_enterprise_attack_file.load_from_file("kb/stix/enterprise-attack.json")
 
     timestamp_now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
     coa_extension_definition_file = stix2.MemoryStore()
-    coa_extension_definition_file.load_from_file("stix_coa_extension_definition.json")
+    coa_extension_definition_file.load_from_file("kb/stix/stix_coa_extension_definition.json")
     coa_extension_definition = coa_extension_definition_file.get("extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c")
 
     # attack_pattern = mitre_enterprise_attack_file.query([
@@ -251,12 +251,12 @@ def getSTIXReport_ransomware(global_scope):
     organization_id = global_scope.get("organization_id")
 
     mitre_enterprise_attack_file = stix2.MemoryStore()
-    mitre_enterprise_attack_file.load_from_file("enterprise-attack.json")
+    mitre_enterprise_attack_file.load_from_file("kb/stix/enterprise-attack.json")
 
     timestamp_now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
     coa_extension_definition_file = stix2.MemoryStore()
-    coa_extension_definition_file.load_from_file("stix_coa_extension_definition.json")
+    coa_extension_definition_file.load_from_file("kb/stix/stix_coa_extension_definition.json")
     coa_extension_definition = coa_extension_definition_file.get("extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c")
 
     # attack_pattern = mitre_enterprise_attack_file.query([
@@ -457,12 +457,12 @@ def getSTIXReport_botnet(global_scope):
     organization_id = global_scope.get("organization_id")
 
     mitre_enterprise_attack_file = stix2.MemoryStore()
-    mitre_enterprise_attack_file.load_from_file("enterprise-attack.json")
+    mitre_enterprise_attack_file.load_from_file("kb/stix/enterprise-attack.json")
 
     timestamp_now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
     coa_extension_definition_file = stix2.MemoryStore()
-    coa_extension_definition_file.load_from_file("stix_coa_extension_definition.json")
+    coa_extension_definition_file.load_from_file("kb/stix/stix_coa_extension_definition.json")
     coa_extension_definition = coa_extension_definition_file.get("extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c")
 
     # attack_pattern = mitre_enterprise_attack_file.query([
@@ -665,12 +665,12 @@ def getSTIXReport_cryptomining(global_scope):
     organization_id = global_scope.get("organization_id")
 
     mitre_enterprise_attack_file = stix2.MemoryStore()
-    mitre_enterprise_attack_file.load_from_file("enterprise-attack.json")
+    mitre_enterprise_attack_file.load_from_file("kb/stix/enterprise-attack.json")
 
     timestamp_now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
     coa_extension_definition_file = stix2.MemoryStore()
-    coa_extension_definition_file.load_from_file("stix_coa_extension_definition.json")
+    coa_extension_definition_file.load_from_file("kb/stix/stix_coa_extension_definition.json")
     coa_extension_definition = coa_extension_definition_file.get("extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c")
 
     # attack_pattern = mitre_enterprise_attack_file.query([
@@ -1001,7 +1001,7 @@ def getSTIXReport_test_standalone():
 
 
         mitre_enterprise_attack_file = stix2.MemoryStore()
-        mitre_enterprise_attack_file.load_from_file("enterprise-attack.json")
+        mitre_enterprise_attack_file.load_from_file("kb/stix/enterprise-attack.json")
 
         timestamp_now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -1014,7 +1014,7 @@ def getSTIXReport_test_standalone():
         impacted_host_ip = "10.10.10.20"
 
         coa_extension_definition_file = stix2.MemoryStore()
-        coa_extension_definition_file.load_from_file("stix_coa_extension_definition.json")
+        coa_extension_definition_file.load_from_file("kb/stix/stix_coa_extension_definition.json")
         coa_extension_definition = coa_extension_definition_file.get("extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c")
         mem.add(coa_extension_definition)
 
