@@ -300,6 +300,8 @@ class AddFilteringRules(FunctionCall):
         node = self.nodeExpression.getValue(scope)
         logger.info("add_filtering_rules " + "rules" + " to " + f"{node}")
 
+        #todo evaluation metrics
+        '''
         try:
             translatedRules = []
             for rule in filteringRules:
@@ -329,6 +331,7 @@ class AddFilteringRules(FunctionCall):
             remediator.service_graph_instance.add_filtering_rules(node, translatedRules)
         except Exception as ex:
             raise ex  # just rethrow it for now
+        '''
 
     def testRun(self, scope):
         super().info()

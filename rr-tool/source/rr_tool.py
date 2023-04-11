@@ -3,7 +3,7 @@ import json
 import os
 import sys
 from typing import Dict
-
+import timeit
 from helpers import igraph_helper
 from helpers import stix_helper
 from helpers import cacao_helper
@@ -171,7 +171,10 @@ class RRTool:
         logger.info("Threat report netflow: " + msg)
         json_msg = json.loads(msg)
         logger.info("Serialized netflow threat report: " + str(json_msg))
-        self.jsonInput(json_msg)
+        #todo evaluation metrics
+        print("METRICA: ")
+        print(min(timeit.repeat(stmt=self.jsonInput(json_msg), repeat=10, number=1)))
+        #self.jsonInput(json_msg)
 
     def stringInputSyslog(self, msg):
         logger.info("Threat report syslog: " + msg)
@@ -179,10 +182,6 @@ class RRTool:
         logger.info("Serialized syslog threat report: " + str(json_msg))
         if json_msg.get("Threat_Category") != "ransomware":
             json_msg["Threat_Category"] = "unauthorized_access"
-        # # tmp fix for demo
-        # if json_msg.get("Threat_Category") == "ransomware2":
-        #     json_msg["Threat_Category"] = "ransomware"
-        #     json_msg["Threat_Label"] = "ransomware"
         self.jsonInput(json_msg)
 
     def stringInputNewAttackRemediation(self, msg):
