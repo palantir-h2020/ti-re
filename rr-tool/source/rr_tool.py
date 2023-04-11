@@ -171,10 +171,7 @@ class RRTool:
         logger.info("Threat report netflow: " + msg)
         json_msg = json.loads(msg)
         logger.info("Serialized netflow threat report: " + str(json_msg))
-        #todo evaluation metrics
-        print("METRICA: ")
-        print(min(timeit.repeat(stmt="self.jsonInput(json_msg)", repeat=10, number=1, globals=globals())))
-        #self.jsonInput(json_msg)
+        self.jsonInput(json_msg)
 
     def stringInputSyslog(self, msg):
         logger.info("Threat report syslog: " + msg)
@@ -389,7 +386,10 @@ class RRTool:
                                                                 self.capability_to_security_control_mappings)
         #recipe_interpreter_instance.remediate(recipe_text)
 
-        recipe_interpreter_instance.remediate_new(bestRecipeName)
+        #todo evaluation metrics
+        print("METRICA: ")
+        print(min(timeit.repeat(stmt="recipe_interpreter_instance.remediate_new(bestRecipeName)", repeat=10, number=1, globals=globals())))
+        #recipe_interpreter_instance.remediate_new(bestRecipeName)
 
 
         if settings.ENABLE_EXTERNAL_CTI_SHARING == "1":
