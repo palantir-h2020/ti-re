@@ -173,7 +173,7 @@ class RRTool:
         logger.info("Serialized netflow threat report: " + str(json_msg))
         #todo evaluation metrics
         print("METRICA: ")
-        print(min(timeit.repeat(stmt=self.jsonInput(json_msg), repeat=10, number=1)))
+        print(min(timeit.repeat(stmt="self.jsonInput(json_msg)", repeat=10, number=1)))
         #self.jsonInput(json_msg)
 
     def stringInputSyslog(self, msg):
