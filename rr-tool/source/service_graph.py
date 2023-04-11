@@ -74,7 +74,7 @@ def generate_victim_firewall_attacker_graph():# -> [ig.Graph, Dict]:
         el["nodeType"] = "host"
 
     ind = 0
-    while ind < 10:
+    while ind < 500:
         ind += 1
         el = gnet1.add_vertex(f"host{ind+100}")
         gnet1.add_edge(f"host{ind+100}", "attacker")
