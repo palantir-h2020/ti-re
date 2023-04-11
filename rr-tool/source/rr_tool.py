@@ -388,7 +388,16 @@ class RRTool:
 
         #todo evaluation metrics
         print("METRICA: ")
-        print(min(timeit.repeat(stmt="recipe_interpreter_instance.remediate_new(bestRecipeName)", repeat=10, number=1, setup="import recipe_interpreter_instance")))
+        num_executions = 10
+        timer = timeit.default_timer
+        elapsed_times = []
+        for i in range(num_executions):
+            start_time = timer()
+            recipe_interpreter_instance.remediate_new(bestRecipeName)
+            end_time = timer()
+            elapsed_time = end_time - start_time
+            elapsed_times.append(elapsed_time)
+        print(min(elapsed_times))
         #recipe_interpreter_instance.remediate_new(bestRecipeName)
 
 
