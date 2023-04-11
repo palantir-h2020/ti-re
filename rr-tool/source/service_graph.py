@@ -95,49 +95,49 @@ class ServiceGraph:
     def __init__(self):
 
         # TODO read landscape from file, initialize node counters accordingly
-        # gnet1, self.node_counters = generate_victim_attacker_graph()
-        gnet1, self.node_counters = generate_victim_firewall_attacker_graph()
-        gnet1.vs["status"] = "on"  # set all nodes' status to on
+        # self.sgraph, self.node_counters = generate_victim_attacker_graph()
+        self.sgraph, self.node_counters = generate_victim_firewall_attacker_graph()
+        self.sgraph.vs["status"] = "on"  # set all nodes' status to on
 
         security_control_types = ["firewall"]
         if settings.RESET_SECURITY_CONTROLS_RULES_AT_STARTUP == "1":
-            for node in gnet1.vs.select(nodeType_in=security_control_types):
+            for node in self.sgraph.vs.select(nodeType_in=security_control_types):
                 if node["nodeType"] == "firewall":
                     mano.flush_filtering_rules(node)
 
     def saveToGraphMl(self):
-        gnet1.write_graphml("graph.xml")
+        self.sgraph.write_graphml("graph.xml")
 
     def plot(self):
         pass
         #TODO check su variabile ambiente IGRAPH_PICTURES_OUTPUT_FOLDER, se vuota non eseguire refreshAndSave, i.e. solo pass
-        #refreshAndSave(gnet1)
+        #refreshAndSave(self.sgraph)
 
     def returnNodeName(self, node_identifier):
         # this function enables recipe functions to accept both node names and ip addresses as arguments
 
         try:
-            nodeName = gnet1.vs.find(ipAddress=node_identifier)
+            nodeName = self.sgraph.vs.find(ipAddress=node_identifier)
             return nodeName["name"]
         except ValueError:
             return node_identifier
 
     def returnNodeIP(self, node_identifier):
         node1 = self.returnNodeName(node_identifier)
-        node: ig.Vertex = gnet1.vs.find(node1)
+        node: ig.Vertex = self.sgraph.vs.find(node1)
         return node["ipAddress"]
 
     def changeNodeIP(self, node_name, new_node_ip):
-        node: ig.Vertex = gnet1.vs.find(node_name)
+        node: ig.Vertex = self.sgraph.vs.find(node_name)
         node["ipAddress"] = new_node_ip
 
     def list_paths(self, src_node, dst_node):  # return a list of node paths
         logger.info(msg="Searching for paths ...")
         srcNode = self.returnNodeName(src_node)
         dstNode = self.returnNodeName(dst_node)
-        paths = gnet1.get_all_simple_paths(srcNode, to=dstNode)
+        paths = self.sgraph.get_all_simple_paths(srcNode, to=dstNode)
         logger.info(msg=f"Found {len(paths)} paths")
-        node_paths = [ gnet1.vs[el]["name"] for el in paths ]
+        node_paths = [ self.sgraph.vs[el]["name"] for el in paths ]
         logger.info(msg="Converted paths from node ids to node names")
         secondPositionNodes = set()
         for path in node_paths:
@@ -156,7 +156,7 @@ class ServiceGraph:
     def find_node_in_path(self, path, node_type, capabilities):  # return node name
         logger.info(msg=f"Searching for a node of {node_type} type in this path: {path} ...")
         for el1 in path:
-            node: ig.Vertex = gnet1.vs.find(el1)
+            node: ig.Vertex = self.sgraph.vs.find(el1)
             if node["nodeType"] == node_type:
                 # logger.info(node)
                 # logger.info(node["capabilities"])
@@ -176,7 +176,7 @@ class ServiceGraph:
         logger.info(msg=f"Adding a node of type {node_type} between {node1_name} and {node2_name} ...")
         newNodeName = f"{node_type}{self.node_counters[node_type]}"
 
-        newNode = add_vertex_between_vertices(gnet1, node1_name, newNodeName, node2_name)
+        newNode = add_vertex_between_vertices(self.sgraph, node1_name, newNodeName, node2_name)
         self.node_counters[node_type] += 1
 
         logger.info(msg=f"Added node of type {node_type} between {node1_name} and {node2_name}")
@@ -184,7 +184,7 @@ class ServiceGraph:
         newNode["nodeType"] = node_type
         mano.addNode(newNode, node_type)
 
-        logger.debug(gnet1.vs.find(newNodeName).attributes())
+        logger.debug(self.sgraph.vs.find(newNodeName).attributes())
 
         return newNodeName
 
@@ -195,7 +195,7 @@ class ServiceGraph:
         node2_name = find_preceding_node_in_path(node1_name, path)
         newNodeName = f"firewall{self.node_counters['firewall']}"
 
-        new_node = add_vertex_between_vertices(gnet1, node1_name, newNodeName, node2_name)
+        new_node = add_vertex_between_vertices(self.sgraph, node1_name, newNodeName, node2_name)
         self.node_counters["firewall"] += 1
 
         new_node["nodeType"] = "firewall"
@@ -206,7 +206,7 @@ class ServiceGraph:
 
         logger.info(msg=f"Added firewall between {node1_name} and {node2_name}")
 
-        logger.debug(gnet1.vs.find(newNodeName).attributes())
+        logger.debug(self.sgraph.vs.find(newNodeName).attributes())
 
         return newNodeName
 
@@ -215,7 +215,7 @@ class ServiceGraph:
         node_name = self.returnNodeName(node_name_or_ip)
         logger.info(msg=f"Adding new rules to {node_name} ...")
 
-        node: ig.Vertex = gnet1.vs.find(node_name)
+        node: ig.Vertex = self.sgraph.vs.find(node_name)
         logger.info(msg=f"Got reference to {node_name}")
 
         for rule in rules:
@@ -246,7 +246,7 @@ class ServiceGraph:
         node1_name = self.returnNodeName(node1_name_or_ip)
         logger.info(msg=f"flushing rules on {node1_name} ...")
 
-        node: ig.Vertex = gnet1.vs.find(node1_name)
+        node: ig.Vertex = self.sgraph.vs.find(node1_name)
         logger.info(msg=f"Got reference to {node1_name}")
 
         if "level_4_filtering" in node["capabilities"]:
@@ -259,7 +259,7 @@ class ServiceGraph:
     def get_filtering_rules(self, node_name_or_ip, level):
 
         node_name = self.returnNodeName(node_name_or_ip)
-        node: ig.Vertex = gnet1.vs.find(node_name)
+        node: ig.Vertex = self.sgraph.vs.find(node_name)
         return node["rules_level_" + str(level)]
 
     def add_dns_policy(self, domain, rule_type):
@@ -267,7 +267,7 @@ class ServiceGraph:
         logger.info(msg="Adding new rule to dns_server ...")
         rule = {"domain": domain, "action": rule_type}
         node1 = "dns_server"
-        node: ig.Vertex = gnet1.vs.find(node1)
+        node: ig.Vertex = self.sgraph.vs.find(node1)
         logger.info(msg=f"Got reference to {node1}")
         node["dns_rules"].append(rule)
         logger.info(msg=f"Added new rule to {node1}: {rule}")
@@ -280,12 +280,12 @@ class ServiceGraph:
         node_name = self.returnNodeName(node_name_or_ip)
         logger.info(msg=f"Shutting down {node_name} ...")
 
-        refreshAndSave(gnet1)
-        node: ig.Vertex = gnet1.vs.find(node_name)
+        refreshAndSave(self.sgraph)
+        node: ig.Vertex = self.sgraph.vs.find(node_name)
         logger.info(msg=f"Got reference to {node_name}")
         node["status"] = "off"
         logger.info(msg=f"Set status of {node_name} to off")
-        refreshAndSave(gnet1)
+        refreshAndSave(self.sgraph)
         mano.shutdown(node_name)
 
     def isolate(self, node_name_or_ip):
@@ -293,10 +293,10 @@ class ServiceGraph:
         node_name = self.returnNodeName(node_name_or_ip)
         logger.info(msg=f"Disconnecting all interfaces of {node_name} ...")
 
-        refreshAndSave(gnet1)
-        gnet1.delete_edges(gnet1.es.select(_source=node_name))
+        refreshAndSave(self.sgraph)
+        self.sgraph.delete_edges(self.sgraph.es.select(_source=node_name))
         logger.info(msg=f"Deleted all edges from {node_name}")
-        refreshAndSave(gnet1)
+        refreshAndSave(self.sgraph)
         mano.isolate(node_name)
 
     def add_link(self, node1_name_or_ip, node2_name_or_ip):
@@ -305,32 +305,32 @@ class ServiceGraph:
         node2_name = self.returnNodeName(node2_name_or_ip)
         logger.info(msg=f"Adding edge between {node1_name} and {node2_name}...")
 
-        refreshAndSave(gnet1)
-        gnet1.add_edge(node1_name, node2_name)
+        refreshAndSave(self.sgraph)
+        self.sgraph.add_edge(node1_name, node2_name)
         logger.info(msg=f"Added edge between {node1_name} and {node2_name}...")
-        refreshAndSave(gnet1)
+        refreshAndSave(self.sgraph)
         mano.add_link(node1_name, node2_name)
 
     def add_honeypot(self, vulnerability):
 
         logger.info(msg="Adding a new honeypot node to the honey net ...")
-        refreshAndSave(gnet1)
+        refreshAndSave(self.sgraph)
         self.node_counters["host"] += 1
         newNodeName = f"host{self.node_counters['host']}"
-        node = gnet1.add_vertex(name=newNodeName, nodeType="honeypot")
+        node = self.sgraph.add_vertex(name=newNodeName, nodeType="honeypot")
         logger.info(msg="Added honeypot node to graph")
         if "vulnerabilityList" in node.attributes() and node["vulnerabilityList"] is not None:
             node["vulnerabilityList"] += f"/{vulnerability}"
         else:
             node["vulnerabilityList"] = vulnerability
         logger.info(msg="Added vulnerability list to honeypot node")
-        refreshAndSave(gnet1)
-        gnet1.add_edges([(newNodeName, "switch_honeyNet")])
+        refreshAndSave(self.sgraph)
+        self.sgraph.add_edges([(newNodeName, "switch_honeyNet")])
         logger.info(msg="Added edge between honeypot and honey net switch")
-        refreshAndSave(gnet1)
+        refreshAndSave(self.sgraph)
         mano.add_honeypot(vulnerability)
 
-        # logger.info(gnet1.vs.find(newNodeName).attributes())
+        # logger.info(self.sgraph.vs.find(newNodeName).attributes())
 
         return newNodeName
 
@@ -342,10 +342,10 @@ class ServiceGraph:
         node2_name = find_preceding_node_in_path(node1_name, path)
         newNodeName = f"network_monitor{self.node_counters['network_monitor']}"
 
-        new_node = add_vertex_between_vertices(gnet1, node1_name, newNodeName, node2_name)
+        new_node = add_vertex_between_vertices(self.sgraph, node1_name, newNodeName, node2_name)
         self.node_counters["network_monitor"] += 1
 
-        logger.debug(gnet1.vs.find(newNodeName).attributes())
+        logger.debug(self.sgraph.vs.find(newNodeName).attributes())
 
         logger.info(msg="Added network monitor node to graph")
         mano.add_network_monitor(new_node, path)
@@ -362,14 +362,14 @@ class ServiceGraph:
         else:
             raise Exception('Unknown network ' + net)
         node_name = self.returnNodeName(node_name)
-        refreshAndSave(gnet1)
-        gnet1.delete_edges(gnet1.es.select(_source=node_name))
+        refreshAndSave(self.sgraph)
+        self.sgraph.delete_edges(self.sgraph.es.select(_source=node_name))
         logger.info(msg=f"Deleted all edges from {node_name}")
-        refreshAndSave(gnet1)
-        gnet1.add_edges([(node_name, switch)])
+        refreshAndSave(self.sgraph)
+        self.sgraph.add_edges([(node_name, switch)])
         logger.info(msg=f"Added edge from {node_name} to {switch}")
-        refreshAndSave(gnet1)
-        logger.debug(gnet1.vs.find(node_name).attributes())
+        refreshAndSave(self.sgraph)
+        logger.debug(self.sgraph.vs.find(node_name).attributes())
         mano.move(node_name, net)
 
 
