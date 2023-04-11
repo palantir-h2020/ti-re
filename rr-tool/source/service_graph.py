@@ -82,6 +82,8 @@ def generate_victim_firewall_attacker_graph():# -> [ig.Graph, Dict]:
         el["ipAddress"] = f"10.1.0.{ind+100}"
         el["subnetMask"] = "16"
         el["nodeType"] = "firewall"
+        el["capabilities"] = ["level_4_filtering"]
+
 
 
 
