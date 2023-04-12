@@ -398,7 +398,7 @@ class RRTool:
             elapsed_time = end_time - start_time
             elapsed_times.append(elapsed_time)
         print(elapsed_times)
-        print("min: " + str(min(elapsed_times)))
+        print("min metrica: " + str(min(elapsed_times)))
         #recipe_interpreter_instance.remediate_new(bestRecipeName)
 
 
