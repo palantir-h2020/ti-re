@@ -102,6 +102,7 @@ class ServiceGraph:
         if settings.RESET_SECURITY_CONTROLS_RULES_AT_STARTUP == "1":
             for node in self.sgraph.vs.select(nodeType_in=security_control_types):
                 if node["nodeType"] == "firewall":
+                    print(node)
                     mano.flush_filtering_rules(node)
 
     def saveToGraphMl(self):
