@@ -65,27 +65,24 @@ def generate_victim_firewall_attacker_graph():# -> [ig.Graph, Dict]:
     border_firewall_node["rules_level_7"] = []
     border_firewall_node["capabilities"] = ["level_4_filtering"]
 
-    #todo evaluation metrics
-    ind = 0
-    while ind < 100:
-        ind += 1
-        el = gnet1.add_vertex(f"hostt{ind+100}")
-        gnet1.add_edge(f"hostt{ind+100}", "border_firewall")
-        el["nodeType"] = "host"
+    # # evaluation metrics
+    # ind = 0
+    # while ind < 100:
+    #     ind += 1
+    #     el = gnet1.add_vertex(f"hostt{ind+100}")
+    #     gnet1.add_edge(f"hostt{ind+100}", "border_firewall")
+    #     el["nodeType"] = "host"
 
-    ind = 0
-    while ind < 100:
-        ind += 1
-        el = gnet1.add_vertex(f"host{ind+100}")
-        gnet1.add_edge(f"host{ind+100}", "attacker")
-        gnet1.add_edge(f"host{ind+100}", "victim")
-        el["ipAddress"] = f"10.1.0.{ind+100}"
-        el["subnetMask"] = "16"
-        el["nodeType"] = "firewall"
-        el["capabilities"] = ["level_4_filtering"]
-
-
-
+    # ind = 0
+    # while ind < 100:
+    #     ind += 1
+    #     el = gnet1.add_vertex(f"host{ind+100}")
+    #     gnet1.add_edge(f"host{ind+100}", "attacker")
+    #     gnet1.add_edge(f"host{ind+100}", "victim")
+    #     el["ipAddress"] = f"10.1.0.{ind+100}"
+    #     el["subnetMask"] = "16"
+    #     el["nodeType"] = "firewall"
+    #     el["capabilities"] = ["level_4_filtering"]
 
     return gnet1, node_counters
 
