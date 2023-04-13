@@ -384,23 +384,22 @@ class RRTool:
         recipe_interpreter_instance = recipe_interpreter.RecipeInterpreter(self.service_graph_instance,
                                                                 self.global_scope,
                                                                 self.capability_to_security_control_mappings)
-        #recipe_interpreter_instance.remediate(recipe_text)
+        recipe_interpreter_instance.remediate(recipe_text)
 
-        #todo evaluation metrics
-        print("METRICA: ")
-        num_executions = 20
-        timer = timeit.default_timer
-        elapsed_times = []
-        for i in range(num_executions):
-            start_time = timer()
-            recipe_interpreter_instance.remediate_new(bestRecipeName)
-            end_time = timer()
-            elapsed_time = end_time - start_time
-            elapsed_times.append(elapsed_time)
-        print(elapsed_times)
-        print("min metrica: " + str(min(elapsed_times)))
-        #recipe_interpreter_instance.remediate_new(bestRecipeName)
-
+        # # evaluation metrics
+        # print("METRICA: ")
+        # num_executions = 20
+        # timer = timeit.default_timer
+        # elapsed_times = []
+        # for i in range(num_executions):
+        #     start_time = timer()
+        #     recipe_interpreter_instance.remediate_new(bestRecipeName)
+        #     end_time = timer()
+        #     elapsed_time = end_time - start_time
+        #     elapsed_times.append(elapsed_time)
+        # print(elapsed_times)
+        # print("min metrica: " + str(min(elapsed_times)))
+        # #recipe_interpreter_instance.remediate_new(bestRecipeName)
 
         if settings.ENABLE_EXTERNAL_CTI_SHARING == "1":
             cacao_playbook_json, cacao_playbook_base64 = cacao_helper.getCACAOPlaybook(self.global_scope,
