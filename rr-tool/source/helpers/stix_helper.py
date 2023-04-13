@@ -259,12 +259,12 @@ def getSTIXReport_ransomware(global_scope):
     coa_extension_definition_file.load_from_file("kb/stix/stix_coa_extension_definition.json")
     coa_extension_definition = coa_extension_definition_file.get("extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c")
 
-    # attack_pattern = mitre_enterprise_attack_file.query([
-    #     stix2.Filter("external_references.external_id", "=", "T1134"),
-    #     stix2.Filter("type", "=", "attack-pattern")
-    # ])[0]
+    attack_pattern = mitre_enterprise_attack_file.query([
+        stix2.Filter("external_references.external_id", "=", "T1134"),
+        stix2.Filter("type", "=", "attack-pattern")
+    ])[0]
 
-    # kill_chain_phases = attack_pattern.kill_chain_phases
+    kill_chain_phases = attack_pattern.kill_chain_phases
 
     identitySDO = stix2.Identity(name=f"Organization ID.{organization_id}",
                                 identity_class="organization")
@@ -627,7 +627,7 @@ def getSTIXReport_botnet(global_scope):
                                 reportSDO,
                                 infraAttacker,
                                 infraVictim,
-                                #attack_pattern,
+                                attack_pattern,
                                 coa_extension_definition,
                                 CoASDO,
                                 IoCSDO,
