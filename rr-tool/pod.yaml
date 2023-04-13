@@ -15,7 +15,7 @@ spec:
         - name: ENABLE_PRIVATE_ARTIFACTS_SHARING
           value: "1"
         - name: ENABLE_EXTERNAL_CTI_SHARING
-          value: "0"
+          value: "1"
         - name: RR_INSTANCE_IDENTIFIER
           value: "0001"
         - name: RR_TOOL_MODE # standalone/kafka
