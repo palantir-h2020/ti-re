@@ -466,7 +466,7 @@ def getSTIXReport_botnet(global_scope):
     coa_extension_definition = coa_extension_definition_file.get("extension-definition--1e1c1bd7-c527-4215-8e18-e199e74da57c")
 
     attack_pattern = mitre_enterprise_attack_file.query([
-        stix2.Filter("external_references.external_id", "=", "T1134"),
+        stix2.Filter("external_references.external_id", "=", "T1095"),
         stix2.Filter("type", "=", "attack-pattern")
     ])[0]
 
