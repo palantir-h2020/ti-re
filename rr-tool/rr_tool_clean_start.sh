@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-BRANCH="v1.2"
+BRANCH="master"
 while getopts o:f:d:b: flag
 do
     case "${flag}" in
