@@ -4,23 +4,44 @@ metadata:
   name: rr-tool
 spec:
   restartPolicy: OnFailure
+  terminationGracePeriodSeconds: 1
   containers:
     - name: palantir-rr-tool
       image: 10.101.10.244:5000/palantir-rr-tool:1.0
       imagePullPolicy: Always
       env:
+        - name: VIM_ID
+          value: "3f5eb7fa-a58d-4589-a93b-7ae403716a0f"
+        - name: ENABLE_PRIVATE_ARTIFACTS_SHARING
+          value: "1"
+        - name: ENABLE_EXTERNAL_CTI_SHARING
+          value: "1"
+        - name: RR_INSTANCE_IDENTIFIER
+          value: "0001"
+        - name: RR_TOOL_MODE # standalone/kafka
+          value: "kafka"
         - name: KAFKA_IP
           value: "10.101.41.255"
         - name: KAFKA_PORT
           value: "9092"
         - name: KAFKA_POLLING_TIMEOUT
           value: "1.0"
+        - name: KAFKA_DEBUG_TOPICS
+          value: "1"
         - name: TOPIC_TI_NETFLOW
           value: "ti.threat_findings_netflow"
         - name: TOPIC_TI_SYSLOG
           value: "ti.threat_findings_syslog"
+        - name: TOPIC_RR_PROACTIVE_REMEDIATION
+          value: "rr.proactive_remediation"
+        - name: TOPIC_RR_NEW_ATTACK_REMEDIATION
+          value: "rr.new_attack_remedation"
         - name: TOPIC_PORTAL_NOTIFICATIONS
           value: "actions-notifications"
+        - name: TOPIC_SERVICE_MATCHING_REQUESTS
+          value: "cmr.requests"
+        - name: TOPIC_SERVICE_MATCHING_RESPONSES
+          value: "cmr.responses"
         - name: TOPIC_IR_INCIDENT_DETECTED
           value: "ir.detected_incident"
         - name: RR_TOOL_IP
@@ -28,6 +49,10 @@ spec:
         - name: SC_ORCHESTRATOR_IP
           value: "10.101.41.168"
         - name: ENABLE_MANO_API
+          value: "1"
+        - name: ENABLE_ONLY_SECURITY_CAPABILITIES_WITH_TRANSLATOR
+          value: "1"
+        - name: RESET_SECURITY_CONTROLS_RULES_AT_STARTUP
           value: "1"
         - name: ENABLE_IDENTICAL_L4_FILTERING_RULE_SKIPPING
           value: "1"
@@ -41,11 +66,21 @@ spec:
           value: "1"
         - name: SC_CLUSTER_PORT
           value: "50101"
+        - name: IPTNETFLOW_SECAP_ID
+          value: "-1"
         - name: TI_SYSLOG_VICTIM_IP_FIELD_NAME
+          value: "Source_IP"
+        - name: TI_CRYPTO_VICTIM_IP_FIELD_NAME
           value: "Source_IP"
         - name: BACKUP_SERVER_IP
           value: "10.225.1.73"
-        - name: IPTABLES_SC_ID
-          value: "59de4c3a-b82f-4a79-975d-d9e72a061a28"
         - name: IGRAPH_PICTURES_OUTPUT_FOLDER
           value: ""
+
+# terminationGracePeriodSeconds set to 1 s instead
+# of default 30 s to make the pod deletion process faster.
+# This is particularly useful for testing prurposes.
+# After 1 s the pod is forcefully terminated without
+# waiting for graceful shutdown.
+
+# https://stackoverflow.com/questions/71216061/changing-terminationgraceperiodseconds-value-doesnt-getting-effected-during-new

@@ -1,11 +1,12 @@
-nltk>=3.6.5
-igraph>=0.9.8
+nltk==3.6.5
+igraph==0.10.3
+textx==3.0.0
+PyYAML==6.0.0
+simplejson==3.18.1
+confluent_kafka==2.0.2
+pymisp==2.4.168
+requests==2.28.2
+stix2==3.0.1
 
-simplejson>=3.17.6
-confluent_kafka>=1.8.2
-
-requests>=2.27.1
-
-#matplotlib>=3.5
-
-#pycairo>=1.20.1
+#matplotlib==3.6.3
+#pycairo==1.23.0

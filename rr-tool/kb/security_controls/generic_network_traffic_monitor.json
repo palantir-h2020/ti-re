@@ -1,0 +1,10 @@
+{
+    "capabilities": ["level_4_monitor"],
+    "args": [],
+    "optional_args": ["src_ip", "dst_ip", "src_port", "dst_port", "proto"],
+    "args_details": {
+        "proto": {
+            "options": ["tcp", "udp"]
+        }
+    }
+}

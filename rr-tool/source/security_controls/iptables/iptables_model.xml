@@ -1,0 +1,42 @@
+<policy nsfName="IpTables" targetRuleSet="INPUT" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="iptables.xsd">
+	<!-- iptables -A FORWARD -p TCP -s 10.1.0.10/32 -d 2.2.2.2/32 -j DROP -->
+	<rule id="0">
+		<externalData type="priority">1</externalData>
+        <appendRuleActionCapability>
+			<chain>FORWARD</chain>
+		</appendRuleActionCapability>
+		<ipProtocolTypeConditionCapability operator="exactMatch">
+			<capabilityValue>
+				<exactMatch>TCP</exactMatch>
+			</capabilityValue>
+		</ipProtocolTypeConditionCapability>
+		<sourcePortConditionCapability operator="exactMatch">
+			<capabilityValue>
+				<exactMatch>12345</exactMatch>
+			</capabilityValue>
+		</sourcePortConditionCapability>
+		<destinationPortConditionCapability operator="exactMatch">
+			<capabilityValue>
+				<exactMatch>80</exactMatch>
+			</capabilityValue>
+		</destinationPortConditionCapability>
+		<ipSourceAddressConditionCapability operator="rangeCIDR">
+			<capabilityIpValue>
+				<rangeCIDR>
+					<address>10.1.0.10</address>
+					<maskCIDR>32</maskCIDR>
+				</rangeCIDR>
+			</capabilityIpValue>
+		</ipSourceAddressConditionCapability>
+		<ipDestinationAddressConditionCapability operator="rangeCIDR">
+			<capabilityIpValue>
+				<rangeCIDR>
+					<address>2.2.2.2</address>
+					<maskCIDR>32</maskCIDR>
+				</rangeCIDR>
+			</capabilityIpValue>
+		</ipDestinationAddressConditionCapability>
+		<rejectActionCapability/>
+	</rule>
+
+</policy>

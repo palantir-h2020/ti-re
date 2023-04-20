@@ -1,0 +1,8 @@
+{
+    "description": "Add rule to DNS server for redirection of malicious DNS domains queries to safe one",
+    "requiredCapabilities": [
+        "dns_policy_manager"
+    ],
+    "requiredArtifacts": [],
+    "proactive": false
+}

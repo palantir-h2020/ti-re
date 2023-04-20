@@ -1,1 +1,0 @@
-iptables -A FORWARD -s 10.225.1.73/32 -d 10.101.41.33/32 -j ACCEPT 

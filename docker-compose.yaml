@@ -50,6 +50,8 @@ services:
             KAFKA_PORT: "9092"
             TOPIC_TI_NETFLOW: "ti.threat_findings_netflow"
             TOPIC_TI_SYSLOG: "ti.threat_findings_syslog"
+            TOPIC_RR_PROACTIVE_REMEDIATION: "rr.proactive_remediation"
+            TOPIC_RR_NEW_ATTACK_REMEDIATION: "rr.new_attack_remedation"
             TOPIC_PORTAL_NOTIFICATIONS: "actions-notifications"
             TOPIC_IR_INCIDENT_DETECTED: "ir.detected_incident"
             RR_TOOL_IP: "10.?.?.?"

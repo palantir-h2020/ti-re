@@ -1,0 +1,8 @@
+{
+    "description": "Filter payload on impacted node",
+    "requiredCapabilities": [
+        "level_7_filtering"
+    ],
+    "requiredArtifacts": [],
+    "proactive": false
+}

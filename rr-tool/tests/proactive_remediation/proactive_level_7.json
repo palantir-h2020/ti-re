@@ -1,0 +1,12 @@
+{
+    "threat_category": "botnet",
+    "threat_label": "unknown",
+    "rr_tool_instance_id": "IT1234",
+    "timestamp": "2021-09-04 18:50:11.404675 +0000 UTC",
+    "recipe_data":
+    {
+        "attacker_ip": "3.4.5.6",
+        "attacker_port": 22,
+        "payload": "dfjafhjkadfhjkjdhafsafl"
+    }
+}

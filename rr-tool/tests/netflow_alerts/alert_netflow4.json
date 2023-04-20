@@ -1,0 +1,21 @@
+{
+  "Threat_Finding":
+  {
+    "Time_Start": "2020-04-29 13:51:46",
+    "Time_End": "2021-04-29 13:52:51",
+    "Time_Duration": "64",
+    "Source_Address": "10.0.2.107",
+    "Destination_Address": "87.236.215.57",
+    "Source_Port": 6188,
+    "Destination_Port": 80,
+    "Protocol": "TCP",
+    "Flag": "...APRS.",
+    "Source_tos": 0,
+    "Input_packets": 5,
+    "Input_bytes": 1177
+  },
+  "Threat_Label": "Miuref",
+  "Threat_Category": "Botnet",
+  "Classification_Confidence": 0.3346123530318716,
+  "Outlier_Score": 0.5940769567160774
+}

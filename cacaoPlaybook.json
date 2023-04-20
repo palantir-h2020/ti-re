@@ -1,0 +1,151 @@
+{
+    "type": "playbook",
+    "spec_version": "1.1",
+    "id": "playbook--uuid0",
+    "name": "playbookName",
+    "playbook_types": [
+        "remediation"
+    ],
+    "playbook_variables": {},
+    "created_by": "Org",
+    "created": "2022",
+    "modified": "2022",
+    "extension_definitions": {
+        "extension-definition--uuid2": {
+            "type": null,
+            "name": "iterate_on extension",
+            "description": null,
+            "created_by": null,
+            "schema": null,
+            "version": null
+        }
+    },
+    "workflow_start": "step--uuid1",
+    "workflow": {
+        "step--uuid1": {
+            "type": "start",
+            "on_completion": "step--uuid3"
+        },
+        "step--uuid3": {
+            "type": "single",
+            "commands": [
+                {
+                    "type": "manual",
+                    "command": "list_paths from $$impacted_host_ip$$ to attacker"
+                }
+            ],
+            "on_completion": "step--uuid4",
+            "in_args": [
+                "$$impacted_host_ip$$"
+            ],
+            "out_args": [
+                "$$path_list$$"
+            ]
+        },
+        "step--uuid4": {
+            "type": "while-condition",
+            "condition": "$$iterationIndex$$ < $$path_list.length$$",
+            "on_true": [
+                "step--uuid5"
+            ],
+            "on_false": [
+                "step--uuid10"
+            ],
+            "step_extensions": {
+                "extension-definition--uuid2": {
+                    "type_of_while": "iterate_on",
+                    "info": "Interpreter will treat this while as a for each statement",
+                    "iterate_on": "$$path_list$$"
+                }
+            },
+            "step_variables": {
+                "iterationIndex": {
+                    "type": "undefined",
+                    "description": "nothing",
+                    "value": 0,
+                    "constant": false
+                }
+            }
+        },
+        "step--uuid5": {
+            "type": "single",
+            "commands": [
+                {
+                    "type": "manual",
+                    "command": "find_node of type firewall in $$iteration_element$$"
+                }
+            ],
+            "on_completion": "step--uuid6",
+            "in_args": [
+                "$$iteration_element$$"
+            ],
+            "out_args": [
+                "$$found$$",
+                "$$found_node$$"
+            ]
+        },
+        "step--uuid6": {
+            "type": "if-condition",
+            "condition": "$$found$$:value = true",
+            "on_true": [
+                "step--uuid7"
+            ],
+            "on_false": [
+                "step--uuid9"
+            ]
+        },
+        "step--uuid7": {
+            "type": "single",
+            "commands": [
+                {
+                    "type": "manual",
+                    "command": "add_firewall behind $$impacted_host_ip$$ in $$iteration_element$$ with"
+                }
+            ],
+            "on_completion": "step--uuid8",
+            "in_args": [
+                "$$impacted_host_ip$$",
+                "$$iteration_element$$"
+            ],
+            "out_args": [
+                "$$new_node$$",
+                "$$done$$"
+            ]
+        },
+        "step--uuid8": {
+            "type": "single",
+            "commands": [
+                {
+                    "type": "manual",
+                    "command": "add_filtering_rules $$rules_level_4$$ to $$new_node$$"
+                }
+            ],
+            "in_args": [
+                "$$new_node$$",
+                "$$rules_level_4$$"
+            ],
+            "out_args": [
+                "$$done$$"
+            ]
+        },
+        "step--uuid9": {
+            "type": "single",
+            "commands": [
+                {
+                    "type": "manual",
+                    "command": "add_filtering_rules $$rules_level_4$$ to $$found_node$$"
+                }
+            ],
+            "in_args": [
+                "$$found_node$$",
+                "$$rules_level_4$$"
+            ],
+            "out_args": [
+                "$$done$$"
+            ]
+        },
+        "step--uuid10": {
+            "type": "end"
+        }
+    }
+}

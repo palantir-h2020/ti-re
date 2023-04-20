@@ -1,0 +1,21 @@
+{
+  "Threat_Finding":
+  {
+    "Time_Start": "2022-03-23 15:32:01",
+    "Time_End": "2022-03-23 15:32:01",
+    "Time_Duration": "0.027",
+    "Source_Address": "10.101.41.60",
+    "Destination_Address": "192.168.50.11",
+    "Source_Port": 80,
+    "Destination_Port": 49576,
+    "Protocol": "TCP",
+    "Flag": ".AP.S.",
+    "Source_tos": 0,
+    "Input_packets": 5,
+    "Input_bytes": 490
+  },
+  "Threat_Label": "Zeus",
+  "Threat_Category": "Botnet",
+  "Classification_Confidence": 0.26785318966660904,
+  "Outlier_Score": 0.5015223990802375
+}

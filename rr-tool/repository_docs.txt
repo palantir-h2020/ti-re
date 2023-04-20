@@ -1,0 +1,193 @@
+---- RecipeRepository ----
+
+It is a Python dictionary that stores recipes with other relevant information for their deployment.
+
+The structure is the following:
+
+- Entries of the dictionary:
+key: string, name of the recipe
+value: dictionary, recipe details
+Each entry value is a dictionary with three entries:
+
+1)
+The description entry contains a streamlined phrase that indicates what the recipe does, and the assets that it impacts.
+key: string , "description"
+value: string, recipe description
+
+2)
+The requiredCapabilities entry contains a list of capabilities as strings. These capabilities are required to be available
+in the operational environment for the enforcement of the recipe policies.
+key: string, "requiredCapabilities"
+value: list, [capability1: string, capability2: string, ...]
+
+3)
+The value entry contains the raw recipe expressed in the high level policy language.
+key: string, "value"
+value: string, the recipe
+
+---- SecurityControlRepository ----
+
+It is a JSON dictionary with a single object at the top used to store a collection of security controls available as policy
+enforcers in the operational environment.
+
+The structure is the following:
+
+- Entries of the collection:
+key: string, name of the security control
+value: object, details about the security control
+Each value object comes with four entries:
+
+1)
+The "capabilities" entry contains the list of security capabilities the security control can enforce policies for.
+key: string , "capabilities"
+value: array, [capability1: string, capability2: string, ...]
+
+2)
+The args entry contains the list of arguments that MUST be passed to the security control function policy enforcing.
+Other details concerning the arguments are covered in other entries. They MUST follow the required format or value laid down in the
+args_details entry of the security control in consideration.
+key: string, "args"
+value: array, [arg1: string, arg2: string, ...]
+
+3)
+The optional_args entry contains the list of arguments that MAY be passed to the security control function.
+These arguments are OPTIONAL but, if they are used, they MUST follow the required format or value laid down in the
+args_details entry of the security control in consideration.
+key: string, "optional_args"
+value: string, the recipe
+
+4)
+The args_details entry is used to detail specific requirements that a security control argument MUST comply with.
+key: string, "args_details"
+value: object, requirements object
+
+Each argument entry of its collection MUST follow this format:
+key: string, name of the argument
+value: object, requirements for this argument
+
+The requirements object MUST follow this format:
+key: string, name of the requirement
+value: string/object/array, it contains a requirement
+
+To specify that an argument value MUST be chosen from a pre-determined set of values, the "options" requirement for that argument
+SHALL be specified. The value of the "options" entry MUST be an array of string values.
+
+
+---- ThreatRepository ----
+
+                                           +-----------------+    +----------------+
+                                           |                 |    |                |
+                                        +--+  Threat family  +----+   Knowledge    |
+                                        |  |                 |    |                |
+                                        |  +-----------------+    +----------------+
+                                        |
+                                        |  +-----------------+    +----------------+
+                   +---------------+    |  |                 |    |                |
+                   |               |    +--+  Threat family  +----+   Knowledge    |
+                 +-+  Threat type  +----+  |                 |    |                |
+                 | |               |    |  +-----------------+    +----------------+
+                 | +---------------+    |
++-----------+    |                      |  +-----------------+    +----------------+
+|           |    |                      |  |                 |    |                |
+|  Threats  +----+                      +--+  Threat family  +----+   Knowledge    |
+|           |    |                         |                 |    |                |
++-----------+    |                         +-----------------+    +----------------+
+                 | +---------------+
+                 | |               |       +-----------------+    +----------------+
+                 +-+  Threat type  +----+  |                 |    |                |
+                   |               |    +--+  Threat family  +----+   Knowledge    |
+                   +---------------+    |  |                 |    |                |
+                                        |  +-----------------+    +----------------+
+                                        |
+                                        |  +-----------------+    +----------------+
+                                        |  |                 |    |                |
+                                        +--+  Threat family  +----+   Knowledge    |
+                                           |                 |    |                |
+                                           +-----------------+    +----------------+
+
+It is a JSON dictionary with a single object at the top used to store a collection of threats along with details about them.
+
+The structure is the following:
+
+At the top level of the JSON lays the Threats entry, this contains all other components, structured on nested levels.
+Every object MAY be commented using the _comment entry. This will be ignored by the remediation framework.
+
+- Dictionary of threat types
+
+Each entry of this dictionary represents a threat type, for example malware or unauthorized_access. This is the first level of abstraction.
+
+- Dictionary of threat families
+
+This is composed of multiple threat families, and for each one of them an entry is present. This is the second level of abstraction.
+The key of those entries is the threat family name.
+
+- Threat family object:
+
+Each threat family is structured on two entries:
+
+1)
+key: string, rules
+value: array, list of rule objects
+
+2)
+key: string, recipes
+value: array, list of recipe objects.
+
+- Rule object:
+
+Represents filtering rules to be enforced by a firewall, and is structured on two entries:
+
+1)
+key: string, level
+value: number, OSI layer.
+
+The value MUST be between 7 or 4. 7 specifies an application level rule, and 4 a network layer rule.
+
+2)
+key: string, proto
+value: string, protocol targeted by the filtering rule.
+
+If the specified level of the rule is 7 then the payload entry MUST be present.
+
+key: string, payload
+value: string, base64 encoded payload.
+
+If the specified level of the rule is 4 then the c2serversIP entry MUST be present.
+
+key: string, c2serversIP
+value: string, IP address subject of the rule.
+
+- Recipe object:
+
+The recipe object stores the recipe name, and information about its impact on the operational environment.
+Moreover, the priority of the recipe is specified.
+
+Entries:
+
+1)
+key: string, recipeName.
+value: number, the name of the recipe.
+
+The name of the recipe MUST be the same of the one used to declare the recipe string in the Remediator.
+
+2)
+key: string, priority.
+value: number, priority of the recipe.
+
+The value MUST be between 1 and 10.
+The priority is used during the remediation process, to determine which course of action is more suited in response to this family of threat.
+
+key: string, impact.
+value: string, impact of the recipe.
+
+The impact determines how the deployment of this course of action impacts the SLA of the operational environment.
+
+
+---- Function mappings ----
+
+
+SecurityControlFunctions
+
+EnvironmentFunctions
+
+

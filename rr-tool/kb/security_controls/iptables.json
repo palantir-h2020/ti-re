@@ -1,0 +1,10 @@
+{
+    "capabilities": ["level_4_filtering"],
+    "args": ["src_ip", "dst_ip", "dst_port", "proto", "chain"],
+    "optional_args": ["src_port"],
+    "args_details": {
+        "proto": {
+            "options": ["tcp", "udp"]
+        }
+    }
+}

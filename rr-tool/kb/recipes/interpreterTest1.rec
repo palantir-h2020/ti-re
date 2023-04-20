@@ -1,0 +1,12 @@
+# recipe for nested "iterate" and "if" constructs testing.
+iterate_on listTest1
+    invertTestCondition other optional keywords and parameters
+    iterate_on listTest2
+        actionThatDoesNothing other optional keywords and parameters
+        if testCondition
+            testIf other optional keywords and parameters
+        else
+            testElse other optional keywords and parameters
+        endif
+    end_iteration
+end_iteration

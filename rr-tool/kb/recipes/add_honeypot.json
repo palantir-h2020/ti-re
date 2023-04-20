@@ -1,0 +1,6 @@
+{
+    "description": "Add honeypot for each impacted node",
+    "requiredCapabilities": [],
+    "requiredArtifacts": [],
+    "proactive": false
+}
