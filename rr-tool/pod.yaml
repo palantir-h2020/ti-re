@@ -11,7 +11,7 @@ spec:
       imagePullPolicy: Always
       env:
         - name: VIM_ID
-          value: "3f5eb7fa-a58d-4589-a93b-7ae403716a0f"
+          value: "6663bb03-5fc1-47fe-8628-f8b80c53faf6"
         - name: ENABLE_PRIVATE_ARTIFACTS_SHARING
           value: "1"
         - name: ENABLE_EXTERNAL_CTI_SHARING
