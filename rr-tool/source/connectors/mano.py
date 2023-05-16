@@ -60,13 +60,13 @@ def addNode(node, node_type):
 # noinspection PyUnusedLocal
 def addFirewall(new_node, path, capabilities):
 
-    #secap_id = service_matching.deploy_secap("level_4_filtering", ["iptnetflow_cnf"])
-    # secap_id = "91a41534-7597-4975-8763-0642ef98c864"
-    #check_secap_readiness(secap_id)
+    secap_id = service_matching.deploy_secap("level_4_filtering", ["iptnetflow_cnf"])
+    #secap_id = "91a41534-7597-4975-8763-0642ef98c864"
+    check_secap_readiness(secap_id)
 
-    new_node_name = new_node["name"]
-    new_node["id"] = "0"  # TODO get from orchestrator the id of the newly created firewall
-    logger.info(f"new firewall node {new_node_name} deployed")
+    # new_node_name = new_node["name"]
+    # new_node["id"] = "0"  # TODO get from orchestrator the id of the newly created firewall
+    # logger.info(f"new firewall node {new_node_name} deployed")
 
 
 def add_filtering_rules(node1, iptables_rule):

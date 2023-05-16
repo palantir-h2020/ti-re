@@ -1,3 +1,4 @@
+import time
 from typing import Dict
 
 from connectors import mano
@@ -143,7 +144,10 @@ class ServiceGraph:
         for path in node_paths:
             secondPositionNodes.add(path[1])
         pruned_paths = []
-        #mano.addFirewall("test", path, "test") #todo remove after service matching testing
+        #### #todo remove after service matching testing
+        mano.addFirewall("test", path, "test")
+        time.sleep(120)
+        ####
         for nodeName in secondPositionNodes:
             for path in node_paths:
                 if path[1] == nodeName:
