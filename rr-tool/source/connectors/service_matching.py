@@ -74,7 +74,7 @@ def deploy_secap(requested_capability,
     request_message = {
         "session": correlation_id, # correlation id
         "realm": "orion",
-        "action": "SIMULDEPLOY",
+        "action": "DEPLOY",
         "parameter":[{
             "mechName": "",
             "nature": "network_flow_monitoring", # requested_capability,  # rr-tool internal: level_4_filtering. sm equivalent:
