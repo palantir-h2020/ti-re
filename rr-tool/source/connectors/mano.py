@@ -60,7 +60,7 @@ def addNode(node, node_type):
 # noinspection PyUnusedLocal
 def addFirewall(new_node, path, capabilities):
 
-    secap_id = service_matching.deploy_secap("level_4_filtering", ["iptnetflow_cnf"])
+    secap_id = service_matching.deploy_secap("level_4_filtering", ["snort_cnf"]) #iptnetflow_cnf
     #secap_id = "91a41534-7597-4975-8763-0642ef98c864"
     check_secap_readiness(secap_id)
 
