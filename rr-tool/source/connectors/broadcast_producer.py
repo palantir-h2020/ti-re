@@ -1,5 +1,5 @@
 from settings import *
-from confluent_kafka import AdminClient
+from confluent_kafka.admin import AdminClient
 from helpers.logging_helper import get_logger
 
 logger = get_logger('BROADCAST_MESSAGE_PRODUCER')
