@@ -5,7 +5,7 @@ from helpers.logging_helper import get_logger
 
 logger = get_logger('BROADCAST_MESSAGE_PRODUCER')
 
-# a kafka message producer that writes on all partitions of a given topic
+# a kafka message producer that sends the same message on all partitions of a given topic
 
 try:
     # noinspection PyUnresolvedReferences
@@ -43,8 +43,8 @@ def broadcast_message(topic, content, callback):
         logger.info(f"Topic '{topic}' does not exist.")
 
     for partition_id in partition_list:
-        #message_producer(topic, content, partition_id, callback)
-        message_producer(topic, json.dumps({"test:": partition_id}), partition_id, callback)
+        message_producer(topic, content, partition_id, callback)
+        #message_producer(topic, json.dumps({"test:": partition_id}), partition_id, callback)
 
 def message_producer(topic, content, partition, callback):
     if ENABLE_MOCKUP_PRODUCER == 0:
