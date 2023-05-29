@@ -145,8 +145,8 @@ class ServiceGraph:
             secondPositionNodes.add(path[1])
         pruned_paths = []
         #### #todo remove after service matching testing
-        mano.addFirewall("test", path, "test")
-        time.sleep(120)
+        #mano.addFirewall("test", path, "test")
+        #time.sleep(120)
         ####
         for nodeName in secondPositionNodes:
             for path in node_paths:

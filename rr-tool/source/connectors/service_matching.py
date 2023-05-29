@@ -65,11 +65,7 @@ def deploy_secap(requested_capability,
             string: the ID of the security capability deployed
     """
 
-
     correlation_id = random.randint(10, 100000)
-
-
-# 6 corresponds to iptnetflow
 
     request_message = {
         "session": correlation_id, # correlation id
@@ -123,7 +119,8 @@ def deploy_secap(requested_capability,
                     logger.info(f"Successfully deployed new security capability")
 
                     # is it safe to assume only 1 secap is present in the list, given that only 1 was required in the request ?
-                    response = message.get("content").get("content")[0].get("instanceId")
+                    response = message.get("content").get("content")[0].get("scId") # here we should use scId not instanceId right?
+                    # then what's instanceId for?
                     break
 
                 else:
@@ -131,8 +128,6 @@ def deploy_secap(requested_capability,
                     logger.error(f"Unable to deploy new security capability.")
             else:
                 logger.info(f"Message not for RR-tool, discard it")
-
-
 
     # Close the consumer
     kafka_consumer.close()
