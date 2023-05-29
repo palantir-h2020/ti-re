@@ -25,7 +25,6 @@ def broadcast_message(topic, content, callback):
 
     # Retrieve metadata for the topic
     metadata = admin_client.list_topics(topic=topic)
-    logger.info(metadata)
 
     # Check if the topic exists in the metadata
     if topic in metadata.topics:
@@ -36,14 +35,13 @@ def broadcast_message(topic, content, callback):
         # Print the number of partitions
         logger.info(f"Number of partitions for topic '{topic}': {partition_count}")
 
-        logger.info(f"List of partitions for topic '{topic}': {partitions}")
+        logger.info(partitions)
+        partition_list = list(partitions.keys())
+        logger.info(f"List of partitions for topic '{topic}': {partition_list}")
     else:
         logger.info(f"Topic '{topic}' does not exist.")
 
-    # Close the admin client
-    admin_client.close()
-
-    for partition_id in partitions:
+    for partition_id in partition_list:
         message_producer(topic, content, partition_id, callback)
 
 
