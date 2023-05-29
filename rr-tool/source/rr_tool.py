@@ -16,6 +16,7 @@ import settings
 from helpers.rr_tool_helper import load_json_folder_as_dict
 from settings import TOOL_DIR
 from helpers.logging_helper import get_logger
+from connectors import broadcast_producer
 
 logger = get_logger('rr-tool')
 
@@ -384,7 +385,8 @@ class RRTool:
         recipe_interpreter_instance = recipe_interpreter.RecipeInterpreter(self.service_graph_instance,
                                                                 self.global_scope,
                                                                 self.capability_to_security_control_mappings)
-        recipe_interpreter_instance.remediate(recipe_text)
+        #todo enable/disable
+        #recipe_interpreter_instance.remediate(recipe_text)
 
         # # evaluation metrics
         # print("METRICA: ")
@@ -419,6 +421,10 @@ class RRTool:
 
         #todo send proactive after having filtered private data
 
+        # Send a message to the endpoint on a certain topic
+        broadcast_producer.produce("testing_multitenancy_rrtool",
+                                json.dumps({"test": "test1"}),
+                                callback=None)
 
     def selectRecipeManually(self):
         """Manually select which recipe to apply, according to the list shown in the terminal.

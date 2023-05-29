@@ -84,7 +84,7 @@ def deploy_secap(requested_capability,
     # Send a message to the endpoint on a certain topic
     message_producer.produce(settings.TOPIC_SERVICE_MATCHING_REQUESTS,
                             json.dumps(request_message),
-                            callback=None)
+                            callback=None, sm=True)
 
     # WARNING: this consumer MUST use a different group.id from the one used by the RR-tool
     # main consumer (the one receiving threat alerts), otherwise strange behavior may occur,

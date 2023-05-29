@@ -33,6 +33,11 @@ ENABLE_PRIVATE_ARTIFACTS_SHARING = (os.environ["ENABLE_PRIVATE_ARTIFACTS_SHARING
 VIM_ID = (os.environ["VIM_ID"])
 
 # KAFKA CONFIGURATION
+
+KAFKA_ADMIN_CLIENT_CONFIG = {
+    "bootstrap.servers": (os.environ['KAFKA_IP']) + ":" + (os.environ['KAFKA_PORT'])
+}
+
 KAFKA_PRODUCER_PROPERTIES = {
     "bootstrap.servers": (os.environ['KAFKA_IP']) + ":" + (os.environ['KAFKA_PORT']),
     "compression.type": "none"

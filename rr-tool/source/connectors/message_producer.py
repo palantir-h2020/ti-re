@@ -15,12 +15,14 @@ except ImportError:
     logger.info("using mockup message producer")
 
 
-def produce(topic, content, callback):
+def produce(topic, content, callback, sm):
     if ENABLE_MOCKUP_PRODUCER == 0:
         if callback is not None:
             kafka_producer.produce(topic, content, callback=callback)
         else:
             kafka_producer.produce(topic, content, callback=default_delivery_report)
+        if sm == True:
+            kafka_producer.flush()
     else:
         logger.info("producing mockup message to topic " + topic + "with content: " + content)
 
