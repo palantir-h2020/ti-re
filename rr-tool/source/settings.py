@@ -40,12 +40,12 @@ KAFKA_PRODUCER_PROPERTIES = {
 
 KAFKA_CONSUMER_PROPERTIES = {
     "bootstrap.servers": (os.environ['KAFKA_IP']) + ":" + (os.environ['KAFKA_PORT']),
-    "group.id": "test-consumer-group",
+    "group.id": "rr-consumer-tenant-" + RR_INSTANCE_ID,
     # "auto.offset.reset": "earliest"
 }
 KAFKA_CONSUMER_SM_PROPERTIES = {
     "bootstrap.servers": (os.environ['KAFKA_IP']) + ":" + (os.environ['KAFKA_PORT']),
-    "group.id": "test-consumer-sm-group",
+    "group.id": "rr-consumer-sm-tenant-" + RR_INSTANCE_ID,
     # WARNING: this consumer MUST use a different group.id from the one used by the
     # main consumer, otherwise it won't work.
     # "auto.offset.reset": "earliest"
