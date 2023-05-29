@@ -16,4 +16,4 @@ def notify(component_type: str, component_id: str, action_name: str, action_desc
         "actionDescription": action_description,
         "onIps": on_ips
     }
-    message_producer.produce(TOPIC_PORTAL_NOTIFICATIONS, json.dumps(notification_content), callback=None)
+    message_producer.produce(TOPIC_PORTAL_NOTIFICATIONS, json.dumps(notification_content), callback=None, sm=False)

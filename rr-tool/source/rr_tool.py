@@ -422,7 +422,7 @@ class RRTool:
         #todo send proactive after having filtered private data
 
         # Send a message to the endpoint on a certain topic
-        broadcast_producer.produce("testing_multitenancy_rrtool",
+        broadcast_producer.broadcast_message("testing_multitenancy_rrtool",
                                 json.dumps({"test": "test1"}),
                                 callback=None)
 
