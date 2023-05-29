@@ -1,5 +1,5 @@
 from settings import *
-from confluent_kafka import KafkaAdminClient
+from confluent_kafka import AdminClient
 from helpers.logging_helper import get_logger
 
 logger = get_logger('BROADCAST_MESSAGE_PRODUCER')
@@ -21,7 +21,7 @@ except ImportError:
 
 def broadcast_message(topic, content, callback):
     # Create the admin client
-    admin_client = KafkaAdminClient(KAFKA_ADMIN_CLIENT_CONFIG)
+    admin_client = AdminClient(KAFKA_ADMIN_CLIENT_CONFIG)
 
     # Retrieve metadata for the topic
     metadata = admin_client.list_topics(topic=topic)
