@@ -421,10 +421,9 @@ class RRTool:
 
         #todo send proactive after having filtered private data
 
-        # Send a message to the endpoint on a certain topic
-        broadcast_producer.broadcast_message("testing_multitenancy_rrtool",
-                                json.dumps({"test": "test1"}),
-                                callback=None)
+        # broadcast_producer.broadcast_message("testing_multitenancy_rrtool",
+        #                         json.dumps({"test": "test1"}),
+        #                         callback=None)
 
     def selectRecipeManually(self):
         """Manually select which recipe to apply, according to the list shown in the terminal.

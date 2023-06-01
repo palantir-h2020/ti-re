@@ -2,6 +2,8 @@ import threading
 
 # noinspection PyUnresolvedReferences
 from confluent_kafka import Consumer
+from confluent_kafka import TopicPartition
+import requests
 
 from settings import *
 
@@ -16,7 +18,7 @@ def consume_topics(remediator):
     # KAFKA Consumer set up
     kafka_consumer_stop_event = threading.Event()
     kafka_consumer_thread = threading.Thread(target=start_kafka_consumer,
-                                             args=[kafka_consumer_stop_event, remediator])
+                                            args=[kafka_consumer_stop_event, remediator])
     kafka_consumer_thread.start()
 
 
@@ -29,7 +31,26 @@ def start_kafka_consumer(stop_event, remediator):
 
     kafka_consumer = Consumer(KAFKA_CONSUMER_PROPERTIES)
 
-    kafka_consumer.subscribe([TOPIC_TI_NETFLOW, TOPIC_TI_SYSLOG, TOPIC_RR_PROACTIVE_REMEDIATION, TOPIC_RR_NEW_ATTACK_REMEDIATION])
+    #kafka_consumer.subscribe([TOPIC_TI_NETFLOW, TOPIC_TI_SYSLOG, TOPIC_RR_PROACTIVE_REMEDIATION, TOPIC_RR_NEW_ATTACK_REMEDIATION])
+
+    ##### Partition-based multi-tenancy support #####
+
+    # get tenant kafka partition
+    url = "http://tenant-api-service.ti-dcp:6000/api/partition/" + RR_INSTANCE_ID
+
+    response = requests.get(url, verify=False)
+    if response.status_code == 200:
+        data = response.json()
+        TENANT_PARTITION = data["partition"]
+        logger.info(response)
+    else:
+        logger.error(response.status_code)
+
+    # the last two topics are inter-tenant thus only one partition is present at the PALANTIR level
+    kafka_consumer.assign([TopicPartition(TOPIC_TI_NETFLOW, TENANT_PARTITION),
+                           TopicPartition(TOPIC_TI_SYSLOG, TENANT_PARTITION),
+                           TopicPartition(TOPIC_RR_PROACTIVE_REMEDIATION, 0),
+                           TopicPartition(TOPIC_RR_NEW_ATTACK_REMEDIATION, 0)])
 
     switch_consumer_handlers = {
         TOPIC_TI_NETFLOW: remediator.stringInputNetflow,
