@@ -244,7 +244,8 @@ class RRTool:
                                                                 self.global_scope,
                                                                 self.capability_to_security_control_mappings)
 
-        recipe_interpreter_instance.remediate_new(bestRecipeName)
+        #todo enable/disable
+        #recipe_interpreter_instance.remediate_new(bestRecipeName)
 
     def addNewAttackRemediation(self, new_attack_remediation):
 
