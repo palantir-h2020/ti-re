@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 BRANCH="v1.2"
-while getopts o:f:d:b: flag
+while getopts o:f:d:b:t: flag
 do
     case "${flag}" in
         o) OSM=${OPTARG};;
         f) RESET_SC=${OPTARG};;
         d) KAFKA_DEBUG=${OPTARG};;
         b) BRANCH=${OPTARG};;
+        t) TENANT=${OPTARG};;
         *) echo "Invalid flags, stopping script"; exit 1 ;;
     esac
 done
@@ -28,6 +29,7 @@ elif [ "$KAFKA_DEBUG" == "0" ]; then
 else
   echo "Unknown KAFKA_DEBUG option, pod.yaml related setting will be followed"
 fi
+sed -n '/RR_INSTANCE_IDENTIFIER/{n;s/.*/          value: "$TENANT"/}' pod.yaml
 echo "Refreshing code"
 cd /media/palantir-nfs/ti-re && git fetch && git checkout "$BRANCH" && git pull origin "$BRANCH"
 echo "Rebuilding RR-tool docker image..."
@@ -41,14 +43,14 @@ elif [ "$OSM" == "1" ]; then
 else
   echo "Unknown OSM connection option, ignoring..."
 fi
-if [[ $(kubectl get pods --all-namespaces | grep -c rr-tool) -gt 0 ]]; then
+if [[ $(kubectl get pods -n $TENANT | grep -c rr-tool) -gt 0 ]]; then
   echo "Existing RR-tool pod found, deleting..."
-  kubectl delete pod rr-tool
+  kubectl delete pod rr-tool -n $TENANT
 fi
 echo "Creating RR-tool pod"
-kubectl create -f /media/palantir-nfs/ti-re/rr-tool/pod.yaml
+kubectl create -f /media/palantir-nfs/ti-re/rr-tool/pod.yaml -n $TENANT
 echo "Waiting for RR-tool pod startup"
-while [[ $(kubectl get pods --all-namespaces | grep rr-tool | grep -c Running) -eq 0 ]]; do
+while [[ $(kubectl get pods -n $TENANT | grep rr-tool | grep -c Running) -eq 0 ]]; do
   echo -n "."
 done
 echo
@@ -62,4 +64,4 @@ echo
 #fi
 
 echo "RR-tool pod started, attaching..."
-kubectl logs rr-tool && kubectl attach rr-tool
+kubectl logs rr-tool -n $TENANT && kubectl attach rr-tool -n $TENANT
