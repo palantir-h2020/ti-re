@@ -29,7 +29,7 @@ elif [ "$KAFKA_DEBUG" == "0" ]; then
 else
   echo "Unknown KAFKA_DEBUG option, pod.yaml related setting will be followed"
 fi
-sed -n '/RR_INSTANCE_IDENTIFIER/{n;s/.*/          value: "$TENANT"/}' pod.yaml
+sed -n "/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/$TENANT/}" pod.yaml
 echo "Refreshing code"
 cd /media/palantir-nfs/ti-re && git fetch && git checkout "$BRANCH" && git pull origin "$BRANCH"
 echo "Rebuilding RR-tool docker image..."

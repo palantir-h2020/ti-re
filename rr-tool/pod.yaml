@@ -17,7 +17,7 @@ spec:
         - name: ENABLE_EXTERNAL_CTI_SHARING
           value: "0"
         - name: RR_INSTANCE_IDENTIFIER
-          value: "0001"
+          value: "TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT"
         - name: RR_TOOL_MODE # standalone/kafka
           value: "kafka"
         - name: KAFKA_IP
