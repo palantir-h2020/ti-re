@@ -42,7 +42,7 @@ def start_kafka_consumer(stop_event, remediator):
     if response.status_code == 200:
         data = response.json()
         TENANT_PARTITION = data["partition"]
-        logger.info(response)
+        logger.info("Partizione: " + TENANT_PARTITION)
     else:
         logger.error(response.status_code)
 
