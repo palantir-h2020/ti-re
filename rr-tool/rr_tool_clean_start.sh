@@ -4,7 +4,7 @@ while getopts o:f:d:b:t: flag
 do
     case "${flag}" in
         o) OSM=${OPTARG};;
-        f) RESET_SC=${OPTARG};;
+        f) RESET_SC=${OPTARG};
            if [ "$RESET_SC" == "1" ]; then
              echo "Existing security controls rules will be flushed at rr-tool startup"
              sed -i '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "1"/}' pod.yaml
