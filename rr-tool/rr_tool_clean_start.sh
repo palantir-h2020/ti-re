@@ -16,6 +16,10 @@ if [ "$TENANT_SPECIFIED" == "0" ]; then
   echo "The tenant where the rr-tool should be executed must be specified, aborting script..."
   exit -1
 fi
+echo "Refreshing code"
+cd /media/palantir-nfs/ti-re && git fetch && git checkout "$BRANCH" && git pull origin "$BRANCH"
+echo "Rebuilding RR-tool docker image..."
+cd /media/palantir-nfs/ti-re/rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0
 if [ "$RESET_SC" == "1" ]; then
   echo "Existing security controls rules will be flushed at rr-tool startup"
   sed -i '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "1"/}' pod.yaml
@@ -35,10 +39,6 @@ else
   echo "KAFKA_DEBUG option unknown or not specified, pod.yaml related setting will be followed"
 fi
 sed -i "s/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/$TENANT/" pod.yaml
-echo "Refreshing code"
-cd /media/palantir-nfs/ti-re && git fetch && git checkout "$BRANCH" && git pull origin "$BRANCH"
-echo "Rebuilding RR-tool docker image..."
-cd /media/palantir-nfs/ti-re/rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0
 if [ "$OSM" == "0" ]; then
   echo "Disabling OSM connection"
   sed -i '/ENABLE_MANO_API/{n;s/.*/          value: "0"/}' pod.yaml
