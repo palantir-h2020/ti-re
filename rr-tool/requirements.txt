@@ -1,5 +1,5 @@
 nltk==3.6.5
-#igraph==0.10.3
+igraph==0.10.3
 textx==3.0.0
 PyYAML==6.0.0
 ruamel.yaml==0.17.16
