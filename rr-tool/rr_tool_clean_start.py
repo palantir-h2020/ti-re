@@ -3,9 +3,6 @@ import sys
 import subprocess
 import yaml
 
-branch = "multi_tenancy"
-tenant = 1000
-
 def execute_command(command):
     subprocess.run(command, shell=True, check=True)
 
@@ -18,6 +15,8 @@ def main():
     osm = None
     reset_sc = None
     kafka_debug = None
+    branch = "multi_tenancy"
+    tenant = 1000
 
     args = sys.argv[1:]
     while args:
