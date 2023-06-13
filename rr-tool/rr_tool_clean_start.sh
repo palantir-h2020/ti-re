@@ -8,7 +8,7 @@ do
         f) RESET_SC=${OPTARG};;
         d) KAFKA_DEBUG=${OPTARG};;
         b) BRANCH=${OPTARG};;
-        t) TENANT=${OPTARG}; TENANT_SPECIFIED=1;
+        t) TENANT=${OPTARG}; TENANT_SPECIFIED=1;;
         *) echo "Invalid flags, stopping script"; exit 1 ;;
     esac
 done
