@@ -5,21 +5,21 @@ do
     case "${flag}" in
         o) OSM=${OPTARG};;
         f) RESET_SC=${OPTARG};;
+           if [ "$RESET_SC" == "1" ]; then
+             echo "Existing security controls rules will be flushed at rr-tool startup"
+             sed -i '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "1"/}' pod.yaml
+           elif [ "$RESET_SC" == "0" ]; then
+             echo "Existing security controls rules will be kept"
+             sed -i '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "0"/}' pod.yaml
+           else
+             echo "Unknown RESET_SECURITY_CONTROLS_RULES_AT_STARTUP option, pod.yaml related setting will be followed"
+           fi;;
         d) KAFKA_DEBUG=${OPTARG};;
         b) BRANCH=${OPTARG};;
         t) TENANT=${OPTARG};;
         *) echo "Invalid flags, stopping script"; exit 1 ;;
     esac
 done
-if [ "$RESET_SC" == "1" ]; then
-  echo "Existing security controls rules will be flushed at rr-tool startup"
-  sed -i '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "1"/}' pod.yaml
-elif [ "$RESET_SC" == "0" ]; then
-  echo "Existing security controls rules will be kept"
-  sed -i '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "0"/}' pod.yaml
-else
-  echo "Unknown RESET_SECURITY_CONTROLS_RULES_AT_STARTUP option, pod.yaml related setting will be followed"
-fi
 if [ "$KAFKA_DEBUG" == "1" ]; then
   echo "Using debug Kafka topics"
   sed -i '/KAFKA_DEBUG/{n;s/.*/          value: "1"/}' pod.yaml
