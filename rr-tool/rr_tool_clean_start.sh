@@ -12,7 +12,7 @@ do
         *) echo "Invalid flags, stopping script"; exit 1 ;;
     esac
 done
-if [ "$TENANT_SPECIFIED" == "1" ]; then
+if [ "$TENANT_SPECIFIED" == "0" ]; then
   echo "The tenant where the rr-tool should be executed must be specified, aborting script..."
   exit -1
 fi
