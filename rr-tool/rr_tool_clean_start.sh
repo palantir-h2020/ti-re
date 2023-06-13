@@ -46,7 +46,7 @@ elif [ "$OSM" == "1" ]; then
   echo "Enabling OSM connection"
   sed -i '/ENABLE_MANO_API/{n;s/.*/          value: "1"/}' pod.yaml
 else
-  echo "Unknown OSM connection option, ignoring..."
+  echo "OSM connection option unknown or not specified, ignoring..."
 fi
 if [[ $(kubectl get pods -n $TENANT | grep -c rr-tool) -gt 0 ]]; then
   echo "Existing RR-tool pod found, deleting..."
