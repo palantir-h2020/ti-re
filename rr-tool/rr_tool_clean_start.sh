@@ -1,25 +1,30 @@
 #!/usr/bin/env bash
 BRANCH="multi_tenancy"
+TENANT_SPECIFIED=0;
 while getopts o:f:d:b:t: flag
 do
     case "${flag}" in
         o) OSM=${OPTARG};;
-        f) RESET_SC=${OPTARG};
-           if [ "$RESET_SC" == "1" ]; then
-             echo "Existing security controls rules will be flushed at rr-tool startup"
-             sed -i '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "1"/}' pod.yaml
-           elif [ "$RESET_SC" == "0" ]; then
-             echo "Existing security controls rules will be kept"
-             sed -i '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "0"/}' pod.yaml
-           else
-             echo "Unknown RESET_SECURITY_CONTROLS_RULES_AT_STARTUP option, pod.yaml related setting will be followed"
-           fi;;
+        f) RESET_SC=${OPTARG};;
         d) KAFKA_DEBUG=${OPTARG};;
         b) BRANCH=${OPTARG};;
-        t) TENANT=${OPTARG};;
+        t) TENANT=${OPTARG}; TENANT_SPECIFIED=1;
         *) echo "Invalid flags, stopping script"; exit 1 ;;
     esac
 done
+if [ "$TENANT_SPECIFIED" == "1" ]; then
+  echo "The tenant where the rr-tool should be executed must be specified, aborting script..."
+  exit -1
+fi
+if [ "$RESET_SC" == "1" ]; then
+  echo "Existing security controls rules will be flushed at rr-tool startup"
+  sed -i '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "1"/}' pod.yaml
+elif [ "$RESET_SC" == "0" ]; then
+  echo "Existing security controls rules will be kept"
+  sed -i '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "0"/}' pod.yaml
+else
+  echo "RESET_SECURITY_CONTROLS_RULES_AT_STARTUP option unknown or not specified, pod.yaml related setting will be followed"
+fi
 if [ "$KAFKA_DEBUG" == "1" ]; then
   echo "Using debug Kafka topics"
   sed -i '/KAFKA_DEBUG/{n;s/.*/          value: "1"/}' pod.yaml
@@ -27,7 +32,7 @@ elif [ "$KAFKA_DEBUG" == "0" ]; then
   echo "Using production Kafka topics"
   sed -i '/KAFKA_DEBUG/{n;s/.*/          value: "0"/}' pod.yaml
 else
-  echo "Unknown KAFKA_DEBUG option, pod.yaml related setting will be followed"
+  echo "KAFKA_DEBUG option unknown or not specified, pod.yaml related setting will be followed"
 fi
 sed -i "s/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/$TENANT/" pod.yaml
 echo "Refreshing code"
