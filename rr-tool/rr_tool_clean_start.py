@@ -52,9 +52,6 @@ def main():
     else:
         print("Unknown KAFKA_DEBUG option, pod.yaml related setting will be followed")
 
-    #execute_command(f'sed -n "/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/{tenant}/" pod.yaml')
-    execute_command("sed -n '/RR_INSTANCE_IDENTIFIER/{n;s/.*/          value: \"{}\"/}' pod.yaml".format(tenant))
-    
     print("Rebuilding RR-tool docker image...")
     execute_command("cd /media/palantir-nfs/ti-re/rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0")
 
