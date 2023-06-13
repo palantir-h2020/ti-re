@@ -13,33 +13,33 @@ do
 done
 if [ "$RESET_SC" == "1" ]; then
   echo "Existing security controls rules will be flushed at rr-tool startup"
-  sed -n '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "1"/}' pod.yaml
+  sed -i '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "1"/}' pod.yaml
 elif [ "$RESET_SC" == "0" ]; then
   echo "Existing security controls rules will be kept"
-  sed -n '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "0"/}' pod.yaml
+  sed -i '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "0"/}' pod.yaml
 else
   echo "Unknown RESET_SECURITY_CONTROLS_RULES_AT_STARTUP option, pod.yaml related setting will be followed"
 fi
 if [ "$KAFKA_DEBUG" == "1" ]; then
   echo "Using debug Kafka topics"
-  sed -n '/KAFKA_DEBUG/{n;s/.*/          value: "1"/}' pod.yaml
+  sed -i '/KAFKA_DEBUG/{n;s/.*/          value: "1"/}' pod.yaml
 elif [ "$KAFKA_DEBUG" == "0" ]; then
   echo "Using production Kafka topics"
-  sed -n '/KAFKA_DEBUG/{n;s/.*/          value: "0"/}' pod.yaml
+  sed -i '/KAFKA_DEBUG/{n;s/.*/          value: "0"/}' pod.yaml
 else
   echo "Unknown KAFKA_DEBUG option, pod.yaml related setting will be followed"
 fi
-sed -n "/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/$TENANT/}" pod.yaml
+sed -i "s/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/$TENANT/}" pod.yaml
 echo "Refreshing code"
 cd /media/palantir-nfs/ti-re && git fetch && git checkout "$BRANCH" && git pull origin "$BRANCH"
 echo "Rebuilding RR-tool docker image..."
 cd /media/palantir-nfs/ti-re/rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0
 if [ "$OSM" == "0" ]; then
   echo "Disabling OSM connection"
-  sed -n '/ENABLE_MANO_API/{n;s/.*/          value: "0"/}' pod.yaml
+  sed -i '/ENABLE_MANO_API/{n;s/.*/          value: "0"/}' pod.yaml
 elif [ "$OSM" == "1" ]; then
   echo "Enabling OSM connection"
-  sed -n '/ENABLE_MANO_API/{n;s/.*/          value: "1"/}' pod.yaml
+  sed -i '/ENABLE_MANO_API/{n;s/.*/          value: "1"/}' pod.yaml
 else
   echo "Unknown OSM connection option, ignoring..."
 fi
