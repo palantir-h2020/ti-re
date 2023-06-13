@@ -63,12 +63,15 @@ def main():
         print("Unknown OSM connection option, ignoring...")
 
     for env_var in env_vars:
-        if env_var['name'] == 'RESET_SECURITY_CONTROLS_RULES_AT_STARTUP':
-            env_var['value'] = str(reset_sc)
-        if env_var['name'] == 'KAFKA_DEBUG_TOPICS':
-            env_var['value'] = str(kafka_debug)
-        if env_var['name'] == 'ENABLE_MANO_API':
-            env_var['value'] = str(osm)
+        if reset_sc is not None:
+            if env_var['name'] == 'RESET_SECURITY_CONTROLS_RULES_AT_STARTUP':
+                env_var['value'] = str(reset_sc)
+        if kafka_debug is not None:
+            if env_var['name'] == 'KAFKA_DEBUG_TOPICS':
+                env_var['value'] = str(kafka_debug)
+        if osm is not None:
+            if env_var['name'] == 'ENABLE_MANO_API':
+                env_var['value'] = str(osm)
         if env_var['name'] == 'RR_INSTANCE_IDENTIFIER':
             env_var['value'] = str(tenant)
 
