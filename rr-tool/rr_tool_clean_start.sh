@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-BRANCH="v1.2"
+BRANCH="multi_tenancy"
 while getopts o:f:d:b:t: flag
 do
     case "${flag}" in
