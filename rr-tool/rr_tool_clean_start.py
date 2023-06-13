@@ -18,7 +18,6 @@ def main():
     osm = None
     reset_sc = None
     kafka_debug = None
-    tenant = None
 
     args = sys.argv[1:]
     while args:
