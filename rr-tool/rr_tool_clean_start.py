@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import subprocess
+import yaml
 
 branch = "multi_tenancy"
 tenant = 1000
@@ -9,6 +10,11 @@ def execute_command(command):
     subprocess.run(command, shell=True, check=True)
 
 def main():
+
+    with open('pod.yaml', 'r') as file:
+        yaml_data = yaml.safe_load(file)
+    env_vars = yaml_data['spec']['containers'][0]['env']
+
     osm = None
     reset_sc = None
     kafka_debug = None
@@ -33,12 +39,19 @@ def main():
 
     if reset_sc == "1":
         print("Existing security controls rules will be flushed at rr-tool startup")
-        execute_command("sed -n '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: \"1\"/}' pod.yaml")
     elif reset_sc == "0":
         print("Existing security controls rules will be kept")
-        execute_command("sed -n '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: \"0\"/}' pod.yaml")
     else:
         print("Unknown RESET_SECURITY_CONTROLS_RULES_AT_STARTUP option, pod.yaml related setting will be followed")
+
+    for env_var in env_vars:
+        if env_var['name'] == 'RESET_SECURITY_CONTROLS_RULES_AT_STARTUP':
+            env_var['value'] = str(reset_sc)
+
+    with open('pod.yaml', 'w') as file:
+        yaml.dump(yaml_data, file)
+
+    return 
 
     if kafka_debug == "1":
         print("Using debug Kafka topics")
@@ -51,8 +64,6 @@ def main():
 
     #execute_command(f'sed -n "/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/{tenant}/" pod.yaml')
     execute_command("sed -n '/RR_INSTANCE_IDENTIFIER/{n;s/.*/          value: \"{}\"/}' pod.yaml".format(tenant))
-
-    return 
     
     print("Refreshing code")
     execute_command("cd /media/palantir-nfs/ti-re && git fetch && git checkout {} && git pull origin {}".format(branch, branch))
