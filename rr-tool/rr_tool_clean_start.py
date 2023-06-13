@@ -37,6 +37,9 @@ def main():
             print("Invalid flags, stopping script")
             sys.exit(1)
 
+    print("Refreshing code")
+    execute_command("cd /media/palantir-nfs/ti-re && git fetch && git checkout {} && git pull origin {}".format(branch, branch))
+
     if reset_sc == "1":
         print("Existing security controls rules will be flushed at rr-tool startup")
     elif reset_sc == "0":
@@ -44,41 +47,40 @@ def main():
     else:
         print("Unknown RESET_SECURITY_CONTROLS_RULES_AT_STARTUP option, pod.yaml related setting will be followed")
 
-    for env_var in env_vars:
-        if env_var['name'] == 'RESET_SECURITY_CONTROLS_RULES_AT_STARTUP':
-            env_var['value'] = str(reset_sc)
-
-    with open('pod.yaml', 'w') as file:
-        yaml.dump(yaml_data, file)
-
-    return 
-
     if kafka_debug == "1":
         print("Using debug Kafka topics")
-        execute_command("sed -n '/KAFKA_DEBUG/{n;s/.*/          value: \"1\"/}' pod.yaml")
     elif kafka_debug == "0":
         print("Using production Kafka topics")
-        execute_command("sed -n '/KAFKA_DEBUG/{n;s/.*/          value: \"0\"/}' pod.yaml")
     else:
         print("Unknown KAFKA_DEBUG option, pod.yaml related setting will be followed")
 
     #execute_command(f'sed -n "/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/{tenant}/" pod.yaml')
     execute_command("sed -n '/RR_INSTANCE_IDENTIFIER/{n;s/.*/          value: \"{}\"/}' pod.yaml".format(tenant))
     
-    print("Refreshing code")
-    execute_command("cd /media/palantir-nfs/ti-re && git fetch && git checkout {} && git pull origin {}".format(branch, branch))
-
     print("Rebuilding RR-tool docker image...")
     execute_command("cd /media/palantir-nfs/ti-re/rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0")
 
     if osm == "0":
         print("Disabling OSM connection")
-        execute_command("sed -n '/ENABLE_MANO_API/{n;s/.*/          value: \"0\"/}' pod.yaml")
     elif osm == "1":
         print("Enabling OSM connection")
-        execute_command("sed -n '/ENABLE_MANO_API/{n;s/.*/          value: \"1\"/}' pod.yaml")
     else:
         print("Unknown OSM connection option, ignoring...")
+
+    for env_var in env_vars:
+        if env_var['name'] == 'RESET_SECURITY_CONTROLS_RULES_AT_STARTUP':
+            env_var['value'] = str(reset_sc)
+        if env_var['name'] == 'KAFKA_DEBUG_TOPICS':
+            env_var['value'] = str(kafka_debug)
+        if env_var['name'] == 'ENABLE_MANO_API':
+            env_var['value'] = str(osm)
+        if env_var['name'] == 'RR_INSTANCE_IDENTIFIER':
+            env_var['value'] = str(tenant)
+
+    with open('pod.yaml', 'w') as file:
+        yaml.dump(yaml_data, file)
+
+    return
 
     if subprocess.run(["kubectl", "get", "pods", "-n", tenant, "|", "grep", "-c", "rr-tool"], capture_output=True, text=True).stdout.strip() > "0":
         print("Existing RR-tool pod found, deleting...")
