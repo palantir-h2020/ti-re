@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 import sys
 import subprocess
-import yaml
+import ruamel.yaml
 
 def execute_command(command):
     subprocess.run(command, shell=True, check=True)
 
 def main():
 
+    yaml = ruamel.yaml.YAML()
     with open('pod.yaml', 'r') as file:
         yaml_data = yaml.safe_load(file)
     env_vars = yaml_data['spec']['containers'][0]['env']
