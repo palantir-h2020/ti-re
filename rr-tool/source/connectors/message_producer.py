@@ -14,8 +14,8 @@ except ImportError:
     ENABLE_MOCKUP_PRODUCER = 1
     logger.info("using mockup message producer")
 
-
-def produce(topic, content, callback, sm):
+#TODO @Francesco: check parametro sm mancante
+def produce(topic, content, callback, sm = False):
     if ENABLE_MOCKUP_PRODUCER == 0:
         if callback is not None:
             kafka_producer.produce(topic, content, callback=callback)
