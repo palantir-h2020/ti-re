@@ -23,7 +23,7 @@ def fbm_call_ransomware(alert, alert_source_ip):
                   action_description="Reaction to following alert: " + str(alert),
                   on_ips=[alert_source_ip])
 
-    ir.notify_ransomware("ransomware",
+    ir.notify_with_agent_id("ransomware",
                         alert_source_ip,
                         "Ransomware detected: " + str(alert),
                         alert.get("wazuh_agent_id"))
