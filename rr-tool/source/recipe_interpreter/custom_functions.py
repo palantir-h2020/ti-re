@@ -28,7 +28,30 @@ def fbm_call_ransomware(alert, alert_source_ip):
                         "Ransomware detected: " + str(alert),
                         alert.get("wazuh_agent_id"))
 
+def fbm_call_sqlinjection(alert, alert_source_ip):
+
+    portal.notify(component_type="Recommendation and Remediation",
+                  component_id="0",
+                  action_name="Call Incident Response",
+                  action_description="Reaction to following alert: " + str(alert),
+                  on_ips=[alert_source_ip])
+
+    ir.notify("sql_injection", alert_source_ip, "SQL injection detected: " + str(alert))
+
+def fbm_call_medicaldb(alert, alert_source_ip):
+
+    portal.notify(component_type="Recommendation and Remediation",
+                  component_id="0",
+                  action_name="Call Incident Response",
+                  action_description="Reaction to following alert: " + str(alert),
+                  on_ips=[alert_source_ip])
+
+    ir.notify("unauthorized_access", alert_source_ip, "Unauthorized data access attempt detected: " + str(alert))
+
+
 FunctionMappings = {
     "fbm_call": fbm_call,
-    "fbm_call_ransomware": fbm_call_ransomware
+    "fbm_call_ransomware": fbm_call_ransomware,
+    "fbm_call_sqlinjection": fbm_call_sqlinjection,
+    "fbm_call_medicaldb": fbm_call_medicaldb,
 }

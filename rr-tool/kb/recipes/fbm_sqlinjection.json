@@ -1,0 +1,6 @@
+{
+    "description": "Call the fbm sqlinjection function",
+    "requiredCapabilities": [],
+    "requiredArtifacts": [],
+    "proactive": false
+}

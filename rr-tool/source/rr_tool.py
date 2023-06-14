@@ -379,6 +379,11 @@ class RRTool:
                                                     impacted_host_ip=alert["Threat_Finding"]["Source_Address"],
                                                     attacker_port=alert["Threat_Finding"]["Destination_Port"],
                                                     attacker_ip=alert["Threat_Finding"]["Destination_Address"])
+            elif alert["Threat_Category"] == "sql_injection":
+                input_analyzer. \
+                    prepareDataForRemediationOfSqlInjection(global_scope=self.global_scope,
+                                                        service_graph_instance=self.service_graph_instance,
+                                                        alert=alert)
         except KeyError:
             logger.error("Malformed alert received, skipping...")
             return
@@ -386,8 +391,8 @@ class RRTool:
         recipe_interpreter_instance = recipe_interpreter.RecipeInterpreter(self.service_graph_instance,
                                                                 self.global_scope,
                                                                 self.capability_to_security_control_mappings)
-        #todo enable/disable
-        #recipe_interpreter_instance.remediate(recipe_text)
+        #todo - enable/disable for testing
+        recipe_interpreter_instance.remediate(recipe_text)
 
         # # evaluation metrics
         # print("METRICA: ")
@@ -420,12 +425,11 @@ class RRTool:
                                 stix_report_base64,
                                 threat_type=alert["Threat_Category"])
 
-        #todo send proactive after having filtered private data
-
-        broadcast_producer.message_producer("rr.proactive_remediation_rrtooldebug",
-                                json.dump(alert),
-                                partition=0,
-                                callback=None)
+        #todo send proactive after having filtered private data - enable/disable for testing
+        # broadcast_producer.message_producer("rr.proactive_remediation_rrtooldebug",
+        #                         json.dump(alert),
+        #                         partition=0,
+        #                         callback=None)
 
     def selectRecipeManually(self):
         """Manually select which recipe to apply, according to the list shown in the terminal.
@@ -463,7 +467,7 @@ def main():
         case "kafka":
             from connectors import kafka_consumer
 
-            # misp.publish_on_misp_test() #todo just for quick tests of misp
+            # misp.publish_on_misp_test() #todo - enable/disable for testing
 
             kafka_consumer.consume_topics(RRTool())
         case _:

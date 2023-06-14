@@ -1,4 +1,5 @@
 import json
+from typing import List
 from settings import *
 
 from helpers.logging_helper import get_logger
@@ -7,7 +8,7 @@ from connectors import message_producer
 logger = get_logger('Portal_API')
 
 
-def notify(component_type: str, component_id: str, action_name: str, action_description: str, on_ips: [str]):
+def notify(component_type: str, component_id: str, action_name: str, action_description: str, on_ips: List[str]):
     notification_content = {
         "componentType": component_type,
         "componentId": component_id,

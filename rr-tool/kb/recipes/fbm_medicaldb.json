@@ -1,0 +1,6 @@
+{
+    "description": "Call the fbm medicaldb function",
+    "requiredCapabilities": [],
+    "requiredArtifacts": [],
+    "proactive": false
+}

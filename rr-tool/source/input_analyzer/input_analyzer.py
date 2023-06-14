@@ -178,6 +178,15 @@ def prepareDataForRemediationOfRansomware(global_scope, service_graph_instance, 
     #      "c2serversPort": "", "c2serversIP": global_scope["UnauthorizedAccessAlertSourceIp"],
     #      "proto": "", "action": "ALLOW"}
     # ]
+def prepareDataForRemediationOfSqlInjection(global_scope, service_graph_instance, alert):
+
+    global_scope["threat_category"] = alert["Threat_Category"]
+    global_scope["threat_label"] = alert["Threat_Label"]
+    global_scope["SQLInjectionAlert"] = alert
+    global_scope["SQLInjectionAlertSourceIp"] = alert[settings.TI_SQLINJECTION_VICTIM_IP_FIELD_NAME]
+
+    # TODO remove this temporary fix after having landscape information/ip changes in alerts
+    service_graph_instance.changeNodeIP("victim", global_scope["SQLInjectionAlertSourceIp"])
 
 def prepareDataForRemediationOfCryptomining(global_scope, service_graph_instance, threat_repository,
                                        threat_category, threat_label, protocol, impacted_host_port,

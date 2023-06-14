@@ -13,7 +13,7 @@ spec:
         - name: VIM_ID
           value: "6663bb03-5fc1-47fe-8628-f8b80c53faf6"
         - name: ENABLE_PRIVATE_ARTIFACTS_SHARING
-          value: "1"
+          value: "0"
         - name: ENABLE_EXTERNAL_CTI_SHARING
           value: "0"
         - name: RR_INSTANCE_IDENTIFIER
@@ -27,7 +27,7 @@ spec:
         - name: KAFKA_POLLING_TIMEOUT
           value: "1.0"
         - name: KAFKA_DEBUG_TOPICS
-          value: "1"
+          value: "0"
         - name: TOPIC_TI_NETFLOW
           value: "ti.threat_findings_netflow"
         - name: TOPIC_TI_SYSLOG
@@ -71,6 +71,8 @@ spec:
         - name: TI_SYSLOG_VICTIM_IP_FIELD_NAME
           value: "Source_IP"
         - name: TI_CRYPTO_VICTIM_IP_FIELD_NAME
+          value: "Source_IP"
+        - name: TI_SQLINJECTION_VICTIM_IP_FIELD_NAME
           value: "Source_IP"
         - name: BACKUP_SERVER_IP
           value: "10.225.1.73"

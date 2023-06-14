@@ -1,0 +1,10 @@
+{
+    "rules": [],
+    "recipes": [
+        {
+            "recipeName": "fbm_medicaldb",
+            "priority": 8,
+            "impact": 1
+        }
+    ]
+}
