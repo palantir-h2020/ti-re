@@ -26,3 +26,5 @@ def notify_with_agent_id(detected_incident: str, incident_location: str, inciden
     }
     logger.info(f"Incident response API: calling incident response to mitigate following incident: {detected_incident}")
     message_producer.produce(TOPIC_IR_INCIDENT_DETECTED, json.dumps(notification_content), callback=None)
+
+    
