@@ -323,7 +323,8 @@ class RRTool:
         if alert["Threat_Category"] == "unauthorized_access" or \
             alert["Threat_Category"] == "botnet" or \
             alert["Threat_Category"] == "ransomware" or \
-            alert["Threat_Category"] == "malware":
+            alert["Threat_Category"] == "malware" or \
+            alert["Threat_Category"] == "sql_injection" :
             pass
         else:
             logger.error("Ignoring alert...")
