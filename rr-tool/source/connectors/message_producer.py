@@ -14,7 +14,6 @@ except ImportError:
     ENABLE_MOCKUP_PRODUCER = 1
     logger.info("using mockup message producer")
 
-#TODO @Francesco: check parametro sm mancante
 def produce(topic, content, callback, sm = False):
     if ENABLE_MOCKUP_PRODUCER == 0:
         if callback is not None:
