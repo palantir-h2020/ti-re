@@ -38,6 +38,7 @@ elif [ "$KAFKA_DEBUG" == "0" ]; then
 else
   echo "KAFKA_DEBUG option unknown or not specified, pod.yaml related setting will be followed"
 fi
+sed -i '/RR_INSTANCE_IDENTIFIER/{n;s/.*/          value: "TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT"/}' pod.yaml
 sed -i "s/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/$TENANT/" pod.yaml
 if [ "$OSM" == "0" ]; then
   echo "Disabling OSM connection"
