@@ -217,11 +217,22 @@ class RRTool:
             logger.error("Malformed alert received (ex: threat category missing), skipping...")
             return
 
+        # tmp fix for palantir tests
+        if proactive_remediation_alert["threat_category"] == "unauthorized_access" or \
+            proactive_remediation_alert["threat_category"] == "botnet" or \
+            proactive_remediation_alert["threat_category"] == "ransomware" or \
+            proactive_remediation_alert["threat_category"] == "malware" or \
+            proactive_remediation_alert["threat_category"] == "sql_injection" :
+            pass
+        else:
+            logger.error("Ignoring proactive_remediation_alert...")
+            return
+
         bestRecipeName = self.recipe_filter_instance.  \
                                         selectBestRecipe(proactive_remediation_alert["threat_category"],
                                                         proactive_remediation_alert["threat_label"],
                                                         proactive=True,
-                                                        availableArtifacts=proactive_remediation_alert["recipe_data"])
+                                                        availableArtifacts=list(proactive_remediation_alert["recipe_data"].keys()))
 
         logger.info(f"Selected recipe for proactive remediation: ( \
                     {self.recipe_repository[bestRecipeName]['description']})")
@@ -240,12 +251,14 @@ class RRTool:
         self.setCapabilitiesToSecurityControlMappings(
                                         self.recipe_repository[bestRecipeName]["requiredCapabilities"])
 
+        recipe_text = self.recipe_repository[bestRecipeName]["value"]
+
         recipe_interpreter_instance = recipe_interpreter.RecipeInterpreter(self.service_graph_instance,
                                                                 self.global_scope,
                                                                 self.capability_to_security_control_mappings)
 
-        #todo enable/disable
-        #recipe_interpreter_instance.remediate_new(bestRecipeName)
+        #todo - enable/disable for testing
+        recipe_interpreter_instance.remediate(recipe_text)
 
     def addNewAttackRemediation(self, new_attack_remediation):
 
@@ -426,11 +439,23 @@ class RRTool:
                                 stix_report_base64,
                                 threat_type=alert["Threat_Category"])
 
+        # crypto proactive alert
+        proactive_alert = {
+            "threat_category": alert["Threat_Category"],
+            "threat_label": alert["Threat_Label"],
+            "rr_tool_instance_id": settings.RR_INSTANCE_ID,
+            "timestamp": alert["timestamp"],
+            "recipe_data": {
+                "attacker_ip": alert["Threat_Finding"]["Destination_Address"],
+                "attacker_port": alert["Threat_Finding"]["Destination_Port"]
+            }
+        }
+
         #todo send proactive after having filtered private data - enable/disable for testing
-        # broadcast_producer.message_producer("rr.proactive_remediation_rrtooldebug",
-        #                         json.dump(alert),
-        #                         partition=0,
-        #                         callback=None)
+        broadcast_producer.message_producer(settings.TOPIC_RR_PROACTIVE_REMEDIATION,
+                                json.dump(proactive_alert),
+                                partition=0,
+                                callback=None)
 
     def selectRecipeManually(self):
         """Manually select which recipe to apply, according to the list shown in the terminal.

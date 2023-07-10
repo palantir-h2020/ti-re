@@ -3,6 +3,6 @@
     "requiredCapabilities": [
         "level_4_filtering"
     ],
-    "requiredArtifacts": ["impacted_host_ip", "impacted_host_port"],
+    "requiredArtifacts": ["attacker_ip", "attacker_port"],
     "proactive": false
 }
