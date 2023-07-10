@@ -64,4 +64,4 @@ alert = {
         "Outlier_Score": 0.5940769567160774
     }
 
-message_producer("ti.threat_findings_netflow_rrtooldebug", json.dump(alert), 22, None)
+message_producer("ti.threat_findings_netflow_rrtooldebug", json.dumps(alert), 22, None)

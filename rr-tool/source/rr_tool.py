@@ -453,7 +453,7 @@ class RRTool:
 
         #todo send proactive after having filtered private data - enable/disable for testing
         broadcast_producer.message_producer(settings.TOPIC_RR_PROACTIVE_REMEDIATION,
-                                json.dump(proactive_alert),
+                                json.dumps(proactive_alert),
                                 partition=0,
                                 callback=None)
 
