@@ -73,7 +73,7 @@ def add_filtering_rules(node1, iptables_rule):
 
     logger.info("adding filtering rule to iptables instance")
 
-    print("NODOOOOO" + node1)
+    print("NODOOOOO" + node1["id"])
     if node1["id"] == "-1":
         url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns'
         headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
