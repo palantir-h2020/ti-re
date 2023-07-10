@@ -112,6 +112,8 @@ class RecipeFilter:
 
         if requiredArtifacts.issubset(set(availableArtifacts)):
             logger.info("OK, required artifacts available")
+            logger.info("Available: " + str(set(availableArtifacts)))
+            logger.info("Required: " + str(set(requiredArtifacts)))
             return True
         else:
             logger.error("Required artifacts missing")
