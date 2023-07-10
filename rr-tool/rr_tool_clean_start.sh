@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 BRANCH="multi_tenancy"
 TENANT_SPECIFIED=0;
-while getopts o:f:d:b:t: flag
+while getopts o:f:d:b:t:v:i: flag
 do
     case "${flag}" in
         o) OSM=${OPTARG};;
@@ -9,6 +9,8 @@ do
         d) KAFKA_DEBUG=${OPTARG};;
         b) BRANCH=${OPTARG};;
         t) TENANT=${OPTARG}; TENANT_SPECIFIED=1;;
+        v) VIM_ID=${OPTARG}; VIM_ID_SPECIFIED=1;;
+        i) ORCHESTRATOR_IP=${OPTARG}; ORCHESTRATOR_IP_SPECIFIED=1;;
         *) echo "Invalid flags, stopping script"; exit 1 ;;
     esac
 done
@@ -20,6 +22,14 @@ echo "Refreshing code"
 cd /media/palantir-nfs/ti-re && git fetch && git checkout "$BRANCH" && git pull origin "$BRANCH"
 echo "Rebuilding RR-tool docker image..."
 cd /media/palantir-nfs/ti-re/rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0
+if [ "$VIM_ID_SPECIFIED" == "1" ]; then
+  sed -i '/VIM_ID/{n;s/.*/          value: "TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT"/}' pod.yaml
+  sed -i "s/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/$VIM_ID/" pod.yaml
+fi
+if [ "$ORCHESTRATOR_IP_SPECIFIED" == "1" ]; then
+  sed -i '/ORCHESTRATOR_IP/{n;s/.*/          value: "TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT"/}' pod.yaml
+  sed -i "s/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/$ORCHESTRATOR_IP/" pod.yaml
+fi
 if [ "$RESET_SC" == "1" ]; then
   echo "Existing security controls rules will be flushed at rr-tool startup"
   sed -i '/RESET_SECURITY_CONTROLS_RULES_AT_STARTUP/{n;s/.*/          value: "1"/}' pod.yaml
