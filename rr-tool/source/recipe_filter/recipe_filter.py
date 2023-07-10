@@ -30,7 +30,7 @@ class RecipeFilter:
         SecurityControlsRepository it will return the next one in line that can be enforced.
         Returns the name of the selected recipe."""
 
-        logger.debug("Finding best recipe to remediate threat " + threat_category + "/" + threat_label)
+        logger.info("Finding best recipe to remediate threat " + threat_category + "/" + threat_label)
 
         applicable_recipes = {}
         not_applicable_recipes = {}
@@ -69,7 +69,7 @@ class RecipeFilter:
         """Checks whether the recipe's remediation can be performed when a proactive attack alert is received
         from other RR-tool instances. If the attack alert is not a proctive one, no check is needed"""
 
-        logger.debug("Checking proactive remediation compatibility for recipe " + recipe_name)
+        logger.info("Checking proactive remediation compatibility for recipe " + recipe_name)
 
         if proactive is False:
             return True
@@ -84,7 +84,7 @@ class RecipeFilter:
         """Checks the enforceability of a given recipe, that is, for every required capability a SecurityControl
         capable of enforcing it is available in the SecurityControlRepository"""
 
-        logger.debug("Checking enforceability for recipe " + recipe_name)
+        logger.info("Checking enforceability for recipe " + recipe_name)
 
         # Get the set of required capabilities from the RecipeRepository
         requiredCapabilities = set(self.recipe_repository[recipe_name]["requiredCapabilities"])
@@ -105,12 +105,16 @@ class RecipeFilter:
     def checkArtifactsAvailability(self, recipe_name, availableArtifacts):
         """Checks whether the artifacts required for a recipe remediation are available"""
 
-        logger.debug("Checking artifacts availability for recipe " + recipe_name)
+        logger.info("Checking artifacts availability for recipe " + recipe_name)
 
         # Get the set of required artifacts from the RecipeRepository
         requiredArtifacts = set(self.recipe_repository[recipe_name]["requiredArtifacts"])
 
         if requiredArtifacts.issubset(set(availableArtifacts)):
+            logger.info("OK, required artifacts available")
             return True
         else:
+            logger.error("Required artifacts missing")
+            logger.info("Available: " + str(set(availableArtifacts)))
+            logger.info("Required: " + str(set(requiredArtifacts)))
             return False
