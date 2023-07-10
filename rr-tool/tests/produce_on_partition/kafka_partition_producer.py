@@ -4,12 +4,12 @@ from confluent_kafka import Producer
 from confluent_kafka.admin import AdminClient
 
 KAFKA_PRODUCER_PROPERTIES = {
-    "bootstrap.servers": ("10.101.41.168") + ":" + ("50101"),
+    "bootstrap.servers": "10.101.41.168" + ":" + "50101",
     "compression.type": "none"
 }
 
 KAFKA_ADMIN_CLIENT_CONFIG = {
-    "bootstrap.servers": ("10.101.41.168") + ":" + ("50101")
+    "bootstrap.servers": "10.101.41.168" + ":" + "50101"
 }
 
 kafka_producer = Producer(KAFKA_PRODUCER_PROPERTIES)
