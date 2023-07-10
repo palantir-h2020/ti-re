@@ -19,7 +19,7 @@ if [ "$TENANT_SPECIFIED" == "0" ]; then
   exit -1
 fi
 echo "Refreshing code"
-cd /media/palantir-nfs/ti-re && git fetch && git checkout "$BRANCH" && git pull origin "$BRANCH"
+cd /media/palantir-nfs/ti-re && git fetch && git checkout "$BRANCH" && git stash && git pull origin "$BRANCH"
 echo "Rebuilding RR-tool docker image..."
 cd /media/palantir-nfs/ti-re/rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0
 if [ "$VIM_ID_SPECIFIED" == "1" ]; then
