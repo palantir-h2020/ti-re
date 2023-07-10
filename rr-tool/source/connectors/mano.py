@@ -73,7 +73,6 @@ def add_filtering_rules(node1, iptables_rule):
 
     logger.info("adding filtering rule to iptables instance")
 
-    print("NODOOOOO" + node1["id"])
     if node1["id"] == "-1":
         url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns'
         headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
@@ -95,7 +94,7 @@ def add_filtering_rules(node1, iptables_rule):
                node1["id"] = secap.get("id")
                break
 
-    if check_secap_readiness(node1["id"]):
+    if check_secap_readiness(node1["id"]) or ENABLE_MANO_API == "0":
         send_action(node=node1,
                     payload={"action_name": "run", "action_params": {"cmd": iptables_rule["rule"]}},
                     action_name="Add filtering rule to iptables SC",
