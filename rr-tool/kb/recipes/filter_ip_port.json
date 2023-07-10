@@ -4,5 +4,5 @@
         "level_4_filtering"
     ],
     "requiredArtifacts": ["attacker_ip", "attacker_port"],
-    "proactive": false
+    "proactive": true
 }
