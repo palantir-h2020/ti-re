@@ -73,6 +73,7 @@ def add_filtering_rules(node1, iptables_rule):
 
     logger.info("adding filtering rule to iptables instance")
 
+    print("NODOOOOO" + node1)
     if node1["id"] == "-1":
         url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns'
         headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
@@ -100,7 +101,7 @@ def add_filtering_rules(node1, iptables_rule):
                     action_name="Add filtering rule to iptables SC",
                     action_description="iptables SC reconfigured with command: " + iptables_rule["rule"])
     else:
-        logger.info("ERROR: cannot add new rules, the security capability isn't operational")
+        logger.error("Cannot add new rules, the security capability isn't operational")
 
 
 def flush_filtering_rules(node1):

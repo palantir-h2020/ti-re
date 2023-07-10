@@ -444,7 +444,7 @@ class RRTool:
             "threat_category": alert["Threat_Category"],
             "threat_label": alert["Threat_Label"],
             "rr_tool_instance_id": settings.RR_INSTANCE_ID,
-            "timestamp": alert["timestamp"],
+            "timestamp": alert["Threat_Finding"]["Time_Start"],
             "recipe_data": {
                 "attacker_ip": alert["Threat_Finding"]["Destination_Address"],
                 "attacker_port": alert["Threat_Finding"]["Destination_Port"]
