@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: palatest
+spec:
+  restartPolicy: OnFailure
+  terminationGracePeriodSeconds: 1
+  containers:
+    - name: palatest
+      image: 10.101.10.244:5000/palatest:1.0
+      imagePullPolicy: Always

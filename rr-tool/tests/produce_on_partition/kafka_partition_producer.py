@@ -4,12 +4,12 @@ from confluent_kafka import Producer
 from confluent_kafka.admin import AdminClient
 
 KAFKA_PRODUCER_PROPERTIES = {
-    "bootstrap.servers": "10.101.41.168" + ":" + "50101",
+    "bootstrap.servers": "10.101.41.255" + ":" + "9092",
     "compression.type": "none"
 }
 
 KAFKA_ADMIN_CLIENT_CONFIG = {
-    "bootstrap.servers": "10.101.41.168" + ":" + "50101"
+    "bootstrap.servers": "10.101.41.255" + ":" + "9092"
 }
 
 kafka_producer = Producer(KAFKA_PRODUCER_PROPERTIES)
@@ -42,6 +42,7 @@ def broadcast_message(topic, content, callback):
 
 def message_producer(topic, content, partition, callback):
     kafka_producer.produce(topic, content, partition=partition, callback=callback)
+    kafka_producer.flush()
 
 alert = {
         "Threat_Finding": {
