@@ -41,12 +41,12 @@ else
 fi
 if [ "$KAFKA_DEBUG" == "1" ]; then
   echo "Using debug Kafka topics"
-  sed -i '/KAFKA_DEBUG/{n;s/.*/          value: "1"/}' pod.yaml
+  sed -i '/KAFKA_DEBUG_TOPICS/{n;s/.*/          value: "1"/}' pod.yaml
 elif [ "$KAFKA_DEBUG" == "0" ]; then
   echo "Using production Kafka topics"
-  sed -i '/KAFKA_DEBUG/{n;s/.*/          value: "0"/}' pod.yaml
+  sed -i '/KAFKA_DEBUG_TOPICS/{n;s/.*/          value: "0"/}' pod.yaml
 else
-  echo "KAFKA_DEBUG option unknown or not specified, pod.yaml related setting will be followed"
+  echo "KAFKA_DEBUG_TOPICS option unknown or not specified, pod.yaml related setting will be followed"
 fi
 sed -i '/RR_INSTANCE_IDENTIFIER/{n;s/.*/          value: "TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT"/}' pod.yaml
 sed -i "s/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/$TENANT/" pod.yaml
