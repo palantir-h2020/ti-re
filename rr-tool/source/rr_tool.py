@@ -258,7 +258,7 @@ class RRTool:
                                                                 self.capability_to_security_control_mappings)
 
         #todo - enable/disable for testing
-        # recipe_interpreter_instance.remediate(recipe_text)
+        recipe_interpreter_instance.remediate(recipe_text)
 
     def addNewAttackRemediation(self, new_attack_remediation):
 
@@ -406,7 +406,7 @@ class RRTool:
                                                                 self.global_scope,
                                                                 self.capability_to_security_control_mappings)
         #todo - enable/disable for testing
-        # recipe_interpreter_instance.remediate(recipe_text)
+        recipe_interpreter_instance.remediate(recipe_text)
 
         # # evaluation metrics
         # print("METRICA: ")
