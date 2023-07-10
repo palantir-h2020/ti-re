@@ -31,9 +31,13 @@ def start_kafka_consumer(stop_event, remediator):
 
     kafka_consumer = Consumer(KAFKA_CONSUMER_PROPERTIES)
 
-    kafka_consumer.subscribe([TOPIC_TI_NETFLOW, TOPIC_TI_SYSLOG, TOPIC_RR_PROACTIVE_REMEDIATION, TOPIC_RR_NEW_ATTACK_REMEDIATION])
+    #!!!! Only enable one of the two !!!!#
 
-    ##### Partition-based multi-tenancy support #####
+    ##### Broadcast listening #####
+
+    # kafka_consumer.subscribe([TOPIC_TI_NETFLOW, TOPIC_TI_SYSLOG, TOPIC_RR_PROACTIVE_REMEDIATION, TOPIC_RR_NEW_ATTACK_REMEDIATION])
+
+    ##### Partition-based multi-tenancy listening #####
 
     # get tenant kafka partition
     url = "http://tenant-api-service.ti-dcp:6000/api/partition/" + RR_INSTANCE_ID
