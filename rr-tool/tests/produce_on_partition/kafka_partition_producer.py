@@ -1,5 +1,6 @@
 import json
 import os
+import uuid
 from confluent_kafka import Producer
 from confluent_kafka.admin import AdminClient
 
@@ -43,8 +44,9 @@ def broadcast_message(topic, content, callback):
 def message_producer(topic, content, partition, callback):
     kafka_producer.produce(topic, content, partition=partition, callback=callback)
     kafka_producer.flush()
+    print(f"Message sent on partition {partition} of topic {topic}")
 
-alert = {
+crypto_alert = {
         "Threat_Finding": {
             "Time_Start": "2020-04-29 13:51:46",
             "Time_End": "2021-04-29 13:52:51",
@@ -62,7 +64,10 @@ alert = {
         "Threat_Label": "crypto",
         "Threat_Category": "malware",
         "Classification_Confidence": 0.3346123530318716,
-        "Outlier_Score": 0.5940769567160774
+        "Outlier_Score": 0.5940769567160774,
+        "RandomUUIDForTests": str(uuid.uuid4())
     }
 
-message_producer("ti.threat_findings_netflow_rrtooldebug", json.dumps(alert), 22, None)
+message_producer("ti.threat_findings_netflow_rrtooldebug", json.dumps(crypto_alert), 22, None)
+#message_producer("ti.threat_findings_netflow", json.dumps(crypto_alert), 22, None)
+

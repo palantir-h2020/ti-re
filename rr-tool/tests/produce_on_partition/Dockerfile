@@ -6,4 +6,6 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD [ "python", "./kafka_partition_producer.py"]
+#CMD [ "python", "./kafka_partition_producer.py"]
+
+ENTRYPOINT ["bash"]
