@@ -13,7 +13,7 @@ def check_secap_readiness(secap_id):
     """Returns True if the securtiy capability is operational.
     Returns False otherwise."""
 
-    url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns'
+    url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/api/v2/lcm/ns' + '?tenant_id=' + TENANT_ORCHESTRATOR
 
     headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
 
@@ -74,7 +74,7 @@ def add_filtering_rules(node1, iptables_rule):
     logger.info("adding filtering rule to iptables instance")
 
     if node1["id"] == "-1":
-        url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns'
+        url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/api/v2/lcm/ns'  + '?tenant_id=' + TENANT_ORCHESTRATOR
         headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
 
         raw_response = requests.get(url, headers=headers)
@@ -107,7 +107,7 @@ def flush_filtering_rules(node1):
 
     logger.info("flushing filtering rules on iptables instance")
     if node1["id"] == "-1":
-        url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns'
+        url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/api/v2/lcm/ns'  + '?tenant_id=' + TENANT_ORCHESTRATOR
         headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
 
         raw_response = requests.get(url, headers=headers)
@@ -165,13 +165,13 @@ def send_action(node,
                 action_name,
                 action_description,
                 headers=None,
-                base_url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/lcm/ns/action?id=',
+                base_url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/api/v2/lcm/ns/action?id=',
                 component_type="Recommendation and Remediation",
                 component_id="0"):
 
     if headers is None:
         headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
-    url = base_url + node["id"]
+    url = base_url + node["id"] + '&tenant_id=' + TENANT_ORCHESTRATOR
     if ENABLE_MANO_API == "1":
         r = requests.post(url, headers=headers, json=payload)
 
