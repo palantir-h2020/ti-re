@@ -18,6 +18,8 @@ spec:
           value: "0"
         - name: RR_INSTANCE_IDENTIFIER
           value: "TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT"
+        - name: TENANT_ORCHESTRATOR
+          value: "TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT"
         - name: RR_TOOL_MODE # standalone/kafka
           value: "kafka"
         - name: KAFKA_IP
