@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 BRANCH="multi_tenancy"
 TENANT_SPECIFIED=0;
-while getopts o:f:d:b:t:v:i: flag
+while getopts o:f:d:b:t:z:v:i: flag
 do
     case "${flag}" in
         o) OSM=${OPTARG};;
