@@ -9,6 +9,7 @@ do
         d) KAFKA_DEBUG=${OPTARG};;
         b) BRANCH=${OPTARG};;
         t) TENANT=${OPTARG}; TENANT_SPECIFIED=1;;
+        z) TENANT_ORCHESTRATOR=${OPTARG}; TENANT_ORCHESTRATOR_SPECIFIED=1;;
         v) VIM_ID=${OPTARG}; VIM_ID_SPECIFIED=1;;
         i) ORCHESTRATOR_IP=${OPTARG}; ORCHESTRATOR_IP_SPECIFIED=1;;
         *) echo "Invalid flags, stopping script"; exit 1 ;;
@@ -22,6 +23,10 @@ echo "Refreshing code"
 cd /media/palantir-nfs/ti-re && git fetch && git checkout "$BRANCH" && git stash && git pull origin "$BRANCH"
 echo "Rebuilding RR-tool docker image..."
 cd /media/palantir-nfs/ti-re/rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0
+if [ "$TENANT_ORCHESTRATOR_SPECIFIED" == "1" ]; then
+  sed -i '/TENANT_ORCHESTRATOR/{n;s/.*/          value: "TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT"/}' pod.yaml
+  sed -i "s/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/$TENANT_ORCHESTRATOR/" pod.yaml
+fi
 if [ "$VIM_ID_SPECIFIED" == "1" ]; then
   sed -i '/VIM_ID/{n;s/.*/          value: "TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT"/}' pod.yaml
   sed -i "s/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/$VIM_ID/" pod.yaml
