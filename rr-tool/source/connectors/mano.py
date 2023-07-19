@@ -183,8 +183,8 @@ def send_action(node,
         if r.ok:
             portal.notify(component_type=component_type,
                           component_id=component_id,
-                          action_name=action_name,
-                          action_description=action_description,
+                          action-name=action-name,
+                          action-description=action-description,
                           on_ips=[node["ipAddress"]])
             logger.info("action succeeded: " + action_name)
             logger.debug("response headers from orchestrator " + str(r.headers))
