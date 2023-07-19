@@ -24,8 +24,13 @@ cd /media/palantir-nfs/ti-re && git fetch && git checkout "$BRANCH" && git stash
 echo "Rebuilding RR-tool docker image..."
 cd /media/palantir-nfs/ti-re/rr-tool && docker build -t palantir-rr-tool:1.0 . && docker tag palantir-rr-tool:1.0 10.101.10.244:5000/palantir-rr-tool:1.0 && docker push 10.101.10.244:5000/palantir-rr-tool:1.0
 if [ "$TENANT_ORCHESTRATOR_SPECIFIED" == "1" ]; then
+  echo "Using custom tenant ID for OSM calls"
   sed -i '/TENANT_ORCHESTRATOR/{n;s/.*/          value: "TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT"/}' pod.yaml
   sed -i "s/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/$TENANT_ORCHESTRATOR/" pod.yaml
+else
+  echo "Using tenant ID for OSM calls"
+  sed -i '/TENANT_ORCHESTRATOR/{n;s/.*/          value: "TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT"/}' pod.yaml
+  sed -i "s/TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT/$TENANT/" pod.yaml
 fi
 if [ "$VIM_ID_SPECIFIED" == "1" ]; then
   sed -i '/VIM_ID/{n;s/.*/          value: "TO_BE_SUBSTITUTED_BY_LAUNCH_SCRIPT"/}' pod.yaml
