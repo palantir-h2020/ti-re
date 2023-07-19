@@ -176,7 +176,7 @@ def send_action(node,
     url = base_url + node["id"] + '&tenant_id=' + TENANT_ORCHESTRATOR
     if ENABLE_MANO_API == "1":
         r = requests.post(url, headers=headers, json=payload)
-        logger.debug("request submitted to orchestrator: "+r)
+        logger.debug("request submitted to orchestrator: "+str(r))
         logger.info("response code from orchestrator " + str(r.status_code))
         if r.ok:
             portal.notify(component_type=component_type,
