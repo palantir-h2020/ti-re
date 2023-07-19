@@ -165,7 +165,7 @@ def send_action(node,
                 action_name,
                 action_description,
                 headers=None,
-                base_url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/api/v2/lcm/ns/action?id=',
+                base_url='http://' + SC_ORCHESTRATOR_IP + ':' + SC_CLUSTER_PORT + '/api/v2/lcm/ns/action?ns_id=',
                 component_type="Recommendation and Remediation",
                 component_id="0"):
 
