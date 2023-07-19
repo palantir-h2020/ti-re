@@ -96,7 +96,7 @@ def add_filtering_rules(node1, iptables_rule):
 
     if check_secap_readiness(node1["id"]) or ENABLE_MANO_API == "0":
         send_action(node=node1,
-                    payload={"action_name": "run", "action_params": {"cmd": iptables_rule["rule"]}},
+                    payload={"action-name": "run", "action-params": {"cmd": iptables_rule["rule"]}},
                     action_name="Add filtering rule to iptables SC",
                     action_description="iptables SC reconfigured with command: " + iptables_rule["rule"])
     else:
@@ -130,7 +130,7 @@ def flush_filtering_rules(node1):
     # if check_secap_readiness(node1["id"]):
 
     send_action(node=node1,
-                payload={"action_name": "run", "action_params": {"cmd": "iptables-save | grep -v RR-TOOL_GENERATED | "
+                payload={"action-name": "run", "action-params": {"cmd": "iptables-save | grep -v RR-TOOL_GENERATED | "
                                                                         "iptables-restore"}},
                 action_name="Flush rules on iptables SC",
                 action_description="iptables SC reconfigured with command: iptables-save | grep -v "
@@ -183,8 +183,8 @@ def send_action(node,
         if r.ok:
             portal.notify(component_type=component_type,
                           component_id=component_id,
-                          action-name=action-name,
-                          action-description=action-description,
+                          action_name=action_name,
+                          action_description=action_description,
                           on_ips=[node["ipAddress"]])
             logger.info("action succeeded: " + action_name)
             logger.debug("response headers from orchestrator " + str(r.headers))
