@@ -173,7 +173,7 @@ def send_action(node,
 
     if headers is None:
         headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
-    url = base_url + node["id"] + '&tenant_id=' + TENANT_ORCHESTRATOR
+    url = base_url + node["id"] + '&tenant_id=' + TENANT_ORCHESTRATOR + '&wait_for=NONE'
     if ENABLE_MANO_API == "1":
         r = requests.post(url, headers=headers, json=payload)
         logger.debug("request submitted to orchestrator URL: "+str(url))
