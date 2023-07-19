@@ -169,6 +169,8 @@ def send_action(node,
                 component_type="Recommendation and Remediation",
                 component_id="0"):
 
+    # here node["id"] represents the id of the security capability (control) to which the new rule must be added
+
     if headers is None:
         headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
     url = base_url + node["id"] + '&tenant_id=' + TENANT_ORCHESTRATOR
