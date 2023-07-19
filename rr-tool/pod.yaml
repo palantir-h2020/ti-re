@@ -49,7 +49,7 @@ spec:
         - name: RR_TOOL_IP
           value: "10.101.41.42"
         - name: SC_ORCHESTRATOR_IP
-          value: "10.101.41.168"
+          value: "10.101.41.166"
         - name: ENABLE_MANO_API
           value: "1"
         - name: ENABLE_ONLY_SECURITY_CAPABILITIES_WITH_TRANSLATOR
