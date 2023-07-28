@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-BRANCH="multi_tenancy"
+BRANCH="master"
 TENANT_SPECIFIED=0;
 while getopts o:f:d:b:t:z:v:i: flag
 do
